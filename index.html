@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Звёзды Михалыча</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  :root {
+    --bg-deep: #150c2b;
+    --bg-mid: #2a1a5e;
+    --bg-violet: #3a1f7a;
+    --gold: #e8c97a;
+    --gold-bright: #f0dca0;
+    --cream: #f5e6c8;
+    --lavender: #b7a9d9;
+    --card-bg: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(232, 201, 122, 0.35);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: radial-gradient(circle at 20% 0%, var(--bg-violet), var(--bg-mid) 45%, var(--bg-deep) 100%);
+    color: var(--cream);
+    padding: 20px 16px 32px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 22px;
+  }
+
+  .star-logo {
+    font-size: 40px;
+    line-height: 1;
+    filter: drop-shadow(0 0 12px rgba(232, 201, 122, 0.5));
+  }
+
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    font-size: 24px;
+    margin: 10px 0 4px;
+    color: var(--gold-bright);
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--lavender);
+    margin: 0;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 12px;
+    padding: 4px;
+  }
+
+  nav.tabs button {
+    flex: 1;
+    padding: 9px 4px;
+    border: none;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--lavender);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  nav.tabs button.active {
+    background: linear-gradient(135deg, var(--gold), #c9a35a);
+    color: #2a1a0f;
+  }
+
+  section.panel { display: none; }
+  section.panel.active { display: block; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 16px 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.15s;
+  }
+
+  .card:active {
+    transform: scale(0.96);
+    border-color: var(--gold);
+  }
+
+  .card .icon {
+    font-size: 26px;
+    margin-bottom: 6px;
+  }
+
+  .card .amount {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--gold-bright);
+  }
+
+  .card .hint {
+    font-size: 11px;
+    color: var(--lavender);
+    margin-top: 2px;
+  }
+
+  .card.wide {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .card.wide .amount { font-size: 15px; }
+
+  .perk-list {
+    list-style: none;
+    padding: 0;
+    margin: 14px 0 0;
+    font-size: 12.5px;
+    color: var(--lavender);
+  }
+
+  .perk-list li {
+    padding: 5px 0 5px 20px;
+    position: relative;
+  }
+
+  .perk-list li::before {
+    content: "✦";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 26px;
+    font-size: 11px;
+    color: var(--lavender);
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="star-logo">⭐</div>
+  <h1>Звёзды Михалыча</h1>
+  <p class="subtitle">Гривна → Telegram Stars, TON и Premium</p>
+</header>
+
+<nav class="tabs">
+  <button class="tab-btn active" data-tab="stars">⭐ Stars</button>
+  <button class="tab-btn" data-tab="ton">💎 TON</button>
+  <button class="tab-btn" data-tab="premium">🌟 Premium</button>
+</nav>
+
+<section class="panel active" id="panel-stars">
+  <div class="grid">
+    <div class="card" data-type="stars" data-amount="100">
+      <div class="icon">⭐</div>
+      <div class="amount">100</div>
+      <div class="hint">звёзд</div>
+    </div>
+    <div class="card" data-type="stars" data-amount="250">
+      <div class="icon">⭐</div>
+      <div class="amount">250</div>
+      <div class="hint">звёзд</div>
+    </div>
+    <div class="card" data-type="stars" data-amount="500">
+      <div class="icon">⭐</div>
+      <div class="amount">500</div>
+      <div class="hint">звёзд</div>
+    </div>
+    <div class="card" data-type="stars" data-amount="1000">
+      <div class="icon">⭐</div>
+      <div class="amount">1000</div>
+      <div class="hint">звёзд</div>
+    </div>
+    <div class="card wide" data-type="stars" data-amount="0">
+      <span class="icon">✏️</span>
+      <span class="amount">Своя сумма</span>
+    </div>
+  </div>
+  <ul class="perk-list">
+    <li>Дешевле, чем в App Store</li>
+    <li>Оплата гривной, без карты в валюте</li>
+    <li>Можно дарить другому — просто укажи получателя</li>
+  </ul>
+</section>
+
+<section class="panel" id="panel-ton">
+  <div class="grid">
+    <div class="card" data-type="ton" data-amount="1">
+      <div class="icon">💎</div>
+      <div class="amount">1</div>
+      <div class="hint">TON</div>
+    </div>
+    <div class="card" data-type="ton" data-amount="5">
+      <div class="icon">💎</div>
+      <div class="amount">5</div>
+      <div class="hint">TON</div>
+    </div>
+    <div class="card" data-type="ton" data-amount="10">
+      <div class="icon">💎</div>
+      <div class="amount">10</div>
+      <div class="hint">TON</div>
+    </div>
+    <div class="card" data-type="ton" data-amount="25">
+      <div class="icon">💎</div>
+      <div class="amount">25</div>
+      <div class="hint">TON</div>
+    </div>
+    <div class="card wide" data-type="ton" data-amount="0">
+      <span class="icon">✏️</span>
+      <span class="amount">Своя сумма</span>
+    </div>
+  </div>
+  <ul class="perk-list">
+    <li>Напрямую в твой TON-кошелёк</li>
+    <li>Без криптобирж и подтверждения возраста</li>
+    <li>Гривна → TON за один перевод</li>
+  </ul>
+</section>
+
+<section class="panel" id="panel-premium">
+  <div class="grid">
+    <div class="card wide" data-type="premium" data-amount="3">
+      <span class="icon">🌟</span>
+      <span class="amount">3 месяца Premium</span>
+    </div>
+    <div class="card wide" data-type="premium" data-amount="6">
+      <span class="icon">🌟</span>
+      <span class="amount">6 месяцев Premium</span>
+    </div>
+    <div class="card wide" data-type="premium" data-amount="12">
+      <span class="icon">🌟</span>
+      <span class="amount">12 месяцев Premium</span>
+    </div>
+  </div>
+  <ul class="perk-list">
+    <li>Официальная подписка Telegram Premium</li>
+    <li>Оплата гривной вместо валютной карты</li>
+    <li>Можно оформить другу — просто укажи его</li>
+  </ul>
+</section>
+
+<footer>Нажми на пакет — оформление продолжится в чате с ботом</footer>
+
+<script>
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) {
+    tg.ready();
+    tg.expand();
+  }
+
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      if (tg) tg.HapticFeedback.selectionChanged();
+    });
+  });
+
+  document.querySelectorAll('.card').forEach((card) => {
+    card.addEventListener('click', () => {
+      const payload = JSON.stringify({
+        type: card.dataset.type,
+        amount: Number(card.dataset.amount),
+      });
+      if (tg) {
+        tg.HapticFeedback.impactOccurred('light');
+        tg.sendData(payload);
+      } else {
+        // Открыто вне Telegram (например, для проверки в браузере) — просто лог.
+        console.log('sendData:', payload);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
