@@ -523,7 +523,7 @@
     });
   }
 
-  function renderCardGrid(container, options, anyLabel, onPick) {
+  function renderCardGrid(container, options, anyLabel, onPick, images) {
     container.innerHTML = '';
     const anyCard = document.createElement('div');
     anyCard.className = 'gift-card gift-card-any';
@@ -534,7 +534,11 @@
     options.forEach((name) => {
       const card = document.createElement('div');
       card.className = 'gift-card';
-      card.innerHTML = `<span>${name}</span>`;
+      const imgUrl = images && images[name];
+      const imgHtml = imgUrl
+        ? `<img class="gift-thumb" src="${imgUrl}" alt="" onerror="this.classList.add('hidden')">`
+        : '';
+      card.innerHTML = `${imgHtml}<span>${name}</span>`;
       card.addEventListener('click', () => onPick(name));
       container.appendChild(card);
     });
@@ -547,14 +551,14 @@
     giftDetailThumb.classList.remove('hidden');
     giftDetailThumb.src = fragmentThumbUrl(collection.fragmentSlug);
     giftDetailThumb.onerror = () => giftDetailThumb.classList.add('hidden');
-    renderCardGrid(giftModelGrid, collection.models, 'Любая модель', onModelPicked);
+    renderCardGrid(giftModelGrid, collection.models, 'Любая модель', onModelPicked, collection.modelImages);
     showGiftStage(1);
     if (tg) tg.HapticFeedback.selectionChanged();
   }
 
   function onModelPicked(model) {
     selectedModel = model;
-    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked);
+    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked, selectedCollection.backdropImages);
     showGiftStage(2);
     if (tg) tg.HapticFeedback.selectionChanged();
   }
