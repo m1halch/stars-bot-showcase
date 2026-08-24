@@ -2,8 +2,13 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#150c2b">
 <title>Звёзды Михалыча</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%AD%90%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   :root {
@@ -12,38 +17,87 @@
     --bg-violet: #3a1f7a;
     --gold: #e8c97a;
     --gold-bright: #f0dca0;
+    --gold-soft: rgba(232, 201, 122, 0.16);
     --cream: #f5e6c8;
     --lavender: #b7a9d9;
-    --card-bg: rgba(255, 255, 255, 0.06);
-    --card-border: rgba(232, 201, 122, 0.35);
+    --lavender-dim: #8b7db8;
+    --card-bg: rgba(255, 255, 255, 0.055);
+    --card-bg-hover: rgba(255, 255, 255, 0.09);
+    --card-border: rgba(232, 201, 122, 0.28);
+    --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+    --font-body: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
 
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+  }
+
+  html { height: 100%; }
 
   body {
     margin: 0;
     min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: radial-gradient(circle at 20% 0%, var(--bg-violet), var(--bg-mid) 45%, var(--bg-deep) 100%);
+    min-height: 100dvh;
+    font-family: var(--font-body);
+    background: radial-gradient(circle at 18% -5%, var(--bg-violet), var(--bg-mid) 45%, var(--bg-deep) 100%);
     color: var(--cream);
-    padding: 20px 16px 32px;
+    padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+    position: relative;
+    overflow-x: hidden;
   }
+
+  /* Тонкая рассыпь золотых искр по фону — тот же мотив, что на обоях канала,
+     но статичная (только лёгкое мерцание), чтобы не отвлекать от контента. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 18%, var(--gold-bright) 0%, transparent 60%),
+      radial-gradient(1px 1px at 82% 9%, var(--gold) 0%, transparent 60%),
+      radial-gradient(1.5px 1.5px at 92% 34%, var(--gold-bright) 0%, transparent 60%),
+      radial-gradient(1px 1px at 6% 52%, var(--gold) 0%, transparent 60%),
+      radial-gradient(1.5px 1.5px at 70% 62%, var(--gold-bright) 0%, transparent 60%),
+      radial-gradient(1px 1px at 30% 78%, var(--gold) 0%, transparent 60%),
+      radial-gradient(1.5px 1.5px at 88% 88%, var(--gold-bright) 0%, transparent 60%),
+      radial-gradient(1px 1px at 45% 40%, var(--gold) 0%, transparent 60%);
+    opacity: 0.55;
+    animation: twinkle 5s ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    from { opacity: 0.35; }
+    to { opacity: 0.75; }
+  }
+
+  main { position: relative; z-index: 1; }
 
   header {
     text-align: center;
-    margin-bottom: 22px;
+    margin-bottom: 20px;
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   .star-logo {
-    font-size: 40px;
+    font-size: 38px;
     line-height: 1;
-    filter: drop-shadow(0 0 12px rgba(232, 201, 122, 0.5));
+    filter: drop-shadow(0 0 14px rgba(232, 201, 122, 0.55));
   }
 
   h1 {
-    font-family: Georgia, "Times New Roman", serif;
-    font-weight: 700;
-    font-size: 24px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 25px;
+    letter-spacing: 0.2px;
     margin: 10px 0 4px;
     color: var(--gold-bright);
   }
@@ -52,37 +106,61 @@
     font-size: 13px;
     color: var(--lavender);
     margin: 0;
+    font-weight: 500;
   }
 
   nav.tabs {
+    position: relative;
     display: flex;
-    gap: 8px;
-    margin: 20px 0 16px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 12px;
+    gap: 2px;
+    margin: 18px 0 18px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 13px;
     padding: 4px;
   }
 
+  .tab-indicator {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: 0;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--gold), #c9a35a);
+    box-shadow: 0 3px 10px rgba(232, 201, 122, 0.25);
+    transition: transform 0.32s cubic-bezier(0.65, 0, 0.35, 1), width 0.32s cubic-bezier(0.65, 0, 0.35, 1);
+    z-index: 0;
+  }
+
   nav.tabs button {
+    position: relative;
+    z-index: 1;
     flex: 1;
-    padding: 9px 4px;
+    padding: 10px 4px;
     border: none;
-    border-radius: 9px;
+    border-radius: 10px;
     background: transparent;
     color: var(--lavender);
-    font-size: 13px;
-    font-weight: 600;
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 700;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s;
+    transition: color 0.2s;
+    white-space: nowrap;
   }
 
-  nav.tabs button.active {
-    background: linear-gradient(135deg, var(--gold), #c9a35a);
-    color: #2a1a0f;
+  nav.tabs button.active { color: #2a1a0f; }
+
+  section.panel {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.28s ease, transform 0.28s ease;
   }
 
-  section.panel { display: none; }
   section.panel.active { display: block; }
+  section.panel.panel-visible { opacity: 1; transform: translateY(0); }
 
   .grid {
     display: grid;
@@ -93,26 +171,29 @@
   .card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);
-    border-radius: 14px;
-    padding: 16px 12px;
+    border-radius: 15px;
+    padding: 17px 12px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.1s, border-color 0.15s;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s, background 0.15s;
   }
 
   .card:active {
-    transform: scale(0.96);
+    transform: scale(0.95);
     border-color: var(--gold);
+    background: var(--card-bg-hover);
   }
 
   .card .icon {
-    font-size: 26px;
-    margin-bottom: 6px;
+    font-size: 27px;
+    margin-bottom: 7px;
+    display: block;
   }
 
   .card .amount {
-    font-size: 17px;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-size: 18px;
+    font-weight: 600;
     color: var(--gold-bright);
   }
 
@@ -120,6 +201,7 @@
     font-size: 11px;
     color: var(--lavender);
     margin-top: 2px;
+    font-weight: 500;
   }
 
   .card.wide {
@@ -128,21 +210,26 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    padding: 14px 12px;
   }
 
-  .card.wide .amount { font-size: 15px; }
+  .card.wide .amount { font-size: 15px; font-family: var(--font-body); font-weight: 700; }
 
   .perk-list {
     list-style: none;
-    padding: 0;
-    margin: 14px 0 0;
+    padding: 14px 14px 12px;
+    margin: 16px 0 0;
     font-size: 12.5px;
     color: var(--lavender);
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
   }
 
   .perk-list li {
     padding: 5px 0 5px 20px;
     position: relative;
+    line-height: 1.4;
   }
 
   .perk-list li::before {
@@ -155,44 +242,60 @@
   .gift-steps {
     display: flex;
     gap: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .gift-step {
     flex: 1;
     text-align: center;
-    padding: 6px 4px;
-    border-radius: 8px;
+    padding: 7px 4px;
+    border-radius: 9px;
     font-size: 10.5px;
-    color: var(--lavender);
+    font-weight: 600;
+    color: var(--lavender-dim);
     background: rgba(255, 255, 255, 0.04);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .gift-step.done {
+    color: var(--gold-bright);
+    background: var(--gold-soft);
   }
 
   .gift-step.active {
     color: #2a1a0f;
     background: linear-gradient(135deg, var(--gold), #c9a35a);
-    font-weight: 600;
+    font-weight: 700;
   }
 
   .gift-search {
     width: 100%;
-    padding: 11px 14px;
-    border-radius: 12px;
+    padding: 12px 14px;
+    border-radius: 13px;
     border: 1px solid var(--card-border);
     background: var(--card-bg);
     color: var(--cream);
+    font-family: var(--font-body);
     font-size: 14px;
+    font-weight: 600;
     outline: none;
     margin-bottom: 10px;
+    transition: border-color 0.15s;
   }
 
-  .gift-search::placeholder { color: var(--lavender); opacity: 0.8; }
+  .gift-search:focus { border-color: var(--gold); }
+  .gift-search::placeholder { color: var(--lavender); opacity: 0.7; font-weight: 500; }
 
   .gift-grid {
-    max-height: 380px;
+    max-height: 420px;
     overflow-y: auto;
     display: grid;
     gap: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--card-border) transparent;
   }
 
   .gift-grid-cols2 { grid-template-columns: 1fr 1fr; }
@@ -200,10 +303,11 @@
 
   .gift-card {
     padding: 10px 8px;
-    border-radius: 12px;
+    border-radius: 13px;
     background: var(--card-bg);
     border: 1px solid transparent;
-    font-size: 12.5px;
+    font-size: 12px;
+    font-weight: 600;
     text-align: center;
     cursor: pointer;
     display: flex;
@@ -211,21 +315,28 @@
     align-items: center;
     gap: 6px;
     line-height: 1.25;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s, background 0.15s;
   }
 
-  .gift-card:active { border-color: var(--gold); transform: scale(0.97); }
+  .gift-card:active {
+    border-color: var(--gold);
+    transform: scale(0.95);
+    background: var(--card-bg-hover);
+  }
 
   .gift-card.gift-card-any {
     justify-content: center;
     color: var(--gold-bright);
-    font-weight: 600;
+    font-weight: 700;
     min-height: 44px;
+    background: var(--gold-soft);
+    border-color: var(--card-border);
   }
 
   .gift-thumb {
     width: 100%;
     aspect-ratio: 1;
-    border-radius: 9px;
+    border-radius: 10px;
     object-fit: cover;
     background: rgba(255, 255, 255, 0.05);
   }
@@ -234,6 +345,7 @@
 
   .gift-swatch {
     border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
   }
 
   .gift-card-count {
@@ -241,20 +353,41 @@
     font-size: 10px;
   }
 
+  .gift-skeleton {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .gift-skeleton .sk-cell {
+    aspect-ratio: 0.82;
+    border-radius: 13px;
+    background: linear-gradient(100deg, rgba(255,255,255,0.04) 30%, rgba(255,255,255,0.09) 50%, rgba(255,255,255,0.04) 70%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    from { background-position: 150% 0; }
+    to { background-position: -50% 0; }
+  }
+
   .gift-detail-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
   }
 
   .gift-thumb-large {
-    width: 56px;
-    height: 56px;
-    border-radius: 12px;
+    width: 54px;
+    height: 54px;
+    border-radius: 13px;
     object-fit: cover;
     background: rgba(255, 255, 255, 0.05);
     flex-shrink: 0;
+    border: 1px solid var(--card-border);
   }
 
   .gift-thumb-large.hidden { display: none; }
@@ -263,7 +396,7 @@
     text-align: center;
     color: var(--lavender);
     font-size: 12.5px;
-    padding: 14px 0;
+    padding: 18px 0;
     grid-column: 1 / -1;
   }
 
@@ -271,35 +404,54 @@
     background: none;
     border: none;
     color: var(--gold-bright);
+    font-family: var(--font-body);
+    font-weight: 700;
     font-size: 13px;
-    padding: 6px 0 12px;
+    padding: 4px 0 12px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
 
   .gift-detail-title {
-    font-family: Georgia, "Times New Roman", serif;
+    font-family: var(--font-display);
     font-size: 19px;
+    font-weight: 600;
     color: var(--gold-bright);
   }
 
+  .gift-crumb {
+    font-size: 11.5px;
+    color: var(--lavender-dim);
+    margin: -6px 0 12px;
+    font-weight: 600;
+  }
+
+  .gift-crumb b { color: var(--lavender); font-weight: 700; }
+
   footer {
     text-align: center;
-    margin-top: 26px;
+    margin-top: 28px;
     font-size: 11px;
     color: var(--lavender);
-    opacity: 0.7;
+    opacity: 0.65;
+    font-weight: 500;
   }
 </style>
 </head>
 <body>
 
+<main>
+
 <header>
   <div class="star-logo">⭐</div>
   <h1>Звёзды Михалыча</h1>
-  <p class="subtitle">Гривна → Telegram Stars, TON и Premium</p>
+  <p class="subtitle">Гривна → Telegram Stars, TON, Premium и NFT-подарки</p>
 </header>
 
-<nav class="tabs">
+<nav class="tabs" id="tabs">
+  <div class="tab-indicator" id="tab-indicator"></div>
   <button class="tab-btn active" data-tab="stars">⭐ Stars</button>
   <button class="tab-btn" data-tab="ton">💎 TON</button>
   <button class="tab-btn" data-tab="premium">🌟 Premium</button>
@@ -309,22 +461,22 @@
 <section class="panel active" id="panel-stars">
   <div class="grid">
     <div class="card" data-type="stars" data-amount="100">
-      <div class="icon">⭐</div>
+      <span class="icon">⭐</span>
       <div class="amount">100</div>
       <div class="hint">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="250">
-      <div class="icon">⭐</div>
+      <span class="icon">⭐</span>
       <div class="amount">250</div>
       <div class="hint">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="500">
-      <div class="icon">⭐</div>
+      <span class="icon">⭐</span>
       <div class="amount">500</div>
       <div class="hint">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="1000">
-      <div class="icon">⭐</div>
+      <span class="icon">⭐</span>
       <div class="amount">1000</div>
       <div class="hint">звёзд</div>
     </div>
@@ -343,22 +495,22 @@
 <section class="panel" id="panel-ton">
   <div class="grid">
     <div class="card" data-type="ton" data-amount="1">
-      <div class="icon">💎</div>
+      <span class="icon">💎</span>
       <div class="amount">1</div>
       <div class="hint">TON</div>
     </div>
     <div class="card" data-type="ton" data-amount="5">
-      <div class="icon">💎</div>
+      <span class="icon">💎</span>
       <div class="amount">5</div>
       <div class="hint">TON</div>
     </div>
     <div class="card" data-type="ton" data-amount="10">
-      <div class="icon">💎</div>
+      <span class="icon">💎</span>
       <div class="amount">10</div>
       <div class="hint">TON</div>
     </div>
     <div class="card" data-type="ton" data-amount="25">
-      <div class="icon">💎</div>
+      <span class="icon">💎</span>
       <div class="amount">25</div>
       <div class="hint">TON</div>
     </div>
@@ -405,7 +557,12 @@
 
   <div id="gift-stage-collection" class="gift-stage">
     <input type="text" id="gift-search" class="gift-search" placeholder="Фильтр (необязательно)" autocomplete="off">
-    <div id="gift-collection-grid" class="gift-grid gift-grid-cols3"></div>
+    <div id="gift-collection-grid" class="gift-grid gift-grid-cols3">
+      <div class="gift-skeleton">
+        <div class="sk-cell"></div><div class="sk-cell"></div><div class="sk-cell"></div>
+        <div class="sk-cell"></div><div class="sk-cell"></div><div class="sk-cell"></div>
+      </div>
+    </div>
   </div>
 
   <div id="gift-stage-model" class="gift-stage" style="display:none">
@@ -419,7 +576,8 @@
 
   <div id="gift-stage-backdrop" class="gift-stage" style="display:none">
     <button class="gift-back" data-back="1">← К моделям</button>
-    <div class="gift-detail-title" id="gift-backdrop-title">Выбери фон</div>
+    <div class="gift-detail-title">Выбери фон</div>
+    <div class="gift-crumb" id="gift-backdrop-crumb"></div>
     <div id="gift-backdrop-grid" class="gift-grid gift-grid-cols2"></div>
   </div>
 
@@ -430,6 +588,8 @@
   </ul>
 </section>
 
+</main>
+
 <footer>Нажми на пакет — оформление продолжится в чате с ботом</footer>
 
 <script>
@@ -439,13 +599,31 @@
     tg.expand();
   }
 
+  const tabsNav = document.getElementById('tabs');
+  const tabIndicator = document.getElementById('tab-indicator');
+
+  function moveIndicatorTo(btn) {
+    if (!btn) return;
+    const navRect = tabsNav.getBoundingClientRect();
+    const btnRect = btn.getBoundingClientRect();
+    tabIndicator.style.width = btnRect.width + 'px';
+    tabIndicator.style.transform = `translateX(${btnRect.left - navRect.left - 4}px)`;
+  }
+
   function switchTab(tabName) {
     const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
     if (!btn) return;
     document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach((p) => {
+      p.classList.remove('active', 'panel-visible');
+    });
     btn.classList.add('active');
-    document.getElementById('panel-' + tabName).classList.add('active');
+    const panel = document.getElementById('panel-' + tabName);
+    panel.classList.add('active');
+    // Двойной rAF — иначе браузер схлопывает display:none -> opacity:1 без
+    // перехода (стили должны примениться в отдельном кадре до анимации).
+    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('panel-visible')));
+    moveIndicatorTo(btn);
   }
 
   document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -458,9 +636,15 @@
   // Кнопка "🎁 Подарки NFT" в меню бота открывает витрину сразу на этой
   // вкладке (?#gifts в URL), а не с нуля — иначе про подарки узнают только
   // те, кто сам догадается потыкать вкладки внутри общей "Витрины".
-  if (location.hash === '#gifts') {
-    switchTab('gifts');
-  }
+  const initialTab = location.hash === '#gifts' ? 'gifts' : 'stars';
+  requestAnimationFrame(() => {
+    switchTab(initialTab);
+    // Первое переключение не должно ехать с анимацией — ставим индикатор мгновенно.
+    tabIndicator.style.transition = 'none';
+    moveIndicatorTo(document.querySelector('.tab-btn.active'));
+    requestAnimationFrame(() => { tabIndicator.style.transition = ''; });
+  });
+  window.addEventListener('resize', () => moveIndicatorTo(document.querySelector('.tab-btn.active')));
 
   function sendToBot(payload) {
     const json = JSON.stringify(payload);
@@ -503,12 +687,14 @@
   const giftBackdropGrid = document.getElementById('gift-backdrop-grid');
   const giftDetailTitle = document.getElementById('gift-detail-title');
   const giftDetailThumb = document.getElementById('gift-detail-thumb');
+  const giftBackdropCrumb = document.getElementById('gift-backdrop-crumb');
   const giftStages = [
     document.getElementById('gift-stage-collection'),
     document.getElementById('gift-stage-model'),
     document.getElementById('gift-stage-backdrop'),
   ];
   const giftStepEls = document.querySelectorAll('.gift-step');
+  const giftStepDefaults = ['1. Подарок', '2. Модель', '3. Фон'];
 
   // Превью — CDN Fragment (nft-маркетплейс Telegram), публичного API у них
   // нет, но статичные превью по этому пути отдаются свободно (проверено
@@ -519,7 +705,17 @@
 
   function showGiftStage(index) {
     giftStages.forEach((el, i) => { el.style.display = i === index ? 'block' : 'none'; });
-    giftStepEls.forEach((el, i) => el.classList.toggle('active', i === index));
+    giftStepEls.forEach((el, i) => {
+      el.classList.toggle('active', i === index);
+      el.classList.toggle('done', i < index);
+    });
+  }
+
+  // Подписи шагов сверху отражают уже сделанный выбор ("1. Plush Pepe"
+  // вместо "1. Подарок") — видно на каком шаге что выбрано, не нужно
+  // прокручивать обратно, чтобы вспомнить.
+  function setStepLabel(index, text) {
+    giftStepEls[index].textContent = text || giftStepDefaults[index];
   }
 
   function renderGiftCollections() {
@@ -577,6 +773,7 @@
     giftDetailThumb.classList.remove('hidden');
     giftDetailThumb.src = fragmentThumbUrl(collection.fragmentSlug);
     giftDetailThumb.onerror = () => giftDetailThumb.classList.add('hidden');
+    setStepLabel(0, collection.name);
     renderCardGrid(giftModelGrid, collection.models, 'Любая модель', onModelPicked, collection.modelImages);
     showGiftStage(1);
     if (tg) tg.HapticFeedback.selectionChanged();
@@ -584,6 +781,8 @@
 
   function onModelPicked(model) {
     selectedModel = model;
+    setStepLabel(1, model || 'Любая модель');
+    giftBackdropCrumb.innerHTML = `<b>${selectedCollection.name}</b> · ${model || 'любая модель'}`;
     renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked, null, backdropColors);
     showGiftStage(2);
     if (tg) tg.HapticFeedback.selectionChanged();
@@ -598,6 +797,8 @@
     });
     selectedCollection = null;
     selectedModel = null;
+    setStepLabel(0, null);
+    setStepLabel(1, null);
     showGiftStage(0);
   }
 
