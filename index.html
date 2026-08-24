@@ -152,6 +152,28 @@
     color: var(--gold);
   }
 
+  .gift-steps {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .gift-step {
+    flex: 1;
+    text-align: center;
+    padding: 6px 4px;
+    border-radius: 8px;
+    font-size: 10.5px;
+    color: var(--lavender);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .gift-step.active {
+    color: #2a1a0f;
+    background: linear-gradient(135deg, var(--gold), #c9a35a);
+    font-weight: 600;
+  }
+
   .gift-search {
     width: 100%;
     padding: 11px 14px;
@@ -161,57 +183,65 @@
     color: var(--cream);
     font-size: 14px;
     outline: none;
+    margin-bottom: 10px;
   }
 
   .gift-search::placeholder { color: var(--lavender); opacity: 0.8; }
 
-  .gift-results {
-    margin-top: 10px;
-    max-height: 300px;
+  .gift-grid {
+    max-height: 380px;
     overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    gap: 8px;
   }
 
-  .gift-result {
-    padding: 8px 14px 8px 8px;
-    border-radius: 10px;
+  .gift-grid-cols2 { grid-template-columns: 1fr 1fr; }
+  .gift-grid-cols3 { grid-template-columns: repeat(3, 1fr); }
+
+  .gift-card {
+    padding: 10px 8px;
+    border-radius: 12px;
     background: var(--card-bg);
     border: 1px solid transparent;
-    font-size: 14px;
+    font-size: 12.5px;
+    text-align: center;
     cursor: pointer;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
+    line-height: 1.25;
   }
 
-  .gift-result:active { border-color: var(--gold); }
+  .gift-card:active { border-color: var(--gold); transform: scale(0.97); }
+
+  .gift-card.gift-card-any {
+    justify-content: center;
+    color: var(--gold-bright);
+    font-weight: 600;
+    min-height: 44px;
+  }
 
   .gift-thumb {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 9px;
     object-fit: cover;
     background: rgba(255, 255, 255, 0.05);
-    flex-shrink: 0;
   }
 
   .gift-thumb.hidden { display: none; }
 
-  .gift-result-text { flex: 1; min-width: 0; }
-
-  .gift-result .count {
-    display: block;
+  .gift-card-count {
     color: var(--lavender);
-    font-size: 11px;
+    font-size: 10px;
   }
 
   .gift-detail-header {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 4px;
+    margin-bottom: 10px;
   }
 
   .gift-thumb-large {
@@ -230,6 +260,7 @@
     color: var(--lavender);
     font-size: 12.5px;
     padding: 14px 0;
+    grid-column: 1 / -1;
   }
 
   .gift-back {
@@ -245,29 +276,6 @@
     font-family: Georgia, "Times New Roman", serif;
     font-size: 19px;
     color: var(--gold-bright);
-    margin-bottom: 12px;
-  }
-
-  .gift-label {
-    display: block;
-    font-size: 11.5px;
-    color: var(--lavender);
-    margin: 10px 0 4px;
-  }
-
-  .gift-select {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 10px;
-    border: 1px solid var(--card-border);
-    background: var(--card-bg);
-    color: var(--cream);
-    font-size: 14px;
-  }
-
-  .gift-confirm {
-    margin-top: 18px;
-    width: 100%;
   }
 
   footer {
@@ -385,26 +393,30 @@
 </section>
 
 <section class="panel" id="panel-gifts">
-  <input type="text" id="gift-search" class="gift-search" placeholder="Найти подарок, например Plush Pepe" autocomplete="off">
-  <div id="gift-results" class="gift-results"></div>
+  <div class="gift-steps" id="gift-steps">
+    <span class="gift-step active" data-step="0">1. Подарок</span>
+    <span class="gift-step" data-step="1">2. Модель</span>
+    <span class="gift-step" data-step="2">3. Фон</span>
+  </div>
 
-  <div id="gift-detail" class="gift-detail" style="display:none">
-    <button id="gift-back" class="gift-back">← Другой подарок</button>
+  <div id="gift-stage-collection" class="gift-stage">
+    <input type="text" id="gift-search" class="gift-search" placeholder="Фильтр (необязательно)" autocomplete="off">
+    <div id="gift-collection-grid" class="gift-grid gift-grid-cols3"></div>
+  </div>
+
+  <div id="gift-stage-model" class="gift-stage" style="display:none">
+    <button class="gift-back" data-back="0">← К подаркам</button>
     <div class="gift-detail-header">
       <img class="gift-thumb-large hidden" id="gift-detail-thumb" alt="">
       <div class="gift-detail-title" id="gift-detail-title"></div>
     </div>
+    <div id="gift-model-grid" class="gift-grid gift-grid-cols2"></div>
+  </div>
 
-    <label class="gift-label">Модель</label>
-    <select id="gift-model" class="gift-select"></select>
-
-    <label class="gift-label">Фон</label>
-    <select id="gift-backdrop" class="gift-select"></select>
-
-    <button class="card wide gift-confirm" id="gift-confirm">
-      <span class="icon">🎁</span>
-      <span class="amount">Узнать цену</span>
-    </button>
+  <div id="gift-stage-backdrop" class="gift-stage" style="display:none">
+    <button class="gift-back" data-back="1">← К моделям</button>
+    <div class="gift-detail-title" id="gift-backdrop-title">Выбери фон</div>
+    <div id="gift-backdrop-grid" class="gift-grid gift-grid-cols2"></div>
   </div>
 
   <ul class="perk-list">
@@ -452,103 +464,118 @@
 
   // --- Подарки: статичный снапшот каталога (коллекции/модели/фоны), без
   // живых цен — точную цену на выбранную комбинацию бот считает сам после
-  // sendData (см. bot/handlers/webapp.py), тут только поиск и выбор.
-  const ANY = '';
+  // sendData (см. bot/handlers/webapp.py). Три шага картами (тап-тап-тап),
+  // без единого текстового ввода — фильтр по названию есть, но опционален.
   let giftCatalog = [];
+  let selectedCollection = null;
+  let selectedModel = null;
 
   fetch('gifts_catalog.json')
     .then((r) => r.json())
-    .then((data) => { giftCatalog = data; })
+    .then((data) => { giftCatalog = data; renderGiftCollections(); })
     .catch((e) => console.error('Не удалось загрузить каталог подарков:', e));
 
   const giftSearch = document.getElementById('gift-search');
-  const giftResults = document.getElementById('gift-results');
-  const giftDetail = document.getElementById('gift-detail');
+  const giftCollectionGrid = document.getElementById('gift-collection-grid');
+  const giftModelGrid = document.getElementById('gift-model-grid');
+  const giftBackdropGrid = document.getElementById('gift-backdrop-grid');
   const giftDetailTitle = document.getElementById('gift-detail-title');
-  const giftModelSelect = document.getElementById('gift-model');
-  const giftBackdropSelect = document.getElementById('gift-backdrop');
   const giftDetailThumb = document.getElementById('gift-detail-thumb');
-  let selectedCollection = null;
+  const giftStages = [
+    document.getElementById('gift-stage-collection'),
+    document.getElementById('gift-stage-model'),
+    document.getElementById('gift-stage-backdrop'),
+  ];
+  const giftStepEls = document.querySelectorAll('.gift-step');
 
-  // Превью коллекции — CDN Fragment (nft-маркетплейс Telegram), публичного
-  // API у них нет, но статичные превью по этому пути отдаются свободно.
-  // Есть не для всех коллекций (проверено вживую) — просто прячем картинку,
-  // если она не загрузилась, ничего страшного.
+  // Превью — CDN Fragment (nft-маркетплейс Telegram), публичного API у них
+  // нет, но статичные превью по этому пути отдаются свободно (проверено
+  // вживую). Есть не для всех коллекций — просто прячем картинку при ошибке.
   function fragmentThumbUrl(fragmentSlug) {
     return `https://fragment.com/file/gifts/${fragmentSlug}/thumb.webp`;
   }
 
-  function renderGiftResults() {
+  function showGiftStage(index) {
+    giftStages.forEach((el, i) => { el.style.display = i === index ? 'block' : 'none'; });
+    giftStepEls.forEach((el, i) => el.classList.toggle('active', i === index));
+  }
+
+  function renderGiftCollections() {
     const query = giftSearch.value.trim().toLowerCase();
-    giftResults.innerHTML = '';
-    if (!query) return;
+    const list = query ? giftCatalog.filter((c) => c.name.toLowerCase().includes(query)) : giftCatalog;
+    giftCollectionGrid.innerHTML = '';
 
-    const matches = giftCatalog
-      .filter((c) => c.name.toLowerCase().includes(query))
-      .slice(0, 25);
-
-    if (matches.length === 0) {
-      giftResults.innerHTML = '<div class="gift-empty">Ничего не найдено</div>';
+    if (list.length === 0) {
+      giftCollectionGrid.innerHTML = '<div class="gift-empty">Ничего не найдено</div>';
       return;
     }
 
-    matches.forEach((c) => {
-      const row = document.createElement('div');
-      row.className = 'gift-result';
-      row.innerHTML = `
+    list.forEach((c) => {
+      const card = document.createElement('div');
+      card.className = 'gift-card';
+      card.innerHTML = `
         <img class="gift-thumb" src="${fragmentThumbUrl(c.fragmentSlug)}" alt=""
              onerror="this.classList.add('hidden')">
-        <span class="gift-result-text">${c.name}<span class="count">${c.models.length} моделей · ${c.backdrops.length} фонов</span></span>
+        <span>${c.name}</span>
       `;
-      row.addEventListener('click', () => openGiftDetail(c));
-      giftResults.appendChild(row);
+      card.addEventListener('click', () => openCollection(c));
+      giftCollectionGrid.appendChild(card);
     });
   }
 
-  function fillSelect(select, options, label) {
-    select.innerHTML = '';
-    const anyOpt = document.createElement('option');
-    anyOpt.value = ANY;
-    anyOpt.textContent = label;
-    select.appendChild(anyOpt);
+  function renderCardGrid(container, options, anyLabel, onPick) {
+    container.innerHTML = '';
+    const anyCard = document.createElement('div');
+    anyCard.className = 'gift-card gift-card-any';
+    anyCard.textContent = anyLabel;
+    anyCard.addEventListener('click', () => onPick(null));
+    container.appendChild(anyCard);
+
     options.forEach((name) => {
-      const opt = document.createElement('option');
-      opt.value = name;
-      opt.textContent = name;
-      select.appendChild(opt);
+      const card = document.createElement('div');
+      card.className = 'gift-card';
+      card.innerHTML = `<span>${name}</span>`;
+      card.addEventListener('click', () => onPick(name));
+      container.appendChild(card);
     });
   }
 
-  function openGiftDetail(collection) {
+  function openCollection(collection) {
     selectedCollection = collection;
+    selectedModel = null;
     giftDetailTitle.textContent = collection.name;
     giftDetailThumb.classList.remove('hidden');
     giftDetailThumb.src = fragmentThumbUrl(collection.fragmentSlug);
     giftDetailThumb.onerror = () => giftDetailThumb.classList.add('hidden');
-    fillSelect(giftModelSelect, collection.models, 'Любая модель');
-    fillSelect(giftBackdropSelect, collection.backdrops, 'Любой фон');
-    document.getElementById('gift-search').closest('.panel').querySelectorAll('.gift-search, .gift-results').forEach((el) => el.style.display = 'none');
-    giftDetail.style.display = 'block';
+    renderCardGrid(giftModelGrid, collection.models, 'Любая модель', onModelPicked);
+    showGiftStage(1);
     if (tg) tg.HapticFeedback.selectionChanged();
   }
 
-  document.getElementById('gift-back').addEventListener('click', () => {
-    selectedCollection = null;
-    giftDetail.style.display = 'none';
-    document.getElementById('gift-search').closest('.panel').querySelectorAll('.gift-search, .gift-results').forEach((el) => el.style.display = '');
-  });
+  function onModelPicked(model) {
+    selectedModel = model;
+    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked);
+    showGiftStage(2);
+    if (tg) tg.HapticFeedback.selectionChanged();
+  }
 
-  document.getElementById('gift-confirm').addEventListener('click', () => {
-    if (!selectedCollection) return;
+  function onBackdropPicked(backdrop) {
     sendToBot({
       type: 'gift',
       collection: selectedCollection.name,
-      model: giftModelSelect.value || null,
-      backdrop: giftBackdropSelect.value || null,
+      model: selectedModel,
+      backdrop: backdrop,
     });
+    selectedCollection = null;
+    selectedModel = null;
+    showGiftStage(0);
+  }
+
+  document.querySelectorAll('.gift-back').forEach((btn) => {
+    btn.addEventListener('click', () => showGiftStage(Number(btn.dataset.back)));
   });
 
-  giftSearch.addEventListener('input', renderGiftResults);
+  giftSearch.addEventListener('input', renderGiftCollections);
 </script>
 
 </body>
