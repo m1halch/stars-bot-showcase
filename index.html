@@ -175,21 +175,55 @@
   }
 
   .gift-result {
-    padding: 11px 14px;
+    padding: 8px 14px 8px 8px;
     border-radius: 10px;
     background: var(--card-bg);
     border: 1px solid transparent;
     font-size: 14px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .gift-result:active { border-color: var(--gold); }
 
+  .gift-thumb {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+  }
+
+  .gift-thumb.hidden { display: none; }
+
+  .gift-result-text { flex: 1; min-width: 0; }
+
   .gift-result .count {
+    display: block;
     color: var(--lavender);
     font-size: 11px;
-    margin-left: 6px;
   }
+
+  .gift-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+  }
+
+  .gift-thumb-large {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    object-fit: cover;
+    background: rgba(255, 255, 255, 0.05);
+    flex-shrink: 0;
+  }
+
+  .gift-thumb-large.hidden { display: none; }
 
   .gift-empty {
     text-align: center;
@@ -356,7 +390,10 @@
 
   <div id="gift-detail" class="gift-detail" style="display:none">
     <button id="gift-back" class="gift-back">← Другой подарок</button>
-    <div class="gift-detail-title" id="gift-detail-title"></div>
+    <div class="gift-detail-header">
+      <img class="gift-thumb-large hidden" id="gift-detail-thumb" alt="">
+      <div class="gift-detail-title" id="gift-detail-title"></div>
+    </div>
 
     <label class="gift-label">Модель</label>
     <select id="gift-model" class="gift-select"></select>
@@ -430,7 +467,16 @@
   const giftDetailTitle = document.getElementById('gift-detail-title');
   const giftModelSelect = document.getElementById('gift-model');
   const giftBackdropSelect = document.getElementById('gift-backdrop');
+  const giftDetailThumb = document.getElementById('gift-detail-thumb');
   let selectedCollection = null;
+
+  // Превью коллекции — CDN Fragment (nft-маркетплейс Telegram), публичного
+  // API у них нет, но статичные превью по этому пути отдаются свободно.
+  // Есть не для всех коллекций (проверено вживую) — просто прячем картинку,
+  // если она не загрузилась, ничего страшного.
+  function fragmentThumbUrl(fragmentSlug) {
+    return `https://fragment.com/file/gifts/${fragmentSlug}/thumb.webp`;
+  }
 
   function renderGiftResults() {
     const query = giftSearch.value.trim().toLowerCase();
@@ -449,7 +495,11 @@
     matches.forEach((c) => {
       const row = document.createElement('div');
       row.className = 'gift-result';
-      row.innerHTML = `${c.name}<span class="count">${c.models.length} моделей · ${c.backdrops.length} фонов</span>`;
+      row.innerHTML = `
+        <img class="gift-thumb" src="${fragmentThumbUrl(c.fragmentSlug)}" alt=""
+             onerror="this.classList.add('hidden')">
+        <span class="gift-result-text">${c.name}<span class="count">${c.models.length} моделей · ${c.backdrops.length} фонов</span></span>
+      `;
       row.addEventListener('click', () => openGiftDetail(c));
       giftResults.appendChild(row);
     });
@@ -472,6 +522,9 @@
   function openGiftDetail(collection) {
     selectedCollection = collection;
     giftDetailTitle.textContent = collection.name;
+    giftDetailThumb.classList.remove('hidden');
+    giftDetailThumb.src = fragmentThumbUrl(collection.fragmentSlug);
+    giftDetailThumb.onerror = () => giftDetailThumb.classList.add('hidden');
     fillSelect(giftModelSelect, collection.models, 'Любая модель');
     fillSelect(giftBackdropSelect, collection.backdrops, 'Любой фон');
     document.getElementById('gift-search').closest('.panel').querySelectorAll('.gift-search, .gift-results').forEach((el) => el.style.display = 'none');

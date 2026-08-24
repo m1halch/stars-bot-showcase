@@ -144,7 +144,8 @@
    "Carrot Juice",
    "Orange",
    "Aquamarine"
-  ]
+  ],
+  "fragmentSlug": "artisanbrick"
  },
  {
   "name": "Astral Shard",
@@ -261,7 +262,8 @@
    "Copper",
    "Persimmon",
    "Emerald"
-  ]
+  ],
+  "fragmentSlug": "astralshard"
  },
  {
   "name": "B-Day Candle",
@@ -428,12 +430,14 @@
    "Black",
    "Copper",
    "Lavender"
-  ]
+  ],
+  "fragmentSlug": "bdaycandle"
  },
  {
   "name": "Balls Ice Cream",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "ballsicecream"
  },
  {
   "name": "Berry Box",
@@ -570,7 +574,8 @@
    "Moonstone",
    "Pacific Green",
    "Indigo Dye"
-  ]
+  ],
+  "fragmentSlug": "berrybox"
  },
  {
   "name": "Big Year",
@@ -712,7 +717,8 @@
    "Feldgrau",
    "Gunmetal",
    "Carmine"
-  ]
+  ],
+  "fragmentSlug": "bigyear"
  },
  {
   "name": "Bling Binky",
@@ -849,7 +855,8 @@
    "Moonstone",
    "Pine Green",
    "Cobalt Blue"
-  ]
+  ],
+  "fragmentSlug": "blingbinky"
  },
  {
   "name": "Bonded Ring",
@@ -986,7 +993,8 @@
    "Ivory White",
    "English Violet",
    "Amber"
-  ]
+  ],
+  "fragmentSlug": "bondedring"
  },
  {
   "name": "Bow Tie",
@@ -1123,7 +1131,8 @@
    "Gunship Green",
    "Strawberry",
    "Cappuccino"
-  ]
+  ],
+  "fragmentSlug": "bowtie"
  },
  {
   "name": "Bunny Muffin",
@@ -1290,7 +1299,8 @@
    "Battleship Grey",
    "Persimmon",
    "Moonstone"
-  ]
+  ],
+  "fragmentSlug": "bunnymuffin"
  },
  {
   "name": "Candy Cane",
@@ -1427,12 +1437,14 @@
    "Khaki Green",
    "Coral Red",
    "Silver Blue"
-  ]
+  ],
+  "fragmentSlug": "candycane"
  },
  {
   "name": "Castle",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "castle"
  },
  {
   "name": "Chill Flame",
@@ -1571,7 +1583,8 @@
    "Steel Grey",
    "Silver Blue",
    "Copper"
-  ]
+  ],
+  "fragmentSlug": "chillflame"
  },
  {
   "name": "Clover Pin",
@@ -1708,12 +1721,14 @@
    "Steel Grey",
    "Burgundy",
    "Chestnut"
-  ]
+  ],
+  "fragmentSlug": "cloverpin"
  },
  {
   "name": "Coconut",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "coconut"
  },
  {
   "name": "Cookie Heart",
@@ -1880,7 +1895,8 @@
    "Onyx Black",
    "Jade Green",
    "French Blue"
-  ]
+  ],
+  "fragmentSlug": "cookieheart"
  },
  {
   "name": "Crystal Ball",
@@ -2002,7 +2018,8 @@
    "Mystic Pearl",
    "Emerald",
    "Roman Silver"
-  ]
+  ],
+  "fragmentSlug": "crystalball"
  },
  {
   "name": "Cupid Charm",
@@ -2139,7 +2156,8 @@
    "Pure Gold",
    "Light Olive",
    "Mint Green"
-  ]
+  ],
+  "fragmentSlug": "cupidcharm"
  },
  {
   "name": "Desk Calendar",
@@ -2363,7 +2381,8 @@
    "Strawberry",
    "Pure Gold",
    "Shamrock Green"
-  ]
+  ],
+  "fragmentSlug": "deskcalendar"
  },
  {
   "name": "Diamond Ring",
@@ -2530,7 +2549,8 @@
    "Carrot Juice",
    "Persimmon",
    "Lavender"
-  ]
+  ],
+  "fragmentSlug": "diamondring"
  },
  {
   "name": "Durov’s Cap",
@@ -2652,7 +2672,8 @@
    "Shamrock Green",
    "Lavender",
    "Pacific Cyan"
-  ]
+  ],
+  "fragmentSlug": "durovscap"
  },
  {
   "name": "Durov’s Glasses",
@@ -2789,12 +2810,14 @@
    "Black",
    "Onyx Black",
    "Midnight Blue"
-  ]
+  ],
+  "fragmentSlug": "durovsglasses"
  },
  {
   "name": "Easter Cake",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "eastercake"
  },
  {
   "name": "Easter Egg",
@@ -2943,7 +2966,8 @@
    "Celtic Blue",
    "Mint Green",
    "Tactical Pine"
-  ]
+  ],
+  "fragmentSlug": "easteregg"
  },
  {
   "name": "Electric Skull",
@@ -3080,7 +3104,8 @@
    "Pacific Green",
    "Roman Silver",
    "Persimmon"
-  ]
+  ],
+  "fragmentSlug": "electricskull"
  },
  {
   "name": "Eternal Candle",
@@ -3227,7 +3252,8 @@
    "Chocolate",
    "Electric Purple",
    "Aquamarine"
-  ]
+  ],
+  "fragmentSlug": "eternalcandle"
  },
  {
   "name": "Eternal Rose",
@@ -3344,7 +3370,8 @@
    "Fandango",
    "Mint Green",
    "Navy Blue"
-  ]
+  ],
+  "fragmentSlug": "eternalrose"
  },
  {
   "name": "Evil Eye",
@@ -3461,7 +3488,8 @@
    "Persimmon",
    "Pistachio",
    "English Violet"
-  ]
+  ],
+  "fragmentSlug": "evileye"
  },
  {
   "name": "Faith Amulet",
@@ -3598,7 +3626,8 @@
    "Purple",
    "Coral Red",
    "Lemongrass"
-  ]
+  ],
+  "fragmentSlug": "faithamulet"
  },
  {
   "name": "Fine Pen",
@@ -3740,7 +3769,8 @@
    "Onyx Black",
    "Black",
    "Midnight Blue"
-  ]
+  ],
+  "fragmentSlug": "finepen"
  },
  {
   "name": "Flying Broom",
@@ -3857,7 +3887,8 @@
    "Midnight Blue",
    "Onyx Black",
    "Hunter Green"
-  ]
+  ],
+  "fragmentSlug": "flyingbroom"
  },
  {
   "name": "Fresh Socks",
@@ -3994,7 +4025,8 @@
    "Burgundy",
    "Midnight Blue",
    "Chocolate"
-  ]
+  ],
+  "fragmentSlug": "freshsocks"
  },
  {
   "name": "Gem Signet",
@@ -4131,7 +4163,8 @@
    "Burgundy",
    "Gunmetal",
    "Mexican Pink"
-  ]
+  ],
+  "fragmentSlug": "gemsignet"
  },
  {
   "name": "Genie Lamp",
@@ -4248,7 +4281,8 @@
    "Ivory White",
    "Emerald",
    "Persimmon"
-  ]
+  ],
+  "fragmentSlug": "genielamp"
  },
  {
   "name": "Ginger Cookie",
@@ -4415,7 +4449,8 @@
    "Pacific Cyan",
    "Jade Green",
    "Khaki Green"
-  ]
+  ],
+  "fragmentSlug": "gingercookie"
  },
  {
   "name": "Hanging Star",
@@ -4582,7 +4617,8 @@
    "Cappuccino",
    "Battleship Grey",
    "Ivory White"
-  ]
+  ],
+  "fragmentSlug": "hangingstar"
  },
  {
   "name": "Happy Brownie",
@@ -4719,7 +4755,8 @@
    "Hunter Green",
    "Khaki Green",
    "Chocolate"
-  ]
+  ],
+  "fragmentSlug": "happybrownie"
  },
  {
   "name": "Heart Locket",
@@ -4866,7 +4903,8 @@
    "Lemongrass",
    "Gunmetal",
    "Ranger Green"
-  ]
+  ],
+  "fragmentSlug": "heartlocket"
  },
  {
   "name": "Heroic Helmet",
@@ -5003,7 +5041,8 @@
    "Cobalt Blue",
    "Jade Green",
    "Sky Blue"
-  ]
+  ],
+  "fragmentSlug": "heroichelmet"
  },
  {
   "name": "Hex Pot",
@@ -5150,7 +5189,8 @@
    "Purple",
    "Desert Sand",
    "Onyx Black"
-  ]
+  ],
+  "fragmentSlug": "hexpot"
  },
  {
   "name": "Holiday Drink",
@@ -5287,7 +5327,8 @@
    "Navy Blue",
    "Jade Green",
    "Persimmon"
-  ]
+  ],
+  "fragmentSlug": "holidaydrink"
  },
  {
   "name": "Homemade Cake",
@@ -5454,7 +5495,8 @@
    "Lavender",
    "Roman Silver",
    "Ivory White"
-  ]
+  ],
+  "fragmentSlug": "homemadecake"
  },
  {
   "name": "Hypno Lollipop",
@@ -5621,7 +5663,8 @@
    "Satin Gold",
    "Emerald",
    "Lavender"
-  ]
+  ],
+  "fragmentSlug": "hypnolollipop"
  },
  {
   "name": "Ice Cream",
@@ -5758,7 +5801,8 @@
    "French Blue",
    "Jade Green",
    "Dark Green"
-  ]
+  ],
+  "fragmentSlug": "icecream"
  },
  {
   "name": "Input Key",
@@ -5905,7 +5949,8 @@
    "Khaki Green",
    "Black",
    "Marine Blue"
-  ]
+  ],
+  "fragmentSlug": "inputkey"
  },
  {
   "name": "Instant Ramen",
@@ -6042,7 +6087,8 @@
    "Pure Gold",
    "Amber",
    "Mint Green"
-  ]
+  ],
+  "fragmentSlug": "instantramen"
  },
  {
   "name": "Ion Gem",
@@ -6165,7 +6211,8 @@
    "Pacific Cyan",
    "Platinum",
    "Rosewood"
-  ]
+  ],
+  "fragmentSlug": "iongem"
  },
  {
   "name": "Ionic Dryer",
@@ -6302,7 +6349,8 @@
    "Fandango",
    "Dark Lilac",
    "Jade Green"
-  ]
+  ],
+  "fragmentSlug": "ionicdryer"
  },
  {
   "name": "Jack-in-the-Box",
@@ -6447,7 +6495,8 @@
    "Chocolate",
    "Carmine",
    "Copper"
-  ]
+  ],
+  "fragmentSlug": "jackinthebox"
  },
  {
   "name": "Jelly Bunny",
@@ -6614,7 +6663,8 @@
    "Steel Grey",
    "Raspberry",
    "Fandango"
-  ]
+  ],
+  "fragmentSlug": "jellybunny"
  },
  {
   "name": "Jester Hat",
@@ -6781,7 +6831,8 @@
    "Midnight Blue",
    "Khaki Green",
    "Fandango"
-  ]
+  ],
+  "fragmentSlug": "jesterhat"
  },
  {
   "name": "Jingle Bells",
@@ -6999,7 +7050,8 @@
    "Platinum",
    "Jade Green",
    "Burgundy"
-  ]
+  ],
+  "fragmentSlug": "jinglebells"
  },
  {
   "name": "Jolly Chimp",
@@ -7136,7 +7188,8 @@
    "Ivory White",
    "Roman Silver",
    "Chocolate"
-  ]
+  ],
+  "fragmentSlug": "jollychimp"
  },
  {
   "name": "Joyful Bundle",
@@ -7273,7 +7326,8 @@
    "Chocolate",
    "Khaki Green",
    "Cyberpunk"
-  ]
+  ],
+  "fragmentSlug": "joyfulbundle"
  },
  {
   "name": "Khabib’s Papakha",
@@ -7416,7 +7470,8 @@
    "Sky Blue",
    "Azure Blue",
    "Electric Indigo"
-  ]
+  ],
+  "fragmentSlug": "khabibspapakha"
  },
  {
   "name": "Kissed Frog",
@@ -7533,12 +7588,14 @@
    "English Violet",
    "Electric Purple",
    "Strawberry"
-  ]
+  ],
+  "fragmentSlug": "kissedfrog"
  },
  {
   "name": "Lantern",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "lantern"
  },
  {
   "name": "Liberty Figure",
@@ -7685,7 +7742,8 @@
    "Cobalt Blue",
    "Mystic Pearl",
    "Electric Indigo"
-  ]
+  ],
+  "fragmentSlug": "libertyfigure"
  },
  {
   "name": "Light Sword",
@@ -7824,7 +7882,8 @@
    "Emerald",
    "Celtic Blue",
    "Feldgrau"
-  ]
+  ],
+  "fragmentSlug": "lightsword"
  },
  {
   "name": "Lol Pop",
@@ -7991,7 +8050,8 @@
    "Sky Blue",
    "Navy Blue",
    "Pacific Cyan"
-  ]
+  ],
+  "fragmentSlug": "lolpop"
  },
  {
   "name": "Loot Bag",
@@ -8138,7 +8198,8 @@
    "Hunter Green",
    "Platinum",
    "Pacific Cyan"
-  ]
+  ],
+  "fragmentSlug": "lootbag"
  },
  {
   "name": "Love Candle",
@@ -8255,12 +8316,14 @@
    "Mystic Pearl",
    "Cobalt Blue",
    "Amber"
-  ]
+  ],
+  "fragmentSlug": "lovecandle"
  },
  {
   "name": "Love Locket",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "lovelocket"
  },
  {
   "name": "Love Potion",
@@ -8397,7 +8460,8 @@
    "Silver Blue",
    "Orange",
    "Chocolate"
-  ]
+  ],
+  "fragmentSlug": "lovepotion"
  },
  {
   "name": "Low Rider",
@@ -8534,7 +8598,8 @@
    "Battleship Grey",
    "Dark Lilac",
    "Satin Gold"
-  ]
+  ],
+  "fragmentSlug": "lowrider"
  },
  {
   "name": "Lunar Snake",
@@ -8701,7 +8766,8 @@
    "Carrot Juice",
    "Amber",
    "Purple"
-  ]
+  ],
+  "fragmentSlug": "lunarsnake"
  },
  {
   "name": "Lush Bouquet",
@@ -8838,7 +8904,8 @@
    "Pacific Green",
    "Roman Silver",
    "Onyx Black"
-  ]
+  ],
+  "fragmentSlug": "lushbouquet"
  },
  {
   "name": "Mad Pumpkin",
@@ -8955,7 +9022,8 @@
    "Cobalt Blue",
    "Turquoise",
    "Aquamarine"
-  ]
+  ],
+  "fragmentSlug": "madpumpkin"
  },
  {
   "name": "Magic Potion",
@@ -9072,12 +9140,14 @@
    "Cobalt Blue",
    "Lavender",
    "Chocolate"
-  ]
+  ],
+  "fragmentSlug": "magicpotion"
  },
  {
   "name": "May First",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "mayfirst"
  },
  {
   "name": "Mighty Arm",
@@ -9214,7 +9284,8 @@
    "Tactical Pine",
    "Mint Green",
    "Rifle Green"
-  ]
+  ],
+  "fragmentSlug": "mightyarm"
  },
  {
   "name": "Mini Oscar",
@@ -9381,7 +9452,8 @@
    "Carrot Juice",
    "Mystic Pearl",
    "Pure Gold"
-  ]
+  ],
+  "fragmentSlug": "minioscar"
  },
  {
   "name": "Money Pot",
@@ -9518,7 +9590,8 @@
    "Tactical Pine",
    "Khaki Green",
    "Rifle Green"
-  ]
+  ],
+  "fragmentSlug": "moneypot"
  },
  {
   "name": "Mood Pack",
@@ -9655,7 +9728,8 @@
    "Emerald",
    "Ivory White",
    "Marine Blue"
-  ]
+  ],
+  "fragmentSlug": "moodpack"
  },
  {
   "name": "Moon Pendant",
@@ -9792,7 +9866,8 @@
    "Pure Gold",
    "Battleship Grey",
    "Navy Blue"
-  ]
+  ],
+  "fragmentSlug": "moonpendant"
  },
  {
   "name": "Mousse Cake",
@@ -9929,7 +10004,8 @@
    "French Blue",
    "Hunter Green",
    "Dark Green"
-  ]
+  ],
+  "fragmentSlug": "moussecake"
  },
  {
   "name": "Nail Bracelet",
@@ -10066,7 +10142,8 @@
    "Purple",
    "Midnight Blue",
    "Fandango"
-  ]
+  ],
+  "fragmentSlug": "nailbracelet"
  },
  {
   "name": "Neko Helmet",
@@ -10213,7 +10290,8 @@
    "Deep Cyan",
    "Orange",
    "French Blue"
-  ]
+  ],
+  "fragmentSlug": "nekohelmet"
  },
  {
   "name": "Party Sparkler",
@@ -10380,7 +10458,8 @@
    "Moonstone",
    "Jade Green",
    "Pacific Green"
-  ]
+  ],
+  "fragmentSlug": "partysparkler"
  },
  {
   "name": "Perfume Bottle",
@@ -10497,7 +10576,8 @@
    "Indigo Dye",
    "Coral Red",
    "Onyx Black"
-  ]
+  ],
+  "fragmentSlug": "perfumebottle"
  },
  {
   "name": "Pet Snake",
@@ -10644,7 +10724,8 @@
    "Midnight Blue",
    "Marine Blue",
    "Cappuccino"
-  ]
+  ],
+  "fragmentSlug": "petsnake"
  },
  {
   "name": "Plush Pepe",
@@ -10761,7 +10842,8 @@
    "Black",
    "Grape",
    "Light Olive"
-  ]
+  ],
+  "fragmentSlug": "plushpepe"
  },
  {
   "name": "Pool Float",
@@ -10898,7 +10980,8 @@
    "Onyx Black",
    "Caramel",
    "Tactical Pine"
-  ]
+  ],
+  "fragmentSlug": "poolfloat"
  },
  {
   "name": "Precious Peach",
@@ -11045,7 +11128,8 @@
    "Ivory White",
    "Fandango",
    "Pacific Green"
-  ]
+  ],
+  "fragmentSlug": "preciouspeach"
  },
  {
   "name": "Pretty Posy",
@@ -11182,7 +11266,8 @@
    "Cobalt Blue",
    "French Blue",
    "Light Olive"
-  ]
+  ],
+  "fragmentSlug": "prettyposy"
  },
  {
   "name": "Rare Bird",
@@ -11320,7 +11405,8 @@
    "Black",
    "Pacific Cyan",
    "Marine Blue"
-  ]
+  ],
+  "fragmentSlug": "rarebird"
  },
  {
   "name": "Record Player",
@@ -11507,12 +11593,14 @@
    "Lavender",
    "Ivory White",
    "Persimmon"
-  ]
+  ],
+  "fragmentSlug": "recordplayer"
  },
  {
   "name": "Resistance Dog",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "resistancedog"
  },
  {
   "name": "Restless Jar",
@@ -11649,12 +11737,14 @@
    "Light Olive",
    "Pistachio",
    "Black"
-  ]
+  ],
+  "fragmentSlug": "restlessjar"
  },
  {
   "name": "Roses Bouquet",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "rosesbouquet"
  },
  {
   "name": "Sakura Flower",
@@ -11841,7 +11931,8 @@
    "Tomato",
    "Carrot Juice",
    "English Violet"
-  ]
+  ],
+  "fragmentSlug": "sakuraflower"
  },
  {
   "name": "Santa Hat",
@@ -11978,7 +12069,8 @@
    "Sky Blue",
    "Carrot Juice",
    "Fandango"
-  ]
+  ],
+  "fragmentSlug": "santahat"
  },
  {
   "name": "Scared Cat",
@@ -12095,7 +12187,8 @@
    "Steel Grey",
    "Satin Gold",
    "Onyx Black"
-  ]
+  ],
+  "fragmentSlug": "scaredcat"
  },
  {
   "name": "Sharp Tongue",
@@ -12212,7 +12305,8 @@
    "Navy Blue",
    "Ivory White",
    "Rosewood"
-  ]
+  ],
+  "fragmentSlug": "sharptongue"
  },
  {
   "name": "Signet Ring",
@@ -12329,7 +12423,8 @@
    "Fandango",
    "Rosewood",
    "Steel Grey"
-  ]
+  ],
+  "fragmentSlug": "signetring"
  },
  {
   "name": "Skull Flower",
@@ -12446,7 +12541,8 @@
    "Moonstone",
    "Cyberpunk",
    "Grape"
-  ]
+  ],
+  "fragmentSlug": "skullflower"
  },
  {
   "name": "Sky Stilettos",
@@ -12583,7 +12679,8 @@
    "Turquoise",
    "Satin Gold",
    "Gunship Green"
-  ]
+  ],
+  "fragmentSlug": "skystilettos"
  },
  {
   "name": "Sleigh Bell",
@@ -12720,7 +12817,8 @@
    "Marine Blue",
    "Seal Brown",
    "Celtic Blue"
-  ]
+  ],
+  "fragmentSlug": "sleighbell"
  },
  {
   "name": "Snake Box",
@@ -12877,7 +12975,8 @@
    "Fandango",
    "Malachite",
    "Electric Indigo"
-  ]
+  ],
+  "fragmentSlug": "snakebox"
  },
  {
   "name": "Snoop Cigar",
@@ -13014,7 +13113,8 @@
    "Chestnut",
    "Burgundy",
    "Strawberry"
-  ]
+  ],
+  "fragmentSlug": "snoopcigar"
  },
  {
   "name": "Snoop Dogg",
@@ -13151,7 +13251,8 @@
    "Tactical Pine",
    "Pure Gold",
    "Raspberry"
-  ]
+  ],
+  "fragmentSlug": "snoopdogg"
  },
  {
   "name": "Snow Globe",
@@ -13288,7 +13389,8 @@
    "Ranger Green",
    "English Violet",
    "Gunship Green"
-  ]
+  ],
+  "fragmentSlug": "snowglobe"
  },
  {
   "name": "Snow Mittens",
@@ -13455,7 +13557,8 @@
    "Black",
    "Rosewood",
    "Burgundy"
-  ]
+  ],
+  "fragmentSlug": "snowmittens"
  },
  {
   "name": "Spiced Wine",
@@ -13622,7 +13725,8 @@
    "Caramel",
    "Pure Gold",
    "Shamrock Green"
-  ]
+  ],
+  "fragmentSlug": "spicedwine"
  },
  {
   "name": "Spring Basket",
@@ -13759,7 +13863,8 @@
    "Carrot Juice",
    "Grape",
    "Gunship Green"
-  ]
+  ],
+  "fragmentSlug": "springbasket"
  },
  {
   "name": "Spy Agaric",
@@ -13906,12 +14011,14 @@
    "Sapphire",
    "Silver Blue",
    "Hunter Green"
-  ]
+  ],
+  "fragmentSlug": "spyagaric"
  },
  {
   "name": "Stamp",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "stamp"
  },
  {
   "name": "Star Notepad",
@@ -14078,7 +14185,8 @@
    "Pure Gold",
    "Azure Blue",
    "Hunter Green"
-  ]
+  ],
+  "fragmentSlug": "starnotepad"
  },
  {
   "name": "Stellar Rocket",
@@ -14215,7 +14323,8 @@
    "Pistachio",
    "Rosewood",
    "Chestnut"
-  ]
+  ],
+  "fragmentSlug": "stellarrocket"
  },
  {
   "name": "Surge Board",
@@ -14352,7 +14461,8 @@
    "Raspberry",
    "Dark Lilac",
    "Copper"
-  ]
+  ],
+  "fragmentSlug": "surgeboard"
  },
  {
   "name": "Swag Bag",
@@ -14489,7 +14599,8 @@
    "Moonstone",
    "English Violet",
    "Dark Green"
-  ]
+  ],
+  "fragmentSlug": "swagbag"
  },
  {
   "name": "Swiss Watch",
@@ -14606,7 +14717,8 @@
    "Strawberry",
    "Pine Green",
    "Pacific Cyan"
-  ]
+  ],
+  "fragmentSlug": "swisswatch"
  },
  {
   "name": "Tama Gadget",
@@ -14783,7 +14895,8 @@
    "Malachite",
    "Silver Blue",
    "Battleship Grey"
-  ]
+  ],
+  "fragmentSlug": "tamagadget"
  },
  {
   "name": "Timeless Book",
@@ -14922,7 +15035,8 @@
    "Burgundy",
    "Indigo Dye",
    "Electric Indigo"
-  ]
+  ],
+  "fragmentSlug": "timelessbook"
  },
  {
   "name": "Top Hat",
@@ -15079,7 +15193,8 @@
    "Gunship Green",
    "Dark Lilac",
    "Cappuccino"
-  ]
+  ],
+  "fragmentSlug": "tophat"
  },
  {
   "name": "Toy Bear",
@@ -15216,7 +15331,8 @@
    "Platinum",
    "Turquoise",
    "Pure Gold"
-  ]
+  ],
+  "fragmentSlug": "toybear"
  },
  {
   "name": "Trapped Heart",
@@ -15333,7 +15449,8 @@
    "Chocolate",
    "Carrot Juice",
    "Caramel"
-  ]
+  ],
+  "fragmentSlug": "trappedheart"
  },
  {
   "name": "UFC Strike",
@@ -15465,7 +15582,8 @@
    "Satin Gold",
    "Light Olive",
    "Dark Green"
-  ]
+  ],
+  "fragmentSlug": "ufcstrike"
  },
  {
   "name": "Valentine Box",
@@ -15602,7 +15720,8 @@
    "Khaki Green",
    "Desert Sand",
    "Turquoise"
-  ]
+  ],
+  "fragmentSlug": "valentinebox"
  },
  {
   "name": "Vice Cream",
@@ -15739,7 +15858,8 @@
    "Rosewood",
    "Platinum",
    "French Blue"
-  ]
+  ],
+  "fragmentSlug": "vicecream"
  },
  {
   "name": "Victory Medal",
@@ -15876,12 +15996,14 @@
    "Platinum",
    "Marine Blue",
    "Rifle Green"
-  ]
+  ],
+  "fragmentSlug": "victorymedal"
  },
  {
   "name": "Victory Star",
   "models": [],
-  "backdrops": []
+  "backdrops": [],
+  "fragmentSlug": "victorystar"
  },
  {
   "name": "Vintage Cigar",
@@ -16003,7 +16125,8 @@
    "Malachite",
    "Neon Blue",
    "Roman Silver"
-  ]
+  ],
+  "fragmentSlug": "vintagecigar"
  },
  {
   "name": "Voodoo Doll",
@@ -16120,7 +16243,8 @@
    "Moonstone",
    "Caramel",
    "Strawberry"
-  ]
+  ],
+  "fragmentSlug": "voodoodoll"
  },
  {
   "name": "Westside Sign",
@@ -16257,7 +16381,8 @@
    "Tactical Pine",
    "Chocolate",
    "Rifle Green"
-  ]
+  ],
+  "fragmentSlug": "westsidesign"
  },
  {
   "name": "Whip Cupcake",
@@ -16394,7 +16519,8 @@
    "Silver Blue",
    "Burgundy",
    "Chestnut"
-  ]
+  ],
+  "fragmentSlug": "whipcupcake"
  },
  {
   "name": "Winter Wreath",
@@ -16551,7 +16677,8 @@
    "Feldgrau",
    "Lavender",
    "Tomato"
-  ]
+  ],
+  "fragmentSlug": "winterwreath"
  },
  {
   "name": "Witch Hat",
@@ -16718,7 +16845,8 @@
    "Turquoise",
    "Pistachio",
    "Light Olive"
-  ]
+  ],
+  "fragmentSlug": "witchhat"
  },
  {
   "name": "Xmas Stocking",
@@ -16870,6 +16998,7 @@
    "Electric Purple",
    "Burnt Sienna",
    "Indigo Dye"
-  ]
+  ],
+  "fragmentSlug": "xmasstocking"
  }
 ]
