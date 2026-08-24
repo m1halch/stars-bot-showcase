@@ -439,15 +439,28 @@
     tg.expand();
   }
 
+  function switchTab(tabName) {
+    const btn = document.querySelector(`.tab-btn[data-tab="${tabName}"]`);
+    if (!btn) return;
+    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + tabName).classList.add('active');
+  }
+
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
-      btn.classList.add('active');
-      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      switchTab(btn.dataset.tab);
       if (tg) tg.HapticFeedback.selectionChanged();
     });
   });
+
+  // Кнопка "🎁 Подарки NFT" в меню бота открывает витрину сразу на этой
+  // вкладке (?#gifts в URL), а не с нуля — иначе про подарки узнают только
+  // те, кто сам догадается потыкать вкладки внутри общей "Витрины".
+  if (location.hash === '#gifts') {
+    switchTab('gifts');
+  }
 
   function sendToBot(payload) {
     const json = JSON.stringify(payload);
