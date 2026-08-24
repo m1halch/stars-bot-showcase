@@ -152,6 +152,90 @@
     color: var(--gold);
   }
 
+  .gift-search {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--cream);
+    font-size: 14px;
+    outline: none;
+  }
+
+  .gift-search::placeholder { color: var(--lavender); opacity: 0.8; }
+
+  .gift-results {
+    margin-top: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .gift-result {
+    padding: 11px 14px;
+    border-radius: 10px;
+    background: var(--card-bg);
+    border: 1px solid transparent;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .gift-result:active { border-color: var(--gold); }
+
+  .gift-result .count {
+    color: var(--lavender);
+    font-size: 11px;
+    margin-left: 6px;
+  }
+
+  .gift-empty {
+    text-align: center;
+    color: var(--lavender);
+    font-size: 12.5px;
+    padding: 14px 0;
+  }
+
+  .gift-back {
+    background: none;
+    border: none;
+    color: var(--gold-bright);
+    font-size: 13px;
+    padding: 6px 0 12px;
+    cursor: pointer;
+  }
+
+  .gift-detail-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 19px;
+    color: var(--gold-bright);
+    margin-bottom: 12px;
+  }
+
+  .gift-label {
+    display: block;
+    font-size: 11.5px;
+    color: var(--lavender);
+    margin: 10px 0 4px;
+  }
+
+  .gift-select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--card-border);
+    background: var(--card-bg);
+    color: var(--cream);
+    font-size: 14px;
+  }
+
+  .gift-confirm {
+    margin-top: 18px;
+    width: 100%;
+  }
+
   footer {
     text-align: center;
     margin-top: 26px;
@@ -173,6 +257,7 @@
   <button class="tab-btn active" data-tab="stars">⭐ Stars</button>
   <button class="tab-btn" data-tab="ton">💎 TON</button>
   <button class="tab-btn" data-tab="premium">🌟 Premium</button>
+  <button class="tab-btn" data-tab="gifts">🎁 Подарки</button>
 </nav>
 
 <section class="panel active" id="panel-stars">
@@ -265,6 +350,33 @@
   </ul>
 </section>
 
+<section class="panel" id="panel-gifts">
+  <input type="text" id="gift-search" class="gift-search" placeholder="Найти подарок, например Plush Pepe" autocomplete="off">
+  <div id="gift-results" class="gift-results"></div>
+
+  <div id="gift-detail" class="gift-detail" style="display:none">
+    <button id="gift-back" class="gift-back">← Другой подарок</button>
+    <div class="gift-detail-title" id="gift-detail-title"></div>
+
+    <label class="gift-label">Модель</label>
+    <select id="gift-model" class="gift-select"></select>
+
+    <label class="gift-label">Фон</label>
+    <select id="gift-backdrop" class="gift-select"></select>
+
+    <button class="card wide gift-confirm" id="gift-confirm">
+      <span class="icon">🎁</span>
+      <span class="amount">Узнать цену</span>
+    </button>
+  </div>
+
+  <ul class="perk-list">
+    <li>Реальный NFT-подарок, купленный на маркете</li>
+    <li>Точную цену бот посчитает после выбора</li>
+    <li>Передача — на твой аккаунт или в подарок другу</li>
+  </ul>
+</section>
+
 <footer>Нажми на пакет — оформление продолжится в чате с ботом</footer>
 
 <script>
@@ -284,21 +396,106 @@
     });
   });
 
-  document.querySelectorAll('.card').forEach((card) => {
+  function sendToBot(payload) {
+    const json = JSON.stringify(payload);
+    if (tg) {
+      tg.HapticFeedback.impactOccurred('light');
+      tg.sendData(json);
+    } else {
+      // Открыто вне Telegram (например, для проверки в браузере) — просто лог.
+      console.log('sendData:', json);
+    }
+  }
+
+  document.querySelectorAll('.card[data-type]').forEach((card) => {
     card.addEventListener('click', () => {
-      const payload = JSON.stringify({
-        type: card.dataset.type,
-        amount: Number(card.dataset.amount),
-      });
-      if (tg) {
-        tg.HapticFeedback.impactOccurred('light');
-        tg.sendData(payload);
-      } else {
-        // Открыто вне Telegram (например, для проверки в браузере) — просто лог.
-        console.log('sendData:', payload);
-      }
+      sendToBot({ type: card.dataset.type, amount: Number(card.dataset.amount) });
     });
   });
+
+  // --- Подарки: статичный снапшот каталога (коллекции/модели/фоны), без
+  // живых цен — точную цену на выбранную комбинацию бот считает сам после
+  // sendData (см. bot/handlers/webapp.py), тут только поиск и выбор.
+  const ANY = '';
+  let giftCatalog = [];
+
+  fetch('gifts_catalog.json')
+    .then((r) => r.json())
+    .then((data) => { giftCatalog = data; })
+    .catch((e) => console.error('Не удалось загрузить каталог подарков:', e));
+
+  const giftSearch = document.getElementById('gift-search');
+  const giftResults = document.getElementById('gift-results');
+  const giftDetail = document.getElementById('gift-detail');
+  const giftDetailTitle = document.getElementById('gift-detail-title');
+  const giftModelSelect = document.getElementById('gift-model');
+  const giftBackdropSelect = document.getElementById('gift-backdrop');
+  let selectedCollection = null;
+
+  function renderGiftResults() {
+    const query = giftSearch.value.trim().toLowerCase();
+    giftResults.innerHTML = '';
+    if (!query) return;
+
+    const matches = giftCatalog
+      .filter((c) => c.name.toLowerCase().includes(query))
+      .slice(0, 25);
+
+    if (matches.length === 0) {
+      giftResults.innerHTML = '<div class="gift-empty">Ничего не найдено</div>';
+      return;
+    }
+
+    matches.forEach((c) => {
+      const row = document.createElement('div');
+      row.className = 'gift-result';
+      row.innerHTML = `${c.name}<span class="count">${c.models.length} моделей · ${c.backdrops.length} фонов</span>`;
+      row.addEventListener('click', () => openGiftDetail(c));
+      giftResults.appendChild(row);
+    });
+  }
+
+  function fillSelect(select, options, label) {
+    select.innerHTML = '';
+    const anyOpt = document.createElement('option');
+    anyOpt.value = ANY;
+    anyOpt.textContent = label;
+    select.appendChild(anyOpt);
+    options.forEach((name) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      select.appendChild(opt);
+    });
+  }
+
+  function openGiftDetail(collection) {
+    selectedCollection = collection;
+    giftDetailTitle.textContent = collection.name;
+    fillSelect(giftModelSelect, collection.models, 'Любая модель');
+    fillSelect(giftBackdropSelect, collection.backdrops, 'Любой фон');
+    document.getElementById('gift-search').closest('.panel').querySelectorAll('.gift-search, .gift-results').forEach((el) => el.style.display = 'none');
+    giftDetail.style.display = 'block';
+    if (tg) tg.HapticFeedback.selectionChanged();
+  }
+
+  document.getElementById('gift-back').addEventListener('click', () => {
+    selectedCollection = null;
+    giftDetail.style.display = 'none';
+    document.getElementById('gift-search').closest('.panel').querySelectorAll('.gift-search, .gift-results').forEach((el) => el.style.display = '');
+  });
+
+  document.getElementById('gift-confirm').addEventListener('click', () => {
+    if (!selectedCollection) return;
+    sendToBot({
+      type: 'gift',
+      collection: selectedCollection.name,
+      model: giftModelSelect.value || null,
+      backdrop: giftBackdropSelect.value || null,
+    });
+  });
+
+  giftSearch.addEventListener('input', renderGiftResults);
 </script>
 
 </body>
