@@ -232,6 +232,10 @@
 
   .gift-thumb.hidden { display: none; }
 
+  .gift-swatch {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
   .gift-card-count {
     color: var(--lavender);
     font-size: 10px;
@@ -467,12 +471,17 @@
   // sendData (см. bot/handlers/webapp.py). Три шага картами (тап-тап-тап),
   // без единого текстового ввода — фильтр по названию есть, но опционален.
   let giftCatalog = [];
+  let backdropColors = {};
   let selectedCollection = null;
   let selectedModel = null;
 
   fetch('gifts_catalog.json')
     .then((r) => r.json())
-    .then((data) => { giftCatalog = data; renderGiftCollections(); })
+    .then((data) => {
+      giftCatalog = data.collections;
+      backdropColors = data.backdropColors;
+      renderGiftCollections();
+    })
     .catch((e) => console.error('Не удалось загрузить каталог подарков:', e));
 
   const giftSearch = document.getElementById('gift-search');
@@ -523,7 +532,7 @@
     });
   }
 
-  function renderCardGrid(container, options, anyLabel, onPick, images) {
+  function renderCardGrid(container, options, anyLabel, onPick, images, colors) {
     container.innerHTML = '';
     const anyCard = document.createElement('div');
     anyCard.className = 'gift-card gift-card-any';
@@ -534,11 +543,15 @@
     options.forEach((name) => {
       const card = document.createElement('div');
       card.className = 'gift-card';
-      const imgUrl = images && images[name];
-      const imgHtml = imgUrl
-        ? `<img class="gift-thumb" src="${imgUrl}" alt="" onerror="this.classList.add('hidden')">`
-        : '';
-      card.innerHTML = `${imgHtml}<span>${name}</span>`;
+      let visualHtml = '';
+      if (colors && colors[name]) {
+        // Фон — просто цвет-заливка, а не фото чужого подарка (цвет один и
+        // тот же на всех коллекциях, показывать чей-то случайный предмет вводило в заблуждение).
+        visualHtml = `<div class="gift-thumb gift-swatch" style="background:${colors[name]}"></div>`;
+      } else if (images && images[name]) {
+        visualHtml = `<img class="gift-thumb" src="${images[name]}" alt="" onerror="this.classList.add('hidden')">`;
+      }
+      card.innerHTML = `${visualHtml}<span>${name}</span>`;
       card.addEventListener('click', () => onPick(name));
       container.appendChild(card);
     });
@@ -558,7 +571,7 @@
 
   function onModelPicked(model) {
     selectedModel = model;
-    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked, selectedCollection.backdropImages);
+    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked, null, backdropColors);
     showGiftStage(2);
     if (tg) tg.HapticFeedback.selectionChanged();
   }
