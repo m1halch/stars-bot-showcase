@@ -434,12 +434,6 @@
   "fragmentSlug": "bdaycandle"
  },
  {
-  "name": "Balls Ice Cream",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "ballsicecream"
- },
- {
   "name": "Berry Box",
   "models": [
    "Sweet Kiss",
@@ -1441,12 +1435,6 @@
   "fragmentSlug": "candycane"
  },
  {
-  "name": "Castle",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "castle"
- },
- {
   "name": "Chill Flame",
   "models": [
    "Satis-fire",
@@ -1723,12 +1711,6 @@
    "Chestnut"
   ],
   "fragmentSlug": "cloverpin"
- },
- {
-  "name": "Coconut",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "coconut"
  },
  {
   "name": "Cookie Heart",
@@ -2812,12 +2794,6 @@
    "Midnight Blue"
   ],
   "fragmentSlug": "durovsglasses"
- },
- {
-  "name": "Easter Cake",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "eastercake"
  },
  {
   "name": "Easter Egg",
@@ -7592,12 +7568,6 @@
   "fragmentSlug": "kissedfrog"
  },
  {
-  "name": "Lantern",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "lantern"
- },
- {
   "name": "Liberty Figure",
   "models": [
    "Marilyn",
@@ -8318,12 +8288,6 @@
    "Amber"
   ],
   "fragmentSlug": "lovecandle"
- },
- {
-  "name": "Love Locket",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "lovelocket"
  },
  {
   "name": "Love Potion",
@@ -9142,12 +9106,6 @@
    "Chocolate"
   ],
   "fragmentSlug": "magicpotion"
- },
- {
-  "name": "May First",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "mayfirst"
  },
  {
   "name": "Mighty Arm",
@@ -11597,12 +11555,6 @@
   "fragmentSlug": "recordplayer"
  },
  {
-  "name": "Resistance Dog",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "resistancedog"
- },
- {
   "name": "Restless Jar",
   "models": [
    "Gift Holder",
@@ -11739,12 +11691,6 @@
    "Black"
   ],
   "fragmentSlug": "restlessjar"
- },
- {
-  "name": "Roses Bouquet",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "rosesbouquet"
  },
  {
   "name": "Sakura Flower",
@@ -14015,12 +13961,6 @@
   "fragmentSlug": "spyagaric"
  },
  {
-  "name": "Stamp",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "stamp"
- },
- {
   "name": "Star Notepad",
   "models": [
    "Clown",
@@ -15998,12 +15938,6 @@
    "Rifle Green"
   ],
   "fragmentSlug": "victorymedal"
- },
- {
-  "name": "Victory Star",
-  "models": [],
-  "backdrops": [],
-  "fragmentSlug": "victorystar"
  },
  {
   "name": "Vintage Cigar",
