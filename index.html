@@ -678,6 +678,12 @@
       <img class="gift-thumb-large hidden" id="gift-detail-thumb" alt="">
       <div class="gift-detail-title" id="gift-detail-title"></div>
     </div>
+    <div class="gift-search-wrap">
+      <span class="gift-search-icon">🔍</span>
+      <input type="text" id="gift-model-search" class="gift-search" placeholder="Найти модель…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="gift-model-search-clear" class="gift-search-clear" aria-label="Очистить">✕</button>
+    </div>
+    <div id="gift-model-result-count" class="gift-result-count"></div>
     <div id="gift-model-grid" class="gift-grid gift-grid-cols2"></div>
   </div>
 
@@ -685,6 +691,12 @@
     <button class="gift-back" data-back="1">← К моделям</button>
     <div class="gift-detail-title">Выбери фон</div>
     <div class="gift-crumb" id="gift-backdrop-crumb"></div>
+    <div class="gift-search-wrap">
+      <span class="gift-search-icon">🔍</span>
+      <input type="text" id="gift-backdrop-search" class="gift-search" placeholder="Найти фон…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="gift-backdrop-search-clear" class="gift-search-clear" aria-label="Очистить">✕</button>
+    </div>
+    <div id="gift-backdrop-result-count" class="gift-result-count"></div>
     <div id="gift-backdrop-grid" class="gift-grid gift-grid-cols2"></div>
   </div>
 
@@ -741,9 +753,13 @@
   });
 
   // Кнопка "🎁 Подарки NFT" в меню бота открывает витрину сразу на этой
-  // вкладке (?#gifts в URL), а не с нуля — иначе про подарки узнают только
-  // те, кто сам догадается потыкать вкладки внутри общей "Витрины".
-  const initialTab = location.hash === '#gifts' ? 'gifts' : 'stars';
+  // вкладке (?tab=gifts в URL), а не с нуля — иначе про подарки узнают
+  // только те, кто сам догадается потыкать вкладки внутри общей "Витрины".
+  // ВАЖНО: именно query-параметр, а не #hash — Telegram WebApp сам дописывает
+  // служебные данные инициализации в location.hash при открытии
+  // (#tgWebAppData=...), затирая любой наш собственный фрагмент ещё до того,
+  // как скрипт успевает его прочитать. Query-строка Telegram не трогает.
+  const initialTab = new URLSearchParams(location.search).get('tab') === 'gifts' ? 'gifts' : 'stars';
   requestAnimationFrame(() => {
     switchTab(initialTab);
     // Первое переключение не должно ехать с анимацией — ставим индикатор мгновенно.
@@ -831,7 +847,13 @@
   const giftResultCount = document.getElementById('gift-result-count');
   const giftCollectionGrid = document.getElementById('gift-collection-grid');
   const giftModelGrid = document.getElementById('gift-model-grid');
+  const giftModelSearch = document.getElementById('gift-model-search');
+  const giftModelSearchClear = document.getElementById('gift-model-search-clear');
+  const giftModelResultCount = document.getElementById('gift-model-result-count');
   const giftBackdropGrid = document.getElementById('gift-backdrop-grid');
+  const giftBackdropSearch = document.getElementById('gift-backdrop-search');
+  const giftBackdropSearchClear = document.getElementById('gift-backdrop-search-clear');
+  const giftBackdropResultCount = document.getElementById('gift-backdrop-result-count');
   const giftDetailTitle = document.getElementById('gift-detail-title');
   const giftDetailThumb = document.getElementById('gift-detail-thumb');
   const giftBackdropCrumb = document.getElementById('gift-backdrop-crumb');
@@ -909,7 +931,19 @@
     });
   }
 
-  function renderCardGrid(container, options, anyLabel, onPick, images, colors) {
+  // query/countEl необязательны — используются на шагах модели/фона, где
+  // список тоже может быть длинным и его удобно фильтровать так же, как
+  // список подарков на первом шаге. "Любая ..." всегда первой карточкой,
+  // даже при активном фильтре — иначе при "ничего не найдено" пропадает
+  // способ выбрать "без разницы".
+  function renderCardGrid(container, options, anyLabel, onPick, images, colors, query, countEl) {
+    const q = (query || '').toLowerCase();
+    const filtered = q ? options.filter((name) => name.toLowerCase().includes(q)) : options;
+
+    if (countEl) {
+      countEl.textContent = q ? (filtered.length === 0 ? 'ничего не найдено' : `найдено: ${filtered.length}`) : '';
+    }
+
     container.innerHTML = '';
     const anyCard = document.createElement('div');
     anyCard.className = 'gift-card gift-card-any';
@@ -918,7 +952,15 @@
     anyCard.addEventListener('click', () => onPick(null, anyCard));
     container.appendChild(anyCard);
 
-    options.forEach((name) => {
+    if (q && filtered.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'gift-empty';
+      empty.textContent = 'Ничего не найдено — попробуй другое слово';
+      container.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach((name) => {
       const card = document.createElement('div');
       card.className = 'gift-card';
       let visualHtml = '';
@@ -929,7 +971,7 @@
       } else if (images && images[name]) {
         visualHtml = `<img class="gift-thumb" src="${images[name]}" alt="" onerror="this.classList.add('hidden')">`;
       }
-      card.innerHTML = `${visualHtml}<span>${name}</span>`;
+      card.innerHTML = `${visualHtml}<span>${highlightMatch(name, q)}</span>`;
       attachTapFeedback(card);
       card.addEventListener('click', () => onPick(name, card));
       container.appendChild(card);
@@ -944,6 +986,8 @@
     giftDetailThumb.src = fragmentThumbUrl(collection.fragmentSlug);
     giftDetailThumb.onerror = () => giftDetailThumb.classList.add('hidden');
     setStepLabel(0, collection.name);
+    giftModelSearch.value = '';
+    giftModelSearchClear.classList.remove('visible');
     renderCardGrid(giftModelGrid, collection.models, 'Любая модель', onModelPicked, collection.modelImages);
     showGiftStage(1);
     if (tg) tg.HapticFeedback.selectionChanged();
@@ -953,6 +997,8 @@
     selectedModel = model;
     setStepLabel(1, model || 'Любая модель');
     giftBackdropCrumb.innerHTML = `<b>${selectedCollection.name}</b> · ${model || 'любая модель'}`;
+    giftBackdropSearch.value = '';
+    giftBackdropSearchClear.classList.remove('visible');
     renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked, null, backdropColors);
     showGiftStage(2);
     if (tg) tg.HapticFeedback.selectionChanged();
@@ -979,14 +1025,32 @@
     btn.addEventListener('click', () => showGiftStage(Number(btn.dataset.back)));
   });
 
-  giftSearch.addEventListener('input', renderGiftCollections);
-  giftSearch.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') giftSearch.blur(); // прячем клавиатуру, результат и так уже виден
+  // Общая обвязка для всех трёх строк поиска (подарок/модель/фон) — ввод
+  // фильтрует, крестик чистит, Enter прячет клавиатуру (результат и так виден).
+  function wireSearchInput(input, clearBtn, onQuery) {
+    function trigger() {
+      clearBtn.classList.toggle('visible', input.value.trim().length > 0);
+      onQuery();
+    }
+    input.addEventListener('input', trigger);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') input.blur(); });
+    clearBtn.addEventListener('click', () => { input.value = ''; trigger(); input.focus(); });
+  }
+
+  wireSearchInput(giftSearch, giftSearchClear, renderGiftCollections);
+
+  wireSearchInput(giftModelSearch, giftModelSearchClear, () => {
+    renderCardGrid(
+      giftModelGrid, selectedCollection.models, 'Любая модель', onModelPicked,
+      selectedCollection.modelImages, null, giftModelSearch.value, giftModelResultCount
+    );
   });
-  giftSearchClear.addEventListener('click', () => {
-    giftSearch.value = '';
-    renderGiftCollections();
-    giftSearch.focus();
+
+  wireSearchInput(giftBackdropSearch, giftBackdropSearchClear, () => {
+    renderCardGrid(
+      giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked,
+      null, backdropColors, giftBackdropSearch.value, giftBackdropResultCount
+    );
   });
 </script>
 
