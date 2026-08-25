@@ -532,6 +532,82 @@
 
   .gift-crumb b { color: var(--lavender); font-weight: 700; }
 
+  .review-summary {
+    text-align: center;
+    padding: 24px 16px 20px;
+    margin-bottom: 16px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+  }
+
+  .review-summary-score {
+    font-family: var(--font-display);
+    font-size: 46px;
+    font-weight: 600;
+    color: var(--gold-bright);
+    line-height: 1;
+  }
+
+  .review-summary-stars {
+    font-size: 17px;
+    letter-spacing: 3px;
+    margin: 9px 0 5px;
+    color: var(--gold);
+  }
+
+  .review-summary-count {
+    font-size: 12.5px;
+    color: var(--lavender);
+    font-weight: 600;
+  }
+
+  .review-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .review-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 14px 16px;
+    animation: rise 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .review-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  .review-card-stars {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  .review-card-date {
+    font-size: 11px;
+    color: var(--lavender-dim);
+    font-weight: 600;
+  }
+
+  .review-card-comment {
+    font-size: 13.5px;
+    color: var(--cream);
+    line-height: 1.45;
+  }
+
+  .review-empty {
+    text-align: center;
+    color: var(--lavender);
+    font-size: 12.5px;
+    padding: 20px 0;
+  }
+
   footer {
     text-align: center;
     margin-top: 28px;
@@ -558,6 +634,7 @@
   <button class="tab-btn" data-tab="ton">💎 TON</button>
   <button class="tab-btn" data-tab="premium">🌟 Premium</button>
   <button class="tab-btn" data-tab="gifts">🎁 Подарки</button>
+  <button class="tab-btn" data-tab="reviews">⭐ Отзывы</button>
 </nav>
 
 <section class="panel active" id="panel-stars">
@@ -705,6 +782,15 @@
     <li>Точную цену бот посчитает после выбора</li>
     <li>Передача — на твой аккаунт или в подарок другу</li>
   </ul>
+</section>
+
+<section class="panel" id="panel-reviews">
+  <div class="review-summary">
+    <div class="review-summary-score" id="review-score">–</div>
+    <div class="review-summary-stars" id="review-summary-stars"></div>
+    <div class="review-summary-count" id="review-summary-count">Загружаем…</div>
+  </div>
+  <div id="review-list" class="review-list"></div>
 </section>
 
 </main>
@@ -1052,6 +1138,75 @@
       null, backdropColors, giftBackdropSearch.value, giftBackdropResultCount
     );
   });
+
+  // --- Отзывы: тоже статичный снапшот (reviews.json), т.к. у витрины нет
+  // бэкенда — генерируется руками через scripts/export_reviews.py, когда
+  // накопится заметно новых отзывов (см. README). Публикуются только
+  // оценки 4-5 — это витрина для клиентов, а не журнал жалоб.
+  function starString(rating) {
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+  }
+
+  function reviewsWord(count) {
+    const mod10 = count % 10;
+    const mod100 = count % 100;
+    if (mod10 === 1 && mod100 !== 11) return 'отзыв';
+    if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'отзыва';
+    return 'отзывов';
+  }
+
+  // Комментарии — свободный текст от реальных пользователей; не доверяем
+  // ему как HTML (иначе отзыв с "<img onerror=...>" исполнился бы на
+  // публичной странице) — textContent экранирует, innerHTML тут же читаем обратно.
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function renderReviews(data) {
+    const scoreEl = document.getElementById('review-score');
+    const starsEl = document.getElementById('review-summary-stars');
+    const countEl = document.getElementById('review-summary-count');
+    const listEl = document.getElementById('review-list');
+
+    if (!data.count) {
+      scoreEl.textContent = '—';
+      starsEl.textContent = '';
+      countEl.textContent = 'Отзывов пока нет';
+      listEl.innerHTML = '<div class="review-empty">Будь первым после своего заказа 🙂</div>';
+      return;
+    }
+
+    scoreEl.textContent = data.avgRating.toFixed(1);
+    starsEl.textContent = starString(Math.round(data.avgRating));
+    countEl.textContent = `${data.count} ${reviewsWord(data.count)}`;
+
+    listEl.innerHTML = '';
+    data.reviews.forEach((r) => {
+      const card = document.createElement('div');
+      card.className = 'review-card';
+      const commentHtml = r.comment
+        ? `<div class="review-card-comment">${escapeHtml(r.comment)}</div>`
+        : '';
+      card.innerHTML = `
+        <div class="review-card-head">
+          <span class="review-card-stars">${starString(r.rating)}</span>
+          <span class="review-card-date">${r.date}</span>
+        </div>
+        ${commentHtml}
+      `;
+      listEl.appendChild(card);
+    });
+  }
+
+  fetch('reviews.json')
+    .then((r) => r.json())
+    .then(renderReviews)
+    .catch((e) => {
+      console.error('Не удалось загрузить отзывы:', e);
+      document.getElementById('review-summary-count').textContent = 'Не удалось загрузить';
+    });
 </script>
 
 </body>
