@@ -500,6 +500,27 @@
     font-size: 12.5px;
     padding: 18px 0;
     grid-column: 1 / -1;
+    line-height: 1.6;
+  }
+
+  .gift-retry-btn {
+    margin-top: 6px;
+    padding: 9px 18px;
+    border-radius: 20px;
+    border: 1px solid var(--card-border);
+    background: var(--gold-soft);
+    color: var(--gold-bright);
+    font-family: var(--font-body);
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 0.15s, background 0.15s;
+  }
+
+  .gift-retry-btn:active {
+    transform: scale(0.95);
+    background: var(--gold-soft);
   }
 
   .gift-back {
@@ -919,15 +940,6 @@
   let selectedCollection = null;
   let selectedModel = null;
 
-  fetch('gifts_catalog.json')
-    .then((r) => r.json())
-    .then((data) => {
-      giftCatalog = data.collections;
-      backdropColors = data.backdropColors;
-      renderGiftCollections();
-    })
-    .catch((e) => console.error('Не удалось загрузить каталог подарков:', e));
-
   const giftSearch = document.getElementById('gift-search');
   const giftSearchClear = document.getElementById('gift-search-clear');
   const giftResultCount = document.getElementById('gift-result-count');
@@ -1139,6 +1151,41 @@
     );
   });
 
+  // Загрузка каталога — отдельной функцией (не сразу висящим fetch), чтобы
+  // можно было повторить по кнопке при неудаче: на плохой сети скелетон
+  // раньше висел вечно без единого объяснения, что вообще происходит.
+  function loadGiftCatalog() {
+    giftCollectionGrid.innerHTML = `
+      <div class="gift-skeleton">
+        <div class="sk-cell"></div><div class="sk-cell"></div><div class="sk-cell"></div>
+        <div class="sk-cell"></div><div class="sk-cell"></div><div class="sk-cell"></div>
+      </div>
+    `;
+    fetch('gifts_catalog.json')
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((data) => {
+        giftCatalog = data.collections;
+        backdropColors = data.backdropColors;
+        renderGiftCollections();
+      })
+      .catch((e) => {
+        console.error('Не удалось загрузить каталог подарков:', e);
+        giftCollectionGrid.innerHTML = `
+          <div class="gift-empty">
+            😔 Не удалось загрузить каталог — проверь связь и попробуй ещё раз.
+            <br><br>
+            <button type="button" class="gift-retry-btn" id="gift-retry-btn">Повторить</button>
+          </div>
+        `;
+        document.getElementById('gift-retry-btn').addEventListener('click', loadGiftCatalog);
+      });
+  }
+
+  loadGiftCatalog();
+
   // --- Отзывы: тоже статичный снапшот (reviews.json), т.к. у витрины нет
   // бэкенда — генерируется руками через scripts/export_reviews.py, когда
   // накопится заметно новых отзывов (см. README). Публикуются только
@@ -1200,13 +1247,24 @@
     });
   }
 
-  fetch('reviews.json')
-    .then((r) => r.json())
-    .then(renderReviews)
-    .catch((e) => {
-      console.error('Не удалось загрузить отзывы:', e);
-      document.getElementById('review-summary-count').textContent = 'Не удалось загрузить';
-    });
+  function loadReviews() {
+    fetch('reviews.json')
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(renderReviews)
+      .catch((e) => {
+        console.error('Не удалось загрузить отзывы:', e);
+        document.getElementById('review-summary-count').textContent = 'Не удалось загрузить';
+        document.getElementById('review-list').innerHTML =
+          '<div class="review-empty">😔 Проверь связь и попробуй ещё раз. '
+          + '<button type="button" class="gift-retry-btn" id="review-retry-btn">Повторить</button></div>';
+        document.getElementById('review-retry-btn').addEventListener('click', loadReviews);
+      });
+  }
+
+  loadReviews();
 </script>
 
 </body>
