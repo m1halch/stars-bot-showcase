@@ -1,21 +1,11 @@
 {
-  "count": 3,
+  "count": 1,
   "avgRating": 5.0,
   "reviews": [
     {
       "rating": 5,
       "comment": "Михаил продал тони пришли сразу",
       "date": "25.08"
-    },
-    {
-      "rating": 5,
-      "comment": "а***нно 👍",
-      "date": "24.08"
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "23.08"
     }
   ]
 }
