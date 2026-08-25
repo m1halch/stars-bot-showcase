@@ -46,6 +46,7 @@
     padding: max(20px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
     position: relative;
     overflow-x: hidden;
+    overscroll-behavior-y: contain;
   }
 
   /* Тонкая рассыпь золотых искр по фону — тот же мотив, что на обоях канала,
@@ -146,10 +147,12 @@
     font-size: 12.5px;
     font-weight: 700;
     cursor: pointer;
-    transition: color 0.2s;
+    transition: color 0.2s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
+    touch-action: manipulation;
   }
 
+  nav.tabs button:active { transform: scale(0.92); }
   nav.tabs button.active { color: #2a1a0f; }
 
   section.panel {
@@ -169,13 +172,16 @@
   }
 
   .card {
+    position: relative;
+    overflow: hidden;
     background: var(--card-bg);
     border: 1px solid var(--card-border);
     border-radius: 15px;
     padding: 17px 12px;
     text-align: center;
     cursor: pointer;
-    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s, background 0.15s;
+    touch-action: manipulation;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s, background 0.15s, box-shadow 0.15s;
   }
 
   .card:active {
@@ -214,6 +220,47 @@
   }
 
   .card.wide .amount { font-size: 15px; font-family: var(--font-body); font-weight: 700; }
+
+  /* Тактильный отклик на тап: круг-рябь из точки касания + короткая вспышка
+     "подтверждено" с галочкой перед тем, как реально уйти в чат к боту —
+     мгновенный sendData() без этой паузы ощущается как "ничего не произошло". */
+  .tap-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    transform: scale(0);
+    opacity: 0.55;
+    pointer-events: none;
+    animation: rippleOut 0.5s ease-out forwards;
+  }
+
+  @keyframes rippleOut {
+    to { transform: scale(2.4); opacity: 0; }
+  }
+
+  .card.confirmed, .gift-card.confirmed {
+    border-color: var(--gold-bright);
+    box-shadow: 0 0 0 2px rgba(232, 201, 122, 0.35), 0 8px 20px rgba(232, 201, 122, 0.22);
+  }
+
+  .confirm-check {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    color: var(--gold-bright);
+    background: rgba(21, 12, 43, 0.6);
+    opacity: 0;
+    transform: scale(0.4);
+    animation: checkPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    border-radius: inherit;
+  }
+
+  @keyframes checkPop {
+    to { opacity: 1; transform: scale(1); }
+  }
 
   .perk-list {
     list-style: none;
@@ -271,9 +318,14 @@
     font-weight: 700;
   }
 
+  .gift-search-wrap {
+    position: relative;
+    margin-bottom: 8px;
+  }
+
   .gift-search {
     width: 100%;
-    padding: 12px 14px;
+    padding: 12px 40px 12px 38px;
     border-radius: 13px;
     border: 1px solid var(--card-border);
     background: var(--card-bg);
@@ -282,12 +334,59 @@
     font-size: 14px;
     font-weight: 600;
     outline: none;
-    margin-bottom: 10px;
-    transition: border-color 0.15s;
+    transition: border-color 0.15s, background 0.15s;
   }
 
-  .gift-search:focus { border-color: var(--gold); }
+  .gift-search:focus { border-color: var(--gold); background: var(--card-bg-hover); }
   .gift-search::placeholder { color: var(--lavender); opacity: 0.7; font-weight: 500; }
+
+  .gift-search-icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .gift-search-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%) scale(0.7);
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--lavender);
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s, transform 0.15s;
+    touch-action: manipulation;
+  }
+
+  .gift-search-clear.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%) scale(1);
+  }
+
+  .gift-search-clear:active { background: rgba(255, 255, 255, 0.16); }
+
+  .gift-result-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--lavender-dim);
+    margin: -2px 2px 10px;
+    min-height: 14px;
+  }
+
+  .gift-match { color: var(--gold-bright); }
 
   .gift-grid {
     max-height: 420px;
@@ -302,6 +401,8 @@
   .gift-grid-cols3 { grid-template-columns: repeat(3, 1fr); }
 
   .gift-card {
+    position: relative;
+    overflow: hidden;
     padding: 10px 8px;
     border-radius: 13px;
     background: var(--card-bg);
@@ -310,12 +411,13 @@
     font-weight: 600;
     text-align: center;
     cursor: pointer;
+    touch-action: manipulation;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
     line-height: 1.25;
-    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s, background 0.15s;
+    transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.15s, background 0.15s, box-shadow 0.15s;
   }
 
   .gift-card:active {
@@ -556,7 +658,12 @@
   </div>
 
   <div id="gift-stage-collection" class="gift-stage">
-    <input type="text" id="gift-search" class="gift-search" placeholder="Фильтр (необязательно)" autocomplete="off">
+    <div class="gift-search-wrap">
+      <span class="gift-search-icon">🔍</span>
+      <input type="text" id="gift-search" class="gift-search" placeholder="Найти подарок по названию…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="gift-search-clear" class="gift-search-clear" aria-label="Очистить">✕</button>
+    </div>
+    <div id="gift-result-count" class="gift-result-count"></div>
     <div id="gift-collection-grid" class="gift-grid gift-grid-cols3">
       <div class="gift-skeleton">
         <div class="sk-cell"></div><div class="sk-cell"></div><div class="sk-cell"></div>
@@ -649,7 +756,6 @@
   function sendToBot(payload) {
     const json = JSON.stringify(payload);
     if (tg) {
-      tg.HapticFeedback.impactOccurred('light');
       tg.sendData(json);
     } else {
       // Открыто вне Telegram (например, для проверки в браузере) — просто лог.
@@ -657,9 +763,48 @@
     }
   }
 
+  // --- Тактильный отклик ---------------------------------------------
+  // 1) Рябь из точки касания на КАЖДЫЙ тап — чисто визуальная реакция,
+  //    не зависящая от того, финальный это выбор или промежуточный шаг.
+  // 2) Для финальных действий (пакет звёзд/TON/Premium, фон подарка) —
+  //    короткая вспышка с галочкой и haptic "success" перед sendData():
+  //    Telegram закрывает Mini App сразу после sendData, и без этой паузы
+  //    тап ощущается как "ничего не произошло" — экран просто исчезает.
+  function spawnRipple(el, clientX, clientY) {
+    const rect = el.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.3;
+    const ripple = document.createElement('span');
+    ripple.className = 'tap-ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (clientY - rect.top - size / 2) + 'px';
+    el.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+  }
+
+  function attachTapFeedback(el) {
+    el.addEventListener('pointerdown', (e) => {
+      const rect = el.getBoundingClientRect();
+      const x = e.clientX || rect.left + rect.width / 2;
+      const y = e.clientY || rect.top + rect.height / 2;
+      spawnRipple(el, x, y);
+    });
+  }
+
+  function confirmAndSend(el, payload) {
+    if (tg) tg.HapticFeedback.notificationOccurred('success');
+    el.classList.add('confirmed');
+    const check = document.createElement('div');
+    check.className = 'confirm-check';
+    check.textContent = '✓';
+    el.appendChild(check);
+    setTimeout(() => sendToBot(payload), 190);
+  }
+
   document.querySelectorAll('.card[data-type]').forEach((card) => {
+    attachTapFeedback(card);
     card.addEventListener('click', () => {
-      sendToBot({ type: card.dataset.type, amount: Number(card.dataset.amount) });
+      confirmAndSend(card, { type: card.dataset.type, amount: Number(card.dataset.amount) });
     });
   });
 
@@ -682,6 +827,8 @@
     .catch((e) => console.error('Не удалось загрузить каталог подарков:', e));
 
   const giftSearch = document.getElementById('gift-search');
+  const giftSearchClear = document.getElementById('gift-search-clear');
+  const giftResultCount = document.getElementById('gift-result-count');
   const giftCollectionGrid = document.getElementById('gift-collection-grid');
   const giftModelGrid = document.getElementById('gift-model-grid');
   const giftBackdropGrid = document.getElementById('gift-backdrop-grid');
@@ -718,13 +865,33 @@
     giftStepEls[index].textContent = text || giftStepDefaults[index];
   }
 
+  // Подсвечивает совпавший кусок названия золотым — на 118 коллекциях
+  // глазами скроллить долго, подсветка сразу показывает, за что зацепился
+  // фильтр (полезно, когда ищешь по обрывку слова, а не с начала названия).
+  function highlightMatch(name, query) {
+    if (!query) return name;
+    const idx = name.toLowerCase().indexOf(query);
+    if (idx === -1) return name;
+    return (
+      name.slice(0, idx) +
+      `<span class="gift-match">${name.slice(idx, idx + query.length)}</span>` +
+      name.slice(idx + query.length)
+    );
+  }
+
   function renderGiftCollections() {
     const query = giftSearch.value.trim().toLowerCase();
     const list = query ? giftCatalog.filter((c) => c.name.toLowerCase().includes(query)) : giftCatalog;
+
+    giftSearchClear.classList.toggle('visible', query.length > 0);
+    giftResultCount.textContent = query
+      ? `${list.length === 0 ? 'ничего не найдено' : `найдено: ${list.length}`}`
+      : '';
+
     giftCollectionGrid.innerHTML = '';
 
     if (list.length === 0) {
-      giftCollectionGrid.innerHTML = '<div class="gift-empty">Ничего не найдено</div>';
+      giftCollectionGrid.innerHTML = '<div class="gift-empty">Ничего не найдено — попробуй другое слово</div>';
       return;
     }
 
@@ -734,8 +901,9 @@
       card.innerHTML = `
         <img class="gift-thumb" src="${fragmentThumbUrl(c.fragmentSlug)}" alt=""
              onerror="this.classList.add('hidden')">
-        <span>${c.name}</span>
+        <span>${highlightMatch(c.name, query)}</span>
       `;
+      attachTapFeedback(card);
       card.addEventListener('click', () => openCollection(c));
       giftCollectionGrid.appendChild(card);
     });
@@ -746,7 +914,8 @@
     const anyCard = document.createElement('div');
     anyCard.className = 'gift-card gift-card-any';
     anyCard.textContent = anyLabel;
-    anyCard.addEventListener('click', () => onPick(null));
+    attachTapFeedback(anyCard);
+    anyCard.addEventListener('click', () => onPick(null, anyCard));
     container.appendChild(anyCard);
 
     options.forEach((name) => {
@@ -761,7 +930,8 @@
         visualHtml = `<img class="gift-thumb" src="${images[name]}" alt="" onerror="this.classList.add('hidden')">`;
       }
       card.innerHTML = `${visualHtml}<span>${name}</span>`;
-      card.addEventListener('click', () => onPick(name));
+      attachTapFeedback(card);
+      card.addEventListener('click', () => onPick(name, card));
       container.appendChild(card);
     });
   }
@@ -788,18 +958,21 @@
     if (tg) tg.HapticFeedback.selectionChanged();
   }
 
-  function onBackdropPicked(backdrop) {
-    sendToBot({
+  function onBackdropPicked(backdrop, el) {
+    const payload = {
       type: 'gift',
       collection: selectedCollection.name,
       model: selectedModel,
       backdrop: backdrop,
-    });
+    };
+    confirmAndSend(el, payload);
     selectedCollection = null;
     selectedModel = null;
-    setStepLabel(0, null);
-    setStepLabel(1, null);
-    showGiftStage(0);
+    setTimeout(() => {
+      setStepLabel(0, null);
+      setStepLabel(1, null);
+      showGiftStage(0);
+    }, 190);
   }
 
   document.querySelectorAll('.gift-back').forEach((btn) => {
@@ -807,6 +980,14 @@
   });
 
   giftSearch.addEventListener('input', renderGiftCollections);
+  giftSearch.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') giftSearch.blur(); // прячем клавиатуру, результат и так уже виден
+  });
+  giftSearchClear.addEventListener('click', () => {
+    giftSearch.value = '';
+    renderGiftCollections();
+    giftSearch.focus();
+  });
 </script>
 
 </body>
