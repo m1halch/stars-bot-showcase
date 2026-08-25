@@ -1,12 +1,7 @@
 {
-  "count": 5,
+  "count": 2,
   "avgRating": 5.0,
   "reviews": [
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "24.08"
-    },
     {
       "rating": 5,
       "comment": "а***нно 👍",
@@ -16,16 +11,6 @@
       "rating": 5,
       "comment": null,
       "date": "23.08"
-    },
-    {
-      "rating": 5,
-      "comment": "круто",
-      "date": "22.08"
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "22.08"
     }
   ]
 }
