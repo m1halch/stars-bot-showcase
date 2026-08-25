@@ -221,6 +221,19 @@
 
   .card.wide .amount { font-size: 15px; font-family: var(--font-body); font-weight: 700; }
 
+  .card-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: var(--gold);
+    color: var(--bg-deep);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    padding: 2px 7px;
+    border-radius: 20px;
+  }
+
   /* Тактильный отклик на тап: круг-рябь из точки касания + короткая вспышка
      "подтверждено" с галочкой перед тем, как реально уйти в чат к боту —
      мгновенный sendData() без этой паузы ощущается как "ничего не произошло". */
@@ -272,6 +285,19 @@
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 14px;
   }
+
+  /* Тот же язык "Шаг X из Y", что и в самом боте (bot/utils/tg.py) — выбор
+     пакета тут это шаг 1 из 2, получатель и оплата продолжаются в чате с
+     ботом. Раньше после тапа не было ни единой подсказки, что будет дальше. */
+  .step-hint {
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--lavender);
+    margin: 12px 2px 0;
+  }
+
+  .step-hint b { color: var(--gold-bright); font-weight: 700; }
 
   .perk-list li {
     padding: 5px 0 5px 20px;
@@ -453,6 +479,17 @@
   .gift-card-count {
     color: var(--lavender);
     font-size: 10px;
+  }
+
+  .gift-card-price {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--gold-bright);
+    background: var(--gold-soft);
+    border-radius: 20px;
+    padding: 2px 8px;
+    line-height: 1.4;
   }
 
   .gift-skeleton {
@@ -666,6 +703,7 @@
       <div class="hint">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="250">
+      <span class="card-badge">Оптимально</span>
       <span class="icon">⭐</span>
       <div class="amount">250</div>
       <div class="hint">звёзд</div>
@@ -685,6 +723,7 @@
       <span class="amount">Своя сумма</span>
     </div>
   </div>
+  <p class="step-hint"><b>Шаг 1 из 2</b> — дальше получатель и оплата в боте</p>
   <ul class="perk-list">
     <li>Дешевле, чем в App Store</li>
     <li>Оплата гривной, без карты в валюте</li>
@@ -700,6 +739,7 @@
       <div class="hint">TON</div>
     </div>
     <div class="card" data-type="ton" data-amount="5">
+      <span class="card-badge">Оптимально</span>
       <span class="icon">💎</span>
       <div class="amount">5</div>
       <div class="hint">TON</div>
@@ -719,6 +759,7 @@
       <span class="amount">Своя сумма</span>
     </div>
   </div>
+  <p class="step-hint"><b>Шаг 1 из 2</b> — дальше кошелёк и оплата в боте</p>
   <ul class="perk-list">
     <li>Напрямую в твой TON-кошелёк</li>
     <li>Без криптобирж и подтверждения возраста</li>
@@ -733,6 +774,7 @@
       <span class="amount">3 месяца Premium</span>
     </div>
     <div class="card wide" data-type="premium" data-amount="6">
+      <span class="card-badge">Оптимально</span>
       <span class="icon">🌟</span>
       <span class="amount">6 месяцев Premium</span>
     </div>
@@ -741,6 +783,7 @@
       <span class="amount">12 месяцев Premium</span>
     </div>
   </div>
+  <p class="step-hint"><b>Шаг 1 из 2</b> — дальше получатель и оплата в боте</p>
   <ul class="perk-list">
     <li>Официальная подписка Telegram Premium</li>
     <li>Оплата гривной вместо валютной карты</li>
@@ -1018,10 +1061,18 @@
     list.forEach((c) => {
       const card = document.createElement('div');
       card.className = 'gift-card';
+      // floorPriceUah — приблизительный ценник со снапшота (обновляется по
+      // крону, scripts/export_gift_prices.py), не живая цена. Показываем
+      // "от X грн", если известен — раньше цены не было видно вообще до
+      // самого конца 3-шагового флоу.
+      const priceHtml = c.floorPriceUah
+        ? `<span class="gift-card-price">от ${Math.round(c.floorPriceUah)} грн</span>`
+        : '';
       card.innerHTML = `
         <img class="gift-thumb" src="${fragmentThumbUrl(c.fragmentSlug)}" alt=""
              onerror="this.classList.add('hidden')">
         <span>${highlightMatch(c.name, query)}</span>
+        ${priceHtml}
       `;
       attachTapFeedback(card);
       card.addEventListener('click', () => openCollection(c));
