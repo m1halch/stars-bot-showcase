@@ -694,6 +694,167 @@
     opacity: 0.65;
     font-weight: 500;
   }
+
+  /* --- Модалка с реальной ценой перед оплатой (bot/webapi.py) --------- */
+  .quote-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  .quote-modal.hidden { display: none; }
+
+  .quote-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 6, 20, 0.72);
+    backdrop-filter: blur(3px);
+  }
+
+  .quote-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, var(--bg-mid), var(--bg-deep));
+    border: 1px solid var(--card-border);
+    border-radius: 22px 22px 0 0;
+    padding: 22px 20px calc(22px + env(safe-area-inset-bottom, 0px));
+    animation: quoteRise 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  @keyframes quoteRise {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .quote-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 19px;
+    color: var(--gold-bright);
+    margin-bottom: 14px;
+    text-align: center;
+  }
+
+  .quote-loading, .quote-error {
+    text-align: center;
+    color: var(--lavender);
+    font-size: 13.5px;
+    padding: 10px 0 16px;
+  }
+
+  .quote-error { color: var(--cream); }
+
+  .quote-price-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(232,201,122,0.2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+
+  .quote-price-label {
+    font-size: 13.5px;
+    color: var(--lavender);
+    font-weight: 600;
+  }
+
+  .quote-price-value {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-bright);
+  }
+
+  .quote-discount-line {
+    font-size: 12px;
+    color: var(--lavender);
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .quote-discount-line.hidden { display: none; }
+
+  .quote-pay-btn {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--bg-deep);
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 10px;
+    touch-action: manipulation;
+  }
+
+  .quote-pay-btn:active { transform: scale(0.98); }
+  .quote-pay-btn.hidden { display: none; }
+
+  .quote-card-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--cream);
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .quote-card-info.hidden { display: none; }
+
+  .quote-card-info .copy-hint {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--gold-bright);
+  }
+
+  .quote-confirm-btn {
+    display: block;
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 14.5px;
+    padding: 13px;
+    border-radius: 14px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .quote-confirm-btn:active { background: var(--card-bg-hover); transform: scale(0.98); }
+
+  .quote-cancel-btn {
+    display: block;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--lavender-dim);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 10px;
+    cursor: pointer;
+  }
+
+  .quote-body.hidden { display: none; }
 </style>
 </head>
 <body>
@@ -885,6 +1046,30 @@
 
 </main>
 
+<div id="quote-modal" class="quote-modal hidden">
+  <div class="quote-backdrop" id="quote-backdrop"></div>
+  <div class="quote-card">
+    <div class="quote-title" id="quote-title"></div>
+    <div class="quote-loading" id="quote-loading" data-i18n="loading">Загружаем…</div>
+    <div class="quote-body hidden" id="quote-body">
+      <div class="quote-price-row">
+        <span class="quote-price-label" data-i18n="toPay">К оплате</span>
+        <span class="quote-price-value" id="quote-price-value"></span>
+      </div>
+      <div class="quote-discount-line hidden" id="quote-discount-line"></div>
+      <a class="quote-pay-btn hidden" id="quote-pay-btn" target="_blank" rel="noopener">
+        <span data-i18n="payButton">💳 Оплатить</span>
+      </a>
+      <div class="quote-card-info hidden" id="quote-card-info"></div>
+      <button type="button" class="quote-confirm-btn" id="quote-confirm-btn" data-i18n="paidButton">
+        ✅ Я оплатил, продолжить
+      </button>
+    </div>
+    <div class="quote-error hidden" id="quote-error"></div>
+    <button type="button" class="quote-cancel-btn" id="quote-cancel-btn" data-i18n="cancel">Отмена</button>
+  </div>
+</div>
+
 <footer data-i18n="footer">Нажми на пакет — оформление продолжится в чате с ботом</footer>
 
 <script>
@@ -947,6 +1132,18 @@
         if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'отзыва';
         return 'отзывов';
       },
+      toPay: 'К оплате',
+      payButton: '💳 Оплатить',
+      paidButton: '✅ Я оплатил, продолжить',
+      cancel: 'Отмена',
+      quoteError: 'Не удалось посчитать цену. Попробуй ещё раз.',
+      quoteTitleStars: (n) => `${n} ⭐`,
+      quoteTitleTon: (n) => `${n} TON`,
+      quoteTitlePremium: (n) => `Premium ${n} мес`,
+      openingDiscountLine: (n) => `🎉 Скидка открытия: −${n} грн`,
+      referralDiscountLine: (n) => `🎁 С реферального баланса: −${n} грн`,
+      copyHint: 'Нажми, чтобы скопировать',
+      copiedHint: 'Скопировано!',
     },
     uk: {
       subtitle: 'Гривня → Telegram Stars, TON, Premium і NFT-подарунки',
@@ -993,6 +1190,18 @@
         if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'відгуки';
         return 'відгуків';
       },
+      toPay: 'До сплати',
+      payButton: '💳 Оплатити',
+      paidButton: '✅ Я оплатив, продовжити',
+      cancel: 'Скасувати',
+      quoteError: 'Не вдалося порахувати ціну. Спробуй ще раз.',
+      quoteTitleStars: (n) => `${n} ⭐`,
+      quoteTitleTon: (n) => `${n} TON`,
+      quoteTitlePremium: (n) => `Premium ${n} міс`,
+      openingDiscountLine: (n) => `🎉 Знижка відкриття: −${n} грн`,
+      referralDiscountLine: (n) => `🎁 З реферального балансу: −${n} грн`,
+      copyHint: 'Тисни, щоб скопіювати',
+      copiedHint: 'Скопійовано!',
     },
   };
 
@@ -1149,10 +1358,128 @@
     setTimeout(() => sendToBot(payload), 190);
   }
 
+  // --- Реальная цена перед оплатой (bot/webapi.py::/api/quote) ---------
+  // ВРЕМЕННЫЙ публичный адрес (быстрый cloudflared-туннель, см. README) —
+  // меняется, если процесс туннеля перезапустится. Пока нет постоянного
+  // домена, это ожидаемо и придётся поправить руками при необходимости.
+  const WEBAPI_URL = 'https://qty-lips-blocks-allen.trycloudflare.com';
+
+  function formatMoney(n) {
+    return Number(n).toLocaleString('uk-UA', { maximumFractionDigits: 2 });
+  }
+
+  async function fetchQuote(product, amount) {
+    const initData = tg && tg.initData;
+    if (!initData) return null;  // вне Telegram (например, тест в браузере) — молча пропускаем модалку
+    const resp = await fetch(`${WEBAPI_URL}/api/quote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ init_data: initData, product, amount }),
+    });
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    return resp.json();
+  }
+
+  const quoteModal = document.getElementById('quote-modal');
+  const quoteBackdrop = document.getElementById('quote-backdrop');
+  const quoteTitleEl = document.getElementById('quote-title');
+  const quoteLoadingEl = document.getElementById('quote-loading');
+  const quoteBodyEl = document.getElementById('quote-body');
+  const quotePriceValueEl = document.getElementById('quote-price-value');
+  const quoteDiscountLineEl = document.getElementById('quote-discount-line');
+  const quotePayBtn = document.getElementById('quote-pay-btn');
+  const quoteCardInfoEl = document.getElementById('quote-card-info');
+  const quoteConfirmBtn = document.getElementById('quote-confirm-btn');
+  const quoteErrorEl = document.getElementById('quote-error');
+  const quoteCancelBtn = document.getElementById('quote-cancel-btn');
+
+  function closeQuoteModal() {
+    quoteModal.classList.add('hidden');
+  }
+
+  quoteCancelBtn.addEventListener('click', closeQuoteModal);
+  quoteBackdrop.addEventListener('click', closeQuoteModal);
+
+  const _quoteTitleKeys = { stars: 'quoteTitleStars', ton: 'quoteTitleTon', premium: 'quoteTitlePremium' };
+
+  function openQuoteModalFor(card, payload) {
+    quoteTitleEl.textContent = t(_quoteTitleKeys[payload.type], payload.amount);
+    quoteLoadingEl.classList.remove('hidden');
+    quoteBodyEl.classList.add('hidden');
+    quoteErrorEl.classList.add('hidden');
+    quoteModal.classList.remove('hidden');
+
+    fetchQuote(payload.type, payload.amount)
+      .then((quote) => {
+        if (!quote) {
+          // Нет initData (не в Telegram) — не показываем модалку вообще,
+          // сразу как раньше отправляем боту.
+          closeQuoteModal();
+          confirmAndSend(card, payload);
+          return;
+        }
+
+        quoteLoadingEl.classList.add('hidden');
+        quoteBodyEl.classList.remove('hidden');
+        quotePriceValueEl.textContent = `${formatMoney(quote.price_uah)} грн`;
+
+        const discountParts = [];
+        if (quote.opening_discount_uah > 0) {
+          discountParts.push(t('openingDiscountLine', formatMoney(quote.opening_discount_uah)));
+        }
+        if (quote.credit_applied_uah > 0) {
+          discountParts.push(t('referralDiscountLine', formatMoney(quote.credit_applied_uah)));
+        }
+        if (discountParts.length) {
+          quoteDiscountLineEl.textContent = discountParts.join(' · ');
+          quoteDiscountLineEl.classList.remove('hidden');
+        } else {
+          quoteDiscountLineEl.classList.add('hidden');
+        }
+
+        if (quote.payment.type === 'jar') {
+          quotePayBtn.href = quote.payment.value;
+          quotePayBtn.classList.remove('hidden');
+          quoteCardInfoEl.classList.add('hidden');
+        } else {
+          quotePayBtn.classList.add('hidden');
+          quoteCardInfoEl.innerHTML =
+            `<span>${quote.payment.value}</span><span class="copy-hint">${t('copyHint')}</span>`;
+          quoteCardInfoEl.classList.remove('hidden');
+          quoteCardInfoEl.onclick = () => {
+            navigator.clipboard?.writeText(quote.payment.value).then(() => {
+              quoteCardInfoEl.querySelector('.copy-hint').textContent = t('copiedHint');
+              if (tg) tg.HapticFeedback.notificationOccurred('success');
+            });
+          };
+        }
+
+        quoteConfirmBtn.onclick = () => {
+          closeQuoteModal();
+          confirmAndSend(card, payload);
+        };
+      })
+      .catch((e) => {
+        // Временный туннель недоступен и т.п. — не блокируем покупку,
+        // просто не показываем цену заранее, как раньше.
+        console.error('Не удалось получить цену:', e);
+        closeQuoteModal();
+        confirmAndSend(card, payload);
+      });
+  }
+
   document.querySelectorAll('.card[data-type]').forEach((card) => {
     attachTapFeedback(card);
     card.addEventListener('click', () => {
-      confirmAndSend(card, { type: card.dataset.type, amount: Number(card.dataset.amount) });
+      const payload = { type: card.dataset.type, amount: Number(card.dataset.amount) };
+      // "Своя сумма" (amount=0) ещё не имеет точного числа для расчёта
+      // цены — как и раньше, сразу уходит в чат бота, там же и спросит.
+      // Подарки в /api/quote пока не входят (см. README) — тоже как раньше.
+      if (payload.amount > 0 && payload.type !== 'gift') {
+        openQuoteModalFor(card, payload);
+      } else {
+        confirmAndSend(card, payload);
+      }
     });
   });
 
