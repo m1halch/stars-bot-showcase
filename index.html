@@ -78,9 +78,29 @@
   main { position: relative; z-index: 1; }
 
   header {
+    position: relative;
     text-align: center;
     margin-bottom: 20px;
     animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .lang-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 18px;
+    line-height: 1;
+    padding: 6px 9px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .lang-toggle:active {
+    background: var(--card-bg-hover);
+    transform: scale(0.95);
   }
 
   @keyframes rise {
@@ -681,18 +701,19 @@
 <main>
 
 <header>
+  <button type="button" id="lang-toggle" class="lang-toggle" aria-label="Змінити мову / Сменить язык">🇷🇺</button>
   <div class="star-logo">⭐</div>
   <h1>Звёзды Михалыча</h1>
-  <p class="subtitle">Гривна → Telegram Stars, TON, Premium и NFT-подарки</p>
+  <p class="subtitle" data-i18n="subtitle">Гривна → Telegram Stars, TON, Premium и NFT-подарки</p>
 </header>
 
 <nav class="tabs" id="tabs">
   <div class="tab-indicator" id="tab-indicator"></div>
-  <button class="tab-btn active" data-tab="stars">⭐ Stars</button>
-  <button class="tab-btn" data-tab="ton">💎 TON</button>
-  <button class="tab-btn" data-tab="premium">🌟 Premium</button>
-  <button class="tab-btn" data-tab="gifts">🎁 Подарки</button>
-  <button class="tab-btn" data-tab="reviews">⭐ Отзывы</button>
+  <button class="tab-btn active" data-tab="stars" data-i18n="tabStars">⭐ Stars</button>
+  <button class="tab-btn" data-tab="ton" data-i18n="tabTon">💎 TON</button>
+  <button class="tab-btn" data-tab="premium" data-i18n="tabPremium">🌟 Premium</button>
+  <button class="tab-btn" data-tab="gifts" data-i18n="tabGifts">🎁 Подарки</button>
+  <button class="tab-btn" data-tab="reviews" data-i18n="tabReviews">⭐ Отзывы</button>
 </nav>
 
 <section class="panel active" id="panel-stars">
@@ -700,39 +721,39 @@
     <div class="card" data-type="stars" data-amount="50">
       <span class="icon">⭐</span>
       <div class="amount">50</div>
-      <div class="hint">звёзд</div>
+      <div class="hint" data-i18n="hintStars">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="100">
       <span class="icon">⭐</span>
       <div class="amount">100</div>
-      <div class="hint">звёзд</div>
+      <div class="hint" data-i18n="hintStars">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="250">
-      <span class="card-badge">Оптимально</span>
+      <span class="card-badge" data-i18n="badgeOptimal">Оптимально</span>
       <span class="icon">⭐</span>
       <div class="amount">250</div>
-      <div class="hint">звёзд</div>
+      <div class="hint" data-i18n="hintStars">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="500">
       <span class="icon">⭐</span>
       <div class="amount">500</div>
-      <div class="hint">звёзд</div>
+      <div class="hint" data-i18n="hintStars">звёзд</div>
     </div>
     <div class="card" data-type="stars" data-amount="1000">
       <span class="icon">⭐</span>
       <div class="amount">1000</div>
-      <div class="hint">звёзд</div>
+      <div class="hint" data-i18n="hintStars">звёзд</div>
     </div>
     <div class="card wide" data-type="stars" data-amount="0">
       <span class="icon">✏️</span>
-      <span class="amount">Своя сумма</span>
+      <span class="amount" data-i18n="customAmount">Своя сумма</span>
     </div>
   </div>
-  <p class="step-hint"><b>Шаг 1 из 2</b> — дальше получатель и оплата в боте</p>
+  <p class="step-hint" data-i18n-html="stepHintStars"><b>Шаг 1 из 2</b> — дальше получатель и оплата в боте</p>
   <ul class="perk-list">
-    <li>Дешевле, чем в App Store</li>
-    <li>Оплата гривной, без карты в валюте</li>
-    <li>Можно дарить другому — просто укажи получателя</li>
+    <li data-i18n="perkStars1">Дешевле, чем в App Store</li>
+    <li data-i18n="perkStars2">Оплата гривной, без карты в валюте</li>
+    <li data-i18n="perkStars3">Можно дарить другому — просто укажи получателя</li>
   </ul>
 </section>
 
@@ -744,7 +765,7 @@
       <div class="hint">TON</div>
     </div>
     <div class="card" data-type="ton" data-amount="5">
-      <span class="card-badge">Оптимально</span>
+      <span class="card-badge" data-i18n="badgeOptimal">Оптимально</span>
       <span class="icon">💎</span>
       <div class="amount">5</div>
       <div class="hint">TON</div>
@@ -761,14 +782,14 @@
     </div>
     <div class="card wide" data-type="ton" data-amount="0">
       <span class="icon">✏️</span>
-      <span class="amount">Своя сумма</span>
+      <span class="amount" data-i18n="customAmount">Своя сумма</span>
     </div>
   </div>
-  <p class="step-hint"><b>Шаг 1 из 2</b> — дальше кошелёк и оплата в боте</p>
+  <p class="step-hint" data-i18n-html="stepHintTon"><b>Шаг 1 из 2</b> — дальше кошелёк и оплата в боте</p>
   <ul class="perk-list">
-    <li>Напрямую в твой TON-кошелёк</li>
-    <li>Без криптобирж и подтверждения возраста</li>
-    <li>Гривна → TON за один перевод</li>
+    <li data-i18n="perkTon1">Напрямую в твой TON-кошелёк</li>
+    <li data-i18n="perkTon2">Без криптобирж и подтверждения возраста</li>
+    <li data-i18n="perkTon3">Гривна → TON за один перевод</li>
   </ul>
 </section>
 
@@ -776,38 +797,38 @@
   <div class="grid">
     <div class="card wide" data-type="premium" data-amount="3">
       <span class="icon">🌟</span>
-      <span class="amount">3 месяца Premium</span>
+      <span class="amount" data-i18n="premium3">3 месяца Premium</span>
     </div>
     <div class="card wide" data-type="premium" data-amount="6">
-      <span class="card-badge">Оптимально</span>
+      <span class="card-badge" data-i18n="badgeOptimal">Оптимально</span>
       <span class="icon">🌟</span>
-      <span class="amount">6 месяцев Premium</span>
+      <span class="amount" data-i18n="premium6">6 месяцев Premium</span>
     </div>
     <div class="card wide" data-type="premium" data-amount="12">
       <span class="icon">🌟</span>
-      <span class="amount">12 месяцев Premium</span>
+      <span class="amount" data-i18n="premium12">12 месяцев Premium</span>
     </div>
   </div>
-  <p class="step-hint"><b>Шаг 1 из 2</b> — дальше получатель и оплата в боте</p>
+  <p class="step-hint" data-i18n-html="stepHintPremium"><b>Шаг 1 из 2</b> — дальше получатель и оплата в боте</p>
   <ul class="perk-list">
-    <li>Официальная подписка Telegram Premium</li>
-    <li>Оплата гривной вместо валютной карты</li>
-    <li>Можно оформить другу — просто укажи его</li>
+    <li data-i18n="perkPremium1">Официальная подписка Telegram Premium</li>
+    <li data-i18n="perkPremium2">Оплата гривной вместо валютной карты</li>
+    <li data-i18n="perkPremium3">Можно оформить другу — просто укажи его</li>
   </ul>
 </section>
 
 <section class="panel" id="panel-gifts">
   <div class="gift-steps" id="gift-steps">
-    <span class="gift-step active" data-step="0">1. Подарок</span>
-    <span class="gift-step" data-step="1">2. Модель</span>
-    <span class="gift-step" data-step="2">3. Фон</span>
+    <span class="gift-step active" data-step="0" data-i18n="giftStep1">1. Подарок</span>
+    <span class="gift-step" data-step="1" data-i18n="giftStep2">2. Модель</span>
+    <span class="gift-step" data-step="2" data-i18n="giftStep3">3. Фон</span>
   </div>
 
   <div id="gift-stage-collection" class="gift-stage">
     <div class="gift-search-wrap">
       <span class="gift-search-icon">🔍</span>
-      <input type="text" id="gift-search" class="gift-search" placeholder="Найти подарок по названию…" autocomplete="off" enterkeyhint="search">
-      <button type="button" id="gift-search-clear" class="gift-search-clear" aria-label="Очистить">✕</button>
+      <input type="text" id="gift-search" class="gift-search" data-i18n-placeholder="giftSearchPlaceholder" placeholder="Найти подарок по названию…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="gift-search-clear" class="gift-search-clear" data-i18n-aria="clear" aria-label="Очистить">✕</button>
     </div>
     <div id="gift-result-count" class="gift-result-count"></div>
     <div id="gift-collection-grid" class="gift-grid gift-grid-cols3">
@@ -819,37 +840,37 @@
   </div>
 
   <div id="gift-stage-model" class="gift-stage" style="display:none">
-    <button class="gift-back" data-back="0">← К подаркам</button>
+    <button class="gift-back" data-back="0" data-i18n="backToGifts">← К подаркам</button>
     <div class="gift-detail-header">
       <img class="gift-thumb-large hidden" id="gift-detail-thumb" alt="">
       <div class="gift-detail-title" id="gift-detail-title"></div>
     </div>
     <div class="gift-search-wrap">
       <span class="gift-search-icon">🔍</span>
-      <input type="text" id="gift-model-search" class="gift-search" placeholder="Найти модель…" autocomplete="off" enterkeyhint="search">
-      <button type="button" id="gift-model-search-clear" class="gift-search-clear" aria-label="Очистить">✕</button>
+      <input type="text" id="gift-model-search" class="gift-search" data-i18n-placeholder="giftModelSearchPlaceholder" placeholder="Найти модель…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="gift-model-search-clear" class="gift-search-clear" data-i18n-aria="clear" aria-label="Очистить">✕</button>
     </div>
     <div id="gift-model-result-count" class="gift-result-count"></div>
     <div id="gift-model-grid" class="gift-grid gift-grid-cols2"></div>
   </div>
 
   <div id="gift-stage-backdrop" class="gift-stage" style="display:none">
-    <button class="gift-back" data-back="1">← К моделям</button>
-    <div class="gift-detail-title">Выбери фон</div>
+    <button class="gift-back" data-back="1" data-i18n="backToModels">← К моделям</button>
+    <div class="gift-detail-title" data-i18n="chooseBackdrop">Выбери фон</div>
     <div class="gift-crumb" id="gift-backdrop-crumb"></div>
     <div class="gift-search-wrap">
       <span class="gift-search-icon">🔍</span>
-      <input type="text" id="gift-backdrop-search" class="gift-search" placeholder="Найти фон…" autocomplete="off" enterkeyhint="search">
-      <button type="button" id="gift-backdrop-search-clear" class="gift-search-clear" aria-label="Очистить">✕</button>
+      <input type="text" id="gift-backdrop-search" class="gift-search" data-i18n-placeholder="giftBackdropSearchPlaceholder" placeholder="Найти фон…" autocomplete="off" enterkeyhint="search">
+      <button type="button" id="gift-backdrop-search-clear" class="gift-search-clear" data-i18n-aria="clear" aria-label="Очистить">✕</button>
     </div>
     <div id="gift-backdrop-result-count" class="gift-result-count"></div>
     <div id="gift-backdrop-grid" class="gift-grid gift-grid-cols2"></div>
   </div>
 
   <ul class="perk-list">
-    <li>Реальный NFT-подарок, купленный на маркете</li>
-    <li>Точную цену бот посчитает после выбора</li>
-    <li>Передача — на твой аккаунт или в подарок другу</li>
+    <li data-i18n="perkGift1">Реальный NFT-подарок, купленный на маркете</li>
+    <li data-i18n="perkGift2">Точную цену бот посчитает после выбора</li>
+    <li data-i18n="perkGift3">Передача — на твой аккаунт или в подарок другу</li>
   </ul>
 </section>
 
@@ -857,14 +878,14 @@
   <div class="review-summary">
     <div class="review-summary-score" id="review-score">–</div>
     <div class="review-summary-stars" id="review-summary-stars"></div>
-    <div class="review-summary-count" id="review-summary-count">Загружаем…</div>
+    <div class="review-summary-count" id="review-summary-count" data-i18n="loading">Загружаем…</div>
   </div>
   <div id="review-list" class="review-list"></div>
 </section>
 
 </main>
 
-<footer>Нажми на пакет — оформление продолжится в чате с ботом</footer>
+<footer data-i18n="footer">Нажми на пакет — оформление продолжится в чате с ботом</footer>
 
 <script>
   const tg = window.Telegram && window.Telegram.WebApp;
@@ -872,6 +893,162 @@
     tg.ready();
     tg.expand();
   }
+
+  // --- Локализация (RU/UK) --------------------------------------------
+  // Бот уже знает выбор клиента (users.language) и дописывает его в URL
+  // мини-аппа (?lang=uk, см. bot/keyboards.py::_mini_app_url) — так витрина
+  // открывается сразу на нужном языке без повторного выбора. Тумблер в
+  // шапке — на случай захода без query (например, сам открыл ссылку) или
+  // если хочется посмотреть на другом языке разово; выбор через тумблер
+  // запоминается в localStorage этого браузера.
+  const I18N = {
+    ru: {
+      subtitle: 'Гривна → Telegram Stars, TON, Premium и NFT-подарки',
+      tabStars: '⭐ Stars', tabTon: '💎 TON', tabPremium: '🌟 Premium',
+      tabGifts: '🎁 Подарки', tabReviews: '⭐ Отзывы',
+      hintStars: 'звёзд', customAmount: 'Своя сумма', badgeOptimal: 'Оптимально',
+      stepHintStars: '<b>Шаг 1 из 2</b> — дальше получатель и оплата в боте',
+      stepHintTon: '<b>Шаг 1 из 2</b> — дальше кошелёк и оплата в боте',
+      stepHintPremium: '<b>Шаг 1 из 2</b> — дальше получатель и оплата в боте',
+      perkStars1: 'Дешевле, чем в App Store',
+      perkStars2: 'Оплата гривной, без карты в валюте',
+      perkStars3: 'Можно дарить другому — просто укажи получателя',
+      perkTon1: 'Напрямую в твой TON-кошелёк',
+      perkTon2: 'Без криптобирж и подтверждения возраста',
+      perkTon3: 'Гривна → TON за один перевод',
+      premium3: '3 месяца Premium', premium6: '6 месяцев Premium', premium12: '12 месяцев Premium',
+      perkPremium1: 'Официальная подписка Telegram Premium',
+      perkPremium2: 'Оплата гривной вместо валютной карты',
+      perkPremium3: 'Можно оформить другу — просто укажи его',
+      giftStep1: '1. Подарок', giftStep2: '2. Модель', giftStep3: '3. Фон',
+      giftSearchPlaceholder: 'Найти подарок по названию…',
+      giftModelSearchPlaceholder: 'Найти модель…',
+      giftBackdropSearchPlaceholder: 'Найти фон…',
+      clear: 'Очистить',
+      backToGifts: '← К подаркам', backToModels: '← К моделям', chooseBackdrop: 'Выбери фон',
+      perkGift1: 'Реальный NFT-подарок, купленный на маркете',
+      perkGift2: 'Точную цену бот посчитает после выбора',
+      perkGift3: 'Передача — на твой аккаунт или в подарок другу',
+      loading: 'Загружаем…',
+      footer: 'Нажми на пакет — оформление продолжится в чате с ботом',
+      notFound: 'ничего не найдено',
+      foundCount: (n) => `найдено: ${n}`,
+      noGiftsFound: 'Ничего не найдено — попробуй другое слово',
+      anyModel: 'Любая модель', anyBackdrop: 'Любой фон',
+      giftLoadError: '😔 Не удалось загрузить каталог — проверь связь и попробуй ещё раз.',
+      retry: 'Повторить',
+      priceFrom: (n) => `от ${n} грн`,
+      reviewsNone: 'Отзывов пока нет — будь первым после своего заказа',
+      reviewLoadError: 'Не удалось загрузить',
+      reviewLoadErrorFull: 'Проверь связь и попробуй ещё раз.',
+      reviewWord: (n) => {
+        const m10 = n % 10, m100 = n % 100;
+        if (m10 === 1 && m100 !== 11) return 'отзыв';
+        if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'отзыва';
+        return 'отзывов';
+      },
+    },
+    uk: {
+      subtitle: 'Гривня → Telegram Stars, TON, Premium і NFT-подарунки',
+      tabStars: '⭐ Stars', tabTon: '💎 TON', tabPremium: '🌟 Premium',
+      tabGifts: '🎁 Подарунки', tabReviews: '⭐ Відгуки',
+      hintStars: 'зірок', customAmount: 'Своя сума', badgeOptimal: 'Оптимально',
+      stepHintStars: '<b>Крок 1 із 2</b> — далі отримувач і оплата в боті',
+      stepHintTon: '<b>Крок 1 із 2</b> — далі гаманець і оплата в боті',
+      stepHintPremium: '<b>Крок 1 із 2</b> — далі отримувач і оплата в боті',
+      perkStars1: 'Дешевше, ніж в App Store',
+      perkStars2: 'Оплата гривнею, без картки у валюті',
+      perkStars3: 'Можна дарувати іншому — просто вкажи отримувача',
+      perkTon1: 'Напряму на твій TON-гаманець',
+      perkTon2: 'Без криптобірж і підтвердження віку',
+      perkTon3: 'Гривня → TON за один переказ',
+      premium3: '3 місяці Premium', premium6: '6 місяців Premium', premium12: '12 місяців Premium',
+      perkPremium1: 'Офіційна підписка Telegram Premium',
+      perkPremium2: 'Оплата гривнею замість валютної картки',
+      perkPremium3: 'Можна оформити другу — просто вкажи його',
+      giftStep1: '1. Подарунок', giftStep2: '2. Модель', giftStep3: '3. Фон',
+      giftSearchPlaceholder: 'Знайти подарунок за назвою…',
+      giftModelSearchPlaceholder: 'Знайти модель…',
+      giftBackdropSearchPlaceholder: 'Знайти фон…',
+      clear: 'Очистити',
+      backToGifts: '← До подарунків', backToModels: '← До моделей', chooseBackdrop: 'Обери фон',
+      perkGift1: 'Реальний NFT-подарунок, куплений на маркеті',
+      perkGift2: 'Точну ціну бот порахує після вибору',
+      perkGift3: 'Передача — на твій акаунт або в подарунок другу',
+      loading: 'Завантажуємо…',
+      footer: 'Тисни на пакет — оформлення продовжиться в чаті з ботом',
+      notFound: 'нічого не знайдено',
+      foundCount: (n) => `знайдено: ${n}`,
+      noGiftsFound: 'Нічого не знайдено — спробуй інше слово',
+      anyModel: 'Будь-яка модель', anyBackdrop: 'Будь-який фон',
+      giftLoadError: '😔 Не вдалося завантажити каталог — перевір зв\'язок і спробуй ще раз.',
+      retry: 'Повторити',
+      priceFrom: (n) => `від ${n} грн`,
+      reviewsNone: 'Відгуків поки немає — будь першим після свого замовлення',
+      reviewLoadError: 'Не вдалося завантажити',
+      reviewLoadErrorFull: 'Перевір зв\'язок і спробуй ще раз.',
+      reviewWord: (n) => {
+        const m10 = n % 10, m100 = n % 100;
+        if (m10 === 1 && m100 !== 11) return 'відгук';
+        if (m10 >= 2 && m10 <= 4 && !(m100 >= 12 && m100 <= 14)) return 'відгуки';
+        return 'відгуків';
+      },
+    },
+  };
+
+  let currentLang = 'ru';
+
+  function t(key, ...args) {
+    const entry = I18N[currentLang][key];
+    return typeof entry === 'function' ? entry(...args) : entry;
+  }
+
+  function applyLanguage(lang) {
+    currentLang = I18N[lang] ? lang : 'ru';
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll('[data-i18n]').forEach((el) => {
+      el.textContent = t(el.dataset.i18n);
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+      el.innerHTML = t(el.dataset.i18nHtml);
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+      el.placeholder = t(el.dataset.i18nPlaceholder);
+    });
+    document.querySelectorAll('[data-i18n-aria]').forEach((el) => {
+      el.setAttribute('aria-label', t(el.dataset.i18nAria));
+    });
+    langToggleBtn.textContent = currentLang === 'uk' ? '🇺🇦' : '🇷🇺';
+    // Динамически отрисованный контент (каталог подарков, отзывы) не
+    // подхватывается через data-i18n — если данные уже загружены, просто
+    // перерисовываем их же кэшем на новом языке, без повторного fetch.
+    if (typeof reRenderDynamicContent === 'function') reRenderDynamicContent();
+  }
+
+  const langToggleBtn = document.getElementById('lang-toggle');
+  langToggleBtn.addEventListener('click', () => {
+    const next = currentLang === 'uk' ? 'ru' : 'uk';
+    localStorage.setItem('lang', next);
+    applyLanguage(next);
+    if (tg) tg.HapticFeedback.selectionChanged();
+  });
+
+  function detectInitialLanguage() {
+    const fromUrl = new URLSearchParams(location.search).get('lang');
+    if (fromUrl === 'ru' || fromUrl === 'uk') return fromUrl;
+    try {
+      const stored = localStorage.getItem('lang');
+      if (stored === 'ru' || stored === 'uk') return stored;
+    } catch (e) { /* приватный режим/заблокировано — просто пропускаем */ }
+    const tgLang = tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.language_code;
+    if (tgLang === 'uk') return 'uk';
+    return 'ru';
+  }
+
+  // Сам вызов — в самом конце файла (после того, как объявлены giftCatalog
+  // и остальные переменные, которые трогает reRenderDynamicContent внутри
+  // applyLanguage) — иначе let-переменная, объявленная ниже по файлу, кидает
+  // ReferenceError (temporal dead zone) при обращении до её же объявления.
 
   const tabsNav = document.getElementById('tabs');
   const tabIndicator = document.getElementById('tab-indicator');
@@ -1053,13 +1230,13 @@
 
     giftSearchClear.classList.toggle('visible', query.length > 0);
     giftResultCount.textContent = query
-      ? `${list.length === 0 ? 'ничего не найдено' : `найдено: ${list.length}`}`
+      ? (list.length === 0 ? t('notFound') : t('foundCount', list.length))
       : '';
 
     giftCollectionGrid.innerHTML = '';
 
     if (list.length === 0) {
-      giftCollectionGrid.innerHTML = '<div class="gift-empty">Ничего не найдено — попробуй другое слово</div>';
+      giftCollectionGrid.innerHTML = `<div class="gift-empty">${t('noGiftsFound')}</div>`;
       return;
     }
 
@@ -1071,7 +1248,7 @@
       // "от X грн", если известен — раньше цены не было видно вообще до
       // самого конца 3-шагового флоу.
       const priceHtml = c.floorPriceUah
-        ? `<span class="gift-card-price">от ${Math.round(c.floorPriceUah)} грн</span>`
+        ? `<span class="gift-card-price">${t('priceFrom', Math.round(c.floorPriceUah))}</span>`
         : '';
       card.innerHTML = `
         <img class="gift-thumb" src="${fragmentThumbUrl(c.fragmentSlug)}" alt=""
@@ -1095,7 +1272,7 @@
     const filtered = q ? options.filter((name) => name.toLowerCase().includes(q)) : options;
 
     if (countEl) {
-      countEl.textContent = q ? (filtered.length === 0 ? 'ничего не найдено' : `найдено: ${filtered.length}`) : '';
+      countEl.textContent = q ? (filtered.length === 0 ? t('notFound') : t('foundCount', filtered.length)) : '';
     }
 
     container.innerHTML = '';
@@ -1109,7 +1286,7 @@
     if (q && filtered.length === 0) {
       const empty = document.createElement('div');
       empty.className = 'gift-empty';
-      empty.textContent = 'Ничего не найдено — попробуй другое слово';
+      empty.textContent = t('noGiftsFound');
       container.appendChild(empty);
       return;
     }
@@ -1142,18 +1319,18 @@
     setStepLabel(0, collection.name);
     giftModelSearch.value = '';
     giftModelSearchClear.classList.remove('visible');
-    renderCardGrid(giftModelGrid, collection.models, 'Любая модель', onModelPicked, collection.modelImages);
+    renderCardGrid(giftModelGrid, collection.models, t('anyModel'), onModelPicked, collection.modelImages);
     showGiftStage(1);
     if (tg) tg.HapticFeedback.selectionChanged();
   }
 
   function onModelPicked(model) {
     selectedModel = model;
-    setStepLabel(1, model || 'Любая модель');
-    giftBackdropCrumb.innerHTML = `<b>${selectedCollection.name}</b> · ${model || 'любая модель'}`;
+    setStepLabel(1, model || t('anyModel'));
+    giftBackdropCrumb.innerHTML = `<b>${selectedCollection.name}</b> · ${model || t('anyModel').toLowerCase()}`;
     giftBackdropSearch.value = '';
     giftBackdropSearchClear.classList.remove('visible');
-    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked, null, backdropColors);
+    renderCardGrid(giftBackdropGrid, selectedCollection.backdrops, t('anyBackdrop'), onBackdropPicked, null, backdropColors);
     showGiftStage(2);
     if (tg) tg.HapticFeedback.selectionChanged();
   }
@@ -1195,14 +1372,14 @@
 
   wireSearchInput(giftModelSearch, giftModelSearchClear, () => {
     renderCardGrid(
-      giftModelGrid, selectedCollection.models, 'Любая модель', onModelPicked,
+      giftModelGrid, selectedCollection.models, t('anyModel'), onModelPicked,
       selectedCollection.modelImages, null, giftModelSearch.value, giftModelResultCount
     );
   });
 
   wireSearchInput(giftBackdropSearch, giftBackdropSearchClear, () => {
     renderCardGrid(
-      giftBackdropGrid, selectedCollection.backdrops, 'Любой фон', onBackdropPicked,
+      giftBackdropGrid, selectedCollection.backdrops, t('anyBackdrop'), onBackdropPicked,
       null, backdropColors, giftBackdropSearch.value, giftBackdropResultCount
     );
   });
@@ -1231,9 +1408,9 @@
         console.error('Не удалось загрузить каталог подарков:', e);
         giftCollectionGrid.innerHTML = `
           <div class="gift-empty">
-            😔 Не удалось загрузить каталог — проверь связь и попробуй ещё раз.
+            ${t('giftLoadError')}
             <br><br>
-            <button type="button" class="gift-retry-btn" id="gift-retry-btn">Повторить</button>
+            <button type="button" class="gift-retry-btn" id="gift-retry-btn">${t('retry')}</button>
           </div>
         `;
         document.getElementById('gift-retry-btn').addEventListener('click', loadGiftCatalog);
@@ -1250,14 +1427,6 @@
     return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   }
 
-  function reviewsWord(count) {
-    const mod10 = count % 10;
-    const mod100 = count % 100;
-    if (mod10 === 1 && mod100 !== 11) return 'отзыв';
-    if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) return 'отзыва';
-    return 'отзывов';
-  }
-
   // Комментарии — свободный текст от реальных пользователей; не доверяем
   // ему как HTML (иначе отзыв с "<img onerror=...>" исполнился бы на
   // публичной странице) — textContent экранирует, innerHTML тут же читаем обратно.
@@ -1267,7 +1436,10 @@
     return div.innerHTML;
   }
 
+  let lastReviewsData = null;  // кэш для перерисовки при смене языка без повторного fetch
+
   function renderReviews(data) {
+    lastReviewsData = data;
     const scoreEl = document.getElementById('review-score');
     const starsEl = document.getElementById('review-summary-stars');
     const countEl = document.getElementById('review-summary-count');
@@ -1276,14 +1448,14 @@
     if (!data.count) {
       scoreEl.textContent = '—';
       starsEl.textContent = '';
-      countEl.textContent = 'Отзывов пока нет';
-      listEl.innerHTML = '<div class="review-empty">Будь первым после своего заказа 🙂</div>';
+      countEl.textContent = t('reviewsNone');
+      listEl.innerHTML = `<div class="review-empty">${t('reviewsNone')} 🙂</div>`;
       return;
     }
 
     scoreEl.textContent = data.avgRating.toFixed(1);
     starsEl.textContent = starString(Math.round(data.avgRating));
-    countEl.textContent = `${data.count} ${reviewsWord(data.count)}`;
+    countEl.textContent = `${data.count} ${t('reviewWord', data.count)}`;
 
     listEl.innerHTML = '';
     data.reviews.forEach((r) => {
@@ -1312,15 +1484,29 @@
       .then(renderReviews)
       .catch((e) => {
         console.error('Не удалось загрузить отзывы:', e);
-        document.getElementById('review-summary-count').textContent = 'Не удалось загрузить';
+        document.getElementById('review-summary-count').textContent = t('reviewLoadError');
         document.getElementById('review-list').innerHTML =
-          '<div class="review-empty">😔 Проверь связь и попробуй ещё раз. '
-          + '<button type="button" class="gift-retry-btn" id="review-retry-btn">Повторить</button></div>';
+          `<div class="review-empty">😔 ${t('reviewLoadErrorFull')} `
+          + `<button type="button" class="gift-retry-btn" id="review-retry-btn">${t('retry')}</button></div>`;
         document.getElementById('review-retry-btn').addEventListener('click', loadReviews);
       });
   }
 
   loadReviews();
+
+  // Перерисовать уже загруженный динамический контент (каталог подарков,
+  // отзывы) на новом языке без повторного fetch — вызывается из
+  // applyLanguage(). До первой загрузки функции ссылаются на пустые
+  // переменные — тогда просто ничего не делаем, дождётся своей загрузки.
+  function reRenderDynamicContent() {
+    if (Array.isArray(giftCatalog) && giftCatalog.length) renderGiftCollections();
+    if (lastReviewsData) renderReviews(lastReviewsData);
+  }
+
+  // Применяем язык здесь, в самом конце — все переменные/функции, которые
+  // трогает applyLanguage (включая reRenderDynamicContent), уже объявлены
+  // к этому моменту (см. комментарий у detectInitialLanguage выше).
+  applyLanguage(detectInitialLanguage());
 </script>
 
 </body>
