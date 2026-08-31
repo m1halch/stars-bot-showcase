@@ -855,6 +855,58 @@
   }
 
   .quote-body.hidden { display: none; }
+
+  /* --- Калькулятор "своя сумма" (переиспользует .quote-card) ---------- */
+  .calc-input {
+    width: 100%;
+    box-sizing: border-box;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(232,201,122,0.2);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+  }
+
+  .calc-input:focus {
+    outline: none;
+    border-color: var(--gold-bright);
+  }
+
+  .calc-result {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--gold-bright);
+    margin-bottom: 4px;
+    min-height: 28px;
+  }
+
+  .calc-result.hidden { visibility: hidden; }
+  .calc-result.error { color: var(--cream); font-size: 14px; font-weight: 600; }
+
+  .calc-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--lavender-dim);
+    margin-bottom: 14px;
+  }
+
+  .calc-buy-btn {
+    background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+    color: var(--bg-deep);
+    border: none;
+  }
+
+  .calc-buy-btn:disabled {
+    opacity: 0.4;
+    pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -1070,6 +1122,21 @@
   </div>
 </div>
 
+<!-- "Своя сумма" — калькулятор "ввёл грн → сразу видно сколько получишь"
+     (bot/webapi.py::/api/quote с полем "uah" вместо "amount", см. README).
+     Переиспользует стили .quote-* — визуально та же нижняя шторка. -->
+<div id="calc-modal" class="quote-modal hidden">
+  <div class="quote-backdrop" id="calc-backdrop"></div>
+  <div class="quote-card">
+    <div class="quote-title" id="calc-title"></div>
+    <input type="number" inputmode="decimal" min="1" step="1" class="calc-input" id="calc-input" data-i18n-placeholder="calcInputPlaceholder" placeholder="Сколько грн потратить?">
+    <div class="calc-result hidden" id="calc-result"></div>
+    <div class="calc-hint" id="calc-hint" data-i18n="calcHint">Считаем сразу с учётом твоей скидки</div>
+    <button type="button" class="quote-confirm-btn calc-buy-btn" id="calc-buy-btn" disabled data-i18n="calcButtonBuy">Купить</button>
+    <button type="button" class="quote-cancel-btn" id="calc-cancel-btn" data-i18n="cancel">Отмена</button>
+  </div>
+</div>
+
 <footer data-i18n="footer">Нажми на пакет — оформление продолжится в чате с ботом</footer>
 
 <script>
@@ -1144,6 +1211,13 @@
       referralDiscountLine: (n) => `🎁 С реферального баланса: −${n} грн`,
       copyHint: 'Нажми, чтобы скопировать',
       copiedHint: 'Скопировано!',
+      calcTitleStars: 'Своя сумма — Stars', calcTitleTon: 'Своя сумма — TON',
+      calcInputPlaceholder: 'Сколько грн потратить?',
+      calcResultStars: (n) => `≈ ${n} ⭐`,
+      calcResultTon: (n) => `≈ ${n} 💎`,
+      calcHint: 'Считаем сразу с учётом твоей скидки',
+      calcTooSmall: 'Сумма слишком маленькая',
+      calcButtonBuy: 'Купить',
     },
     uk: {
       subtitle: 'Гривня → Telegram Stars, TON, Premium і NFT-подарунки',
@@ -1202,6 +1276,13 @@
       referralDiscountLine: (n) => `🎁 З реферального балансу: −${n} грн`,
       copyHint: 'Тисни, щоб скопіювати',
       copiedHint: 'Скопійовано!',
+      calcTitleStars: 'Своя сума — Stars', calcTitleTon: 'Своя сума — TON',
+      calcInputPlaceholder: 'Скільки грн витратити?',
+      calcResultStars: (n) => `≈ ${n} ⭐`,
+      calcResultTon: (n) => `≈ ${n} 💎`,
+      calcHint: 'Рахуємо одразу з урахуванням твоєї знижки',
+      calcTooSmall: 'Сума занадто маленька',
+      calcButtonBuy: 'Купити',
     },
   };
 
@@ -1472,16 +1553,111 @@
     attachTapFeedback(card);
     card.addEventListener('click', () => {
       const payload = { type: card.dataset.type, amount: Number(card.dataset.amount) };
-      // "Своя сумма" (amount=0) ещё не имеет точного числа для расчёта
-      // цены — как и раньше, сразу уходит в чат бота, там же и спросит.
-      // Подарки в /api/quote пока не входят (см. README) — тоже как раньше.
-      if (payload.amount > 0 && payload.type !== 'gift') {
+      if (payload.amount === 0 && (payload.type === 'stars' || payload.type === 'ton')) {
+        // "Своя сумма" — калькулятор "ввёл грн, сразу видно сколько
+        // получишь" (как Transak), а не слепой уход в чат бота с вопросом
+        // "сколько хочешь". Premium/gift сюда не попадают — у Premium
+        // фиксированные сроки, у подарков своя трёхшаговая витрина.
+        openCalcModalFor(card, payload.type);
+      } else if (payload.amount > 0 && payload.type !== 'gift') {
         openQuoteModalFor(card, payload);
       } else {
         confirmAndSend(card, payload);
       }
     });
   });
+
+  // --- "Своя сумма" — калькулятор (bot/webapi.py::/api/quote с "uah") -
+  const calcModal = document.getElementById('calc-modal');
+  const calcBackdrop = document.getElementById('calc-backdrop');
+  const calcTitleEl = document.getElementById('calc-title');
+  const calcInputEl = document.getElementById('calc-input');
+  const calcResultEl = document.getElementById('calc-result');
+  const calcBuyBtn = document.getElementById('calc-buy-btn');
+  const calcCancelBtn = document.getElementById('calc-cancel-btn');
+
+  const _calcTitleKeys = { stars: 'calcTitleStars', ton: 'calcTitleTon' };
+  const _calcResultKeys = { stars: 'calcResultStars', ton: 'calcResultTon' };
+
+  let calcCard = null;
+  let calcType = null;
+  let calcComputedAmount = null;
+  let calcDebounceTimer = null;
+  let calcRequestSeq = 0;
+
+  function closeCalcModal() {
+    calcModal.classList.add('hidden');
+    clearTimeout(calcDebounceTimer);
+  }
+
+  function resetCalcResult() {
+    calcResultEl.textContent = '';
+    calcResultEl.classList.add('hidden');
+    calcResultEl.classList.remove('error');
+    calcBuyBtn.disabled = true;
+    calcComputedAmount = null;
+  }
+
+  function openCalcModalFor(card, type) {
+    calcCard = card;
+    calcType = type;
+    calcTitleEl.textContent = t(_calcTitleKeys[type]);
+    calcInputEl.value = '';
+    resetCalcResult();
+    calcModal.classList.remove('hidden');
+    setTimeout(() => calcInputEl.focus(), 50);
+  }
+
+  async function fetchReverseQuote(product, uah) {
+    const initData = tg && tg.initData;
+    if (!initData) return null;
+    const resp = await fetch(`${WEBAPI_URL}/api/quote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ init_data: initData, product, uah }),
+    });
+    if (!resp.ok) return { error: true };
+    return resp.json();
+  }
+
+  calcInputEl.addEventListener('input', () => {
+    clearTimeout(calcDebounceTimer);
+    const raw = calcInputEl.value.replace(',', '.');
+    const uah = parseFloat(raw);
+    if (!uah || uah <= 0) {
+      resetCalcResult();
+      return;
+    }
+    // Дебаунс — не долбим /api/quote на каждое нажатие клавиши, только
+    // когда пользователь на секунду остановился печатать.
+    const seq = ++calcRequestSeq;
+    calcDebounceTimer = setTimeout(() => {
+      fetchReverseQuote(calcType, uah).then((quote) => {
+        if (seq !== calcRequestSeq) return;  // устаревший запрос, пришёл ответ на уже перезаписанный ввод
+        if (!quote || quote.error) {
+          resetCalcResult();
+          calcResultEl.textContent = t('calcTooSmall');
+          calcResultEl.classList.remove('hidden');
+          calcResultEl.classList.add('error');
+          return;
+        }
+        calcComputedAmount = quote.amount;
+        calcResultEl.classList.remove('error');
+        calcResultEl.textContent = t(_calcResultKeys[calcType], quote.amount);
+        calcResultEl.classList.remove('hidden');
+        calcBuyBtn.disabled = false;
+      });
+    }, 400);
+  });
+
+  calcBuyBtn.addEventListener('click', () => {
+    if (!calcComputedAmount) return;
+    closeCalcModal();
+    openQuoteModalFor(calcCard, { type: calcType, amount: calcComputedAmount });
+  });
+
+  calcCancelBtn.addEventListener('click', closeCalcModal);
+  calcBackdrop.addEventListener('click', closeCalcModal);
 
   // --- Подарки: статичный снапшот каталога (коллекции/модели/фоны), без
   // живых цен — точную цену на выбранную комбинацию бот считает сам после
