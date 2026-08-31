@@ -1217,6 +1217,7 @@
       calcResultTon: (n) => `≈ ${n} 💎`,
       calcHint: 'Считаем сразу с учётом твоей скидки',
       calcTooSmall: 'Сумма слишком маленькая',
+      calcGenericError: 'Не удалось посчитать — попробуй ещё раз',
       calcButtonBuy: 'Купить',
     },
     uk: {
@@ -1282,6 +1283,7 @@
       calcResultTon: (n) => `≈ ${n} 💎`,
       calcHint: 'Рахуємо одразу з урахуванням твоєї знижки',
       calcTooSmall: 'Сума занадто маленька',
+      calcGenericError: 'Не вдалося порахувати — спробуй ще раз',
       calcButtonBuy: 'Купити',
     },
   };
@@ -1609,14 +1611,31 @@
   }
 
   async function fetchReverseQuote(product, uah) {
+    // Возвращает { tooSmall: true } ТОЛЬКО если сервер честно ответил
+    // "amount_too_small" — любая другая причина (сеть недоступна, сервер
+    // упал, initData ещё не готов) идёт отдельным {error: true}, чтобы не
+    // путать реальную "сумма маленькая" с "что-то сломалось" (баг замечен
+    // вживую: любая ошибка сети показывала одно и то же "сумма маленькая").
     const initData = tg && tg.initData;
-    if (!initData) return null;
-    const resp = await fetch(`${WEBAPI_URL}/api/quote`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ init_data: initData, product, uah }),
-    });
-    if (!resp.ok) return { error: true };
+    if (!initData) return { error: true };
+    let resp;
+    try {
+      resp = await fetch(`${WEBAPI_URL}/api/quote`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ init_data: initData, product, uah }),
+      });
+    } catch (e) {
+      console.error('Не удалось посчитать обратную цену (сеть):', e);
+      return { error: true };
+    }
+    if (!resp.ok) {
+      let body = null;
+      try { body = await resp.json(); } catch (e) { /* тело не JSON — игнорируем */ }
+      if (body && body.error === 'amount_too_small') return { tooSmall: true };
+      console.error(`Не удалось посчитать обратную цену: HTTP ${resp.status}`, body);
+      return { error: true };
+    }
     return resp.json();
   }
 
@@ -1634,9 +1653,9 @@
     calcDebounceTimer = setTimeout(() => {
       fetchReverseQuote(calcType, uah).then((quote) => {
         if (seq !== calcRequestSeq) return;  // устаревший запрос, пришёл ответ на уже перезаписанный ввод
-        if (!quote || quote.error) {
+        if (quote.tooSmall || quote.error) {
           resetCalcResult();
-          calcResultEl.textContent = t('calcTooSmall');
+          calcResultEl.textContent = quote.tooSmall ? t('calcTooSmall') : t('calcGenericError');
           calcResultEl.classList.remove('hidden');
           calcResultEl.classList.add('error');
           return;
