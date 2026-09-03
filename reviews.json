@@ -1,7 +1,17 @@
 {
-  "count": 9,
+  "count": 11,
   "avgRating": 5.0,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Пришло бистро",
+      "date": "02.09"
+    },
+    {
+      "rating": 5,
+      "comment": "Все хорошо",
+      "date": "02.09"
+    },
     {
       "rating": 5,
       "comment": null,
