@@ -1,7 +1,12 @@
 {
-  "count": 11,
+  "count": 12,
   "avgRating": 5.0,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Все бистро пришло",
+      "date": "03.09"
+    },
     {
       "rating": 5,
       "comment": "Пришло бистро",
