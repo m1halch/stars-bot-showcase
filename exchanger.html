@@ -167,9 +167,23 @@
   // Та же наценка, что и на сервере (bot/exchanger/handlers.py::uah_to_ton) —
   // тут только для ПРЕДПРОСМОТРА, финальная сумма всегда считается заново
   // на сервере в момент отправки, эта цифра клиента ни на что не влияет.
-  const TON_MARGIN = 0.28;
+  // Тиры зеркалят bot/exchanger/handlers.py::_MARGIN_TIERS — чем больше
+  // сумма, тем меньше наценка, как у настоящих обменников.
+  const MARGIN_TIERS = [
+    [999, 0.25],
+    [4999, 0.18],
+    [14999, 0.12],
+    [Infinity, 0.08],
+  ];
   const MIN_UAH = 100;
   const MAX_UAH = 50000;
+
+  function marginFor(uah) {
+    for (const [upper, margin] of MARGIN_TIERS) {
+      if (uah <= upper) return margin;
+    }
+    return MARGIN_TIERS[MARGIN_TIERS.length - 1][1];
+  }
 
   let liveRateUahPerTon = null;
 
@@ -184,18 +198,18 @@
     } catch (e) {
       console.error('rate fetch failed', e);
     }
-    renderRateLine();
     recompute();
   }
 
-  function renderRateLine() {
+  function renderRateLine(uah) {
     const el = document.getElementById('rateLine');
     if (liveRateUahPerTon == null) {
       el.textContent = 'Курс недоступен — попробуйте обновить страницу';
       return;
     }
-    const sellRate = liveRateUahPerTon * (1 + TON_MARGIN);
-    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн`;
+    const margin = marginFor(uah > 0 ? uah : MIN_UAH);
+    const sellRate = liveRateUahPerTon * (1 + margin);
+    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн` + (uah > 0 ? '' : ' (зависит от суммы)');
   }
 
   function isValidTonAddress(v) {
@@ -213,10 +227,11 @@
     const uah = parseFloat(uahInput.value);
     let ton = 0;
     if (liveRateUahPerTon && uah > 0) {
-      const sellRate = liveRateUahPerTon * (1 + TON_MARGIN);
+      const sellRate = liveRateUahPerTon * (1 + marginFor(uah));
       ton = uah / sellRate;
     }
     resultEl.textContent = `${ton.toFixed(4)} TON`;
+    renderRateLine(uah);
 
     const walletRaw = walletInput.value.trim();
     const walletOk = walletRaw === '' || isValidTonAddress(walletRaw);
