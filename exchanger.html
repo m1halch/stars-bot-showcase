@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TonExpress</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0b0e14;
@@ -16,31 +19,64 @@
     --accent-dim: rgba(58, 160, 255, .12);
     --error: #ff5c5c;
     --ok: #4fd17a;
+    --font-display: 'Manrope', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   * { box-sizing: border-box; }
+  html { background: var(--bg); }
   body {
-    margin: 0;
+    position: relative;
+    margin: 0 auto;
+    max-width: 480px;
     background: var(--bg);
     color: var(--text);
-    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    padding: 20px 16px 32px;
+    font: 15px/1.5 var(--font-body);
+    padding: 20px 16px 40px;
+    overflow-x: hidden;
   }
+  /* Telegram Desktop открывает мини-апп в окне заметно шире мобильного —
+     без max-width карточки растягивались бы во всю ширину и выглядели
+     нелепо; 480px + центрирование держат тот же вид, что и на телефоне. */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -12%;
+    left: 50%;
+    width: 130vw;
+    max-width: 640px;
+    aspect-ratio: 1;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(58, 160, 255, .16), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body > * { position: relative; z-index: 1; }
+
   .logo {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 22px;
+    margin-bottom: 24px;
   }
   .logo-icon {
-    width: 36px; height: 36px;
-    border-radius: 10px;
+    width: 38px; height: 38px;
+    flex-shrink: 0;
+    border-radius: 11px;
     background: linear-gradient(135deg, var(--accent), #1a5fb4);
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
     box-shadow: 0 4px 14px rgba(58, 160, 255, .35);
   }
-  .logo-name { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
-  .logo-tag { font-size: 12px; color: var(--muted); }
+  .logo-icon svg { width: 18px; height: 18px; }
+  .logo-name { font: 700 20px/1 var(--font-display); letter-spacing: -.01em; }
+  .logo-tag { margin-top: 3px; font-size: 12px; color: var(--muted); }
+
+  .ton-mark {
+    display: inline-flex;
+    width: 14px; height: 14px;
+    vertical-align: -2px;
+    margin-right: 3px;
+    opacity: .85;
+  }
 
   .card {
     background: var(--card);
@@ -76,8 +112,7 @@
     background: transparent;
     border: none;
     color: var(--text);
-    font-size: 28px;
-    font-weight: 700;
+    font: 700 28px/1.2 var(--font-display);
     font-variant-numeric: tabular-nums;
     outline: none;
     padding: 0;
@@ -106,9 +141,23 @@
   .chip:active { transform: scale(.96); }
   .chip.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
-  .arrow { text-align: center; color: var(--muted); font-size: 18px; margin: -2px 0; }
+  .arrow-divider { display: flex; justify-content: center; margin: -10px 0; }
+  .arrow-badge {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+  }
+  .arrow-badge svg { width: 15px; height: 15px; }
 
-  .result-value { font-size: 28px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .result-value {
+    font: 700 28px/1.2 var(--font-display);
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
   .rate-line { margin-top: 8px; font-size: 12px; color: var(--muted); }
 
   .wallet-input {
@@ -130,8 +179,8 @@
     border-radius: 14px;
     background: var(--accent);
     color: #04101d;
-    font-size: 16px;
-    font-weight: 700;
+    font: 700 16px/1 var(--font-display);
+    letter-spacing: -.005em;
     cursor: pointer;
   }
   button.primary:disabled {
@@ -204,7 +253,13 @@
 <body>
 
   <div class="logo">
-    <div class="logo-icon">💎</div>
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/>
+        <path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/>
+        <path d="M12 2L9 9L12 22L15 9L12 2Z" fill="currentColor" fill-opacity=".25"/>
+      </svg>
+    </div>
     <div>
       <div class="logo-name">TonExpress</div>
       <div class="logo-tag">Мгновенный обмен грн ⇄ TON</div>
@@ -226,10 +281,16 @@
       </div>
     </div>
 
-    <div class="arrow">↓</div>
+    <div class="arrow-divider">
+      <div class="arrow-badge">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4V20M12 20L6 14M12 20L18 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
 
     <div class="card card-hero">
-      <label>Получаете</label>
+      <label><svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/><path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>Получаете</label>
       <div class="result-value" id="result">0.0000 TON</div>
       <div class="rate-line" id="rateLine">Курс загружается…</div>
     </div>
