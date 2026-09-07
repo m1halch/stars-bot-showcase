@@ -378,23 +378,47 @@
   const tg = window.Telegram && window.Telegram.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
 
-  // Вставка адреса из буфера — надёжнее, чем печатать вручную (TON-адрес
-  // обычно и так копируют из кошелька), снимает риск опечатки целиком, а
-  // не просто делает поле заметнее визуально. readTextFromClipboard —
-  // метод именно Telegram.WebApp (Bot API 6.4+), не обычный
-  // navigator.clipboard — тот в WebView часто блокируется без разрешения.
-  const pasteBtn = document.getElementById('pasteBtn');
-  if (tg && typeof tg.readTextFromClipboard === 'function') {
-    pasteBtn.style.display = '';
-    pasteBtn.addEventListener('click', () => {
-      tg.readTextFromClipboard((text) => {
-        if (!text) return;
-        document.getElementById('wallet').value = text.trim();
-        recompute();
-        try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
-      });
-    });
+  // Вставка адреса из буфера — надёжнее, чем печатать вручную. Основной
+  // путь — Telegram.WebApp.readTextFromClipboard (Bot API 6.4+), но у него
+  // известный баг: стабильно работает только в десктопном клиенте, на
+  // мобильных (iOS/Android) часто молча отдаёт пустую строку без ошибки —
+  // поэтому подстраховываемся обычным Clipboard API браузера, а если и
+  // он не сработал (нет разрешения/не поддерживается) — прямо говорим
+  // об этом, а не просто ничего не делаем.
+  function applyPastedWallet(text) {
+    document.getElementById('wallet').value = text.trim();
+    recompute();
+    try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
   }
+
+  async function pasteViaNavigator() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        applyPastedWallet(text);
+        return;
+      }
+    } catch (e) {
+      console.error('navigator.clipboard.readText failed', e);
+    }
+    alert('Не получилось вставить автоматически — зажми поле пальцем и выбери «Вставить».');
+  }
+
+  const pasteBtn = document.getElementById('pasteBtn');
+  pasteBtn.style.display = '';
+  pasteBtn.addEventListener('click', () => {
+    if (tg && typeof tg.readTextFromClipboard === 'function') {
+      tg.readTextFromClipboard((text) => {
+        if (text) {
+          applyPastedWallet(text);
+        } else {
+          pasteViaNavigator();
+        }
+      });
+    } else {
+      pasteViaNavigator();
+    }
+  });
 
   // Та же наценка, что и на сервере (bot/exchanger/handlers.py::uah_to_ton) —
   // тут только для ПРЕДПРОСМОТРА, финальная сумма всегда считается заново
