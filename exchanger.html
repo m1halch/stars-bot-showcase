@@ -267,27 +267,63 @@
   .waiting-wallet { word-break: break-all; }
   .waiting-copy { font-size: 14px; color: var(--text); }
 
-  .status-line {
+  @keyframes pulse {
+    0%, 100% { opacity: .4; transform: scale(.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  .stepper { display: flex; flex-direction: column; margin-top: 18px; }
+  .step {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 9px;
-    margin-top: 16px;
+    gap: 11px;
+    padding: 6px 0;
     font-size: 13px;
     color: var(--muted);
   }
-  .status-dot {
-    width: 8px;
-    height: 8px;
+  .step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 9px;
+    top: 28px;
+    bottom: -6px;
+    width: 2px;
+    background: var(--border);
+  }
+  .step.done:not(:last-child)::after { background: var(--ok); }
+  .step-dot {
+    width: 20px; height: 20px;
     flex-shrink: 0;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--card);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    z-index: 1;
+    transition: border-color .2s ease, background .2s ease;
+  }
+  .step-dot svg {
+    width: 11px; height: 11px;
+    color: #04140a;
+    opacity: 0;
+    transition: opacity .15s ease;
+  }
+  .step.done .step-dot { background: var(--ok); border-color: var(--ok); }
+  .step.done .step-dot svg { opacity: 1; }
+  .step.current .step-dot { border-color: var(--accent); }
+  .step.current .step-dot::before {
+    content: '';
+    width: 8px; height: 8px;
     border-radius: 50%;
     background: var(--accent);
     animation: pulse 1.4s ease-in-out infinite;
   }
-  .status-dot.ok { background: var(--ok); animation: none; }
-  .status-dot.error { background: var(--error); animation: none; }
-  @keyframes pulse {
-    0%, 100% { opacity: .4; transform: scale(.8); }
-    50% { opacity: 1; transform: scale(1); }
+  .step.current .step-label { color: var(--text); font-weight: 600; }
+  .step.error .step-dot { border-color: var(--error); }
+  .step.error .step-label { color: var(--error); }
+  @media (prefers-reduced-motion: reduce) {
+    .step.current .step-dot::before { animation: none; }
   }
 
   .success-card { text-align: center; }
@@ -455,10 +491,23 @@
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
       <div class="timer-line" id="timerLine">Успей оплатить за <span class="timer-value" id="timerValue">30:00</span></div>
-      <div class="status-line">
-        <span class="status-dot" id="waitStatusDot"></span>
-        <span id="waitStatusHint">Ждём оплату…</span>
+
+      <div class="stepper" id="stepper">
+        <div class="step done" data-step="created">
+          <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="step-label">Заявка создана</span>
+        </div>
+        <div class="step" data-step="paid">
+          <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="step-label">Оплата получена</span>
+        </div>
+        <div class="step" data-step="sent">
+          <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="step-label">TON отправлен</span>
+        </div>
       </div>
+      <div class="hint" id="waitStatusHint" style="text-align:center; margin-top:10px;">Ждём оплату…</div>
+
       <button class="primary" id="newOrderBtn" style="margin-top:14px; display:none;">↺ Создать новую заявку</button>
     </div>
   </div>
@@ -758,25 +807,50 @@
     return data;
   }
 
+  // Степпер отражает статус заявки: pending_payment -> "Оплата получена"
+  // текущий шаг; waiting_reserve -> оплата уже done, "TON отправлен" —
+  // текущий (в норме это происходит в тот же цикл опроса, что и оплата,
+  // так что этот шаг часто мелькает быстро, но виден при нехватке резерва);
+  // fulfilled -> оба шага done; expired -> "Оплата получена" в error-стиле.
+  function updateStepper(status) {
+    const stepState = { paid: '', sent: '' };
+    if (status === 'waiting_reserve') {
+      stepState.paid = 'done';
+      stepState.sent = 'current';
+    } else if (status === 'fulfilled') {
+      stepState.paid = 'done';
+      stepState.sent = 'done';
+    } else if (status === 'expired') {
+      stepState.paid = 'error';
+    } else {
+      stepState.paid = 'current';
+    }
+    for (const key of ['paid', 'sent']) {
+      const el = document.querySelector(`.step[data-step="${key}"]`);
+      el.classList.remove('done', 'current', 'error');
+      if (stepState[key]) el.classList.add(stepState[key]);
+    }
+  }
+
   function startPolling(orderId) {
     if (pollTimer) clearInterval(pollTimer);
     const hint = document.getElementById('waitStatusHint');
-    const dot = document.getElementById('waitStatusDot');
     pollTimer = setInterval(async () => {
       try {
         const data = await apiCall('/api/exchange/status', { init_data: tg.initData, order_id: orderId });
+        updateStepper(data.status);
         if (data.status === 'fulfilled') {
           stopTimers();
+          clearSavedOrder();
           document.getElementById('successText').textContent =
             `Отправил ${data.ton_amount.toFixed(4)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
           showSection('successSection');
         } else if (data.status === 'waiting_reserve') {
-          dot.classList.add('ok');
           hint.textContent = 'Оплата получена! TON придёт совсем скоро.';
         } else if (data.status === 'expired') {
           stopTimers();
-          dot.classList.add('error');
+          clearSavedOrder();
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
           document.getElementById('openJarBtn').style.display = 'none';
           document.getElementById('newOrderBtn').style.display = '';
@@ -789,15 +863,33 @@
     }, STATUS_POLL_MS);
   }
 
+  // Заявка раньше жила только в памяти открытой вкладки — обновил
+  // страницу (или Telegram сам перезапустил WebView) и мини-апп
+  // показывал пустую форму заново, хотя заявка на сервере всё ещё жива и
+  // всё равно выполнится. Хуже того — клиент терял точную сумму к
+  // оплате, а платить нужно СТРОГО ту же сумму, иначе платёж не
+  // свяжется автоматически. saveOrder/loadSavedOrder восстанавливают
+  // экран ожидания при повторном открытии.
+  const SAVED_ORDER_KEY = 'tonexpress_pending_order';
+  function saveOrder(orderId) {
+    try { localStorage.setItem(SAVED_ORDER_KEY, String(orderId)); } catch (e) {}
+  }
+  function clearSavedOrder() {
+    try { localStorage.removeItem(SAVED_ORDER_KEY); } catch (e) {}
+  }
+  function loadSavedOrderId() {
+    try { return localStorage.getItem(SAVED_ORDER_KEY); } catch (e) { return null; }
+  }
+
   function enterWaitingScreen(order) {
     document.getElementById('waitOrderId').textContent = order.order_id;
     document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(4)} TON`;
     document.getElementById('waitWallet').textContent = order.ton_wallet;
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
-    document.getElementById('waitStatusDot').classList.remove('ok', 'error');
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     document.getElementById('openJarBtn').style.display = '';
     document.getElementById('newOrderBtn').style.display = 'none';
+    updateStepper('pending_payment');
     document.getElementById('openJarBtn').onclick = () => {
       if (tg && typeof tg.openLink === 'function') {
         tg.openLink(order.jar_link);
@@ -805,6 +897,7 @@
         window.open(order.jar_link, '_blank');
       }
     };
+    saveOrder(order.order_id);
     showSection('waitingSection');
     startPolling(order.order_id);
     startCountdown(order.expires_in_seconds || 30 * 60);
@@ -815,9 +908,45 @@
   });
 
   document.getElementById('newOrderBtn').addEventListener('click', () => {
+    clearSavedOrder();
     showSection('formSection');
     recompute();
   });
+
+  // При открытии — если есть сохранённая незавершённая заявка, спрашиваем
+  // сервер её текущий статус и сразу восстанавливаем нужный экран, вместо
+  // того чтобы всегда показывать пустую форму.
+  async function resumeSavedOrderIfAny() {
+    const savedId = loadSavedOrderId();
+    if (!savedId || !tg || !tg.initData) return;
+    try {
+      const data = await apiCall('/api/exchange/status', { init_data: tg.initData, order_id: Number(savedId) });
+      if (data.status === 'fulfilled') {
+        clearSavedOrder();
+        document.getElementById('successText').textContent =
+          `Отправил ${data.ton_amount.toFixed(4)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+        showSection('successSection');
+      } else if (data.status === 'pending_payment' || data.status === 'waiting_reserve') {
+        enterWaitingScreen({
+          order_id: savedId,
+          uah_amount: data.uah_amount,
+          ton_amount: data.ton_amount,
+          ton_wallet: data.ton_wallet,
+          jar_link: data.jar_link,
+          expires_in_seconds: data.expires_in_seconds,
+        });
+        updateStepper(data.status);
+      } else {
+        // expired / не найдена — этой заявки для клиента больше не существует.
+        clearSavedOrder();
+      }
+    } catch (e) {
+      console.error('resume saved order failed', e);
+      // Не смогли проверить (сеть) — не блокируем клиента пустым экраном
+      // ожидания, просто оставляем обычную форму.
+    }
+  }
+  resumeSavedOrderIfAny();
 
   document.getElementById('submitBtn').addEventListener('click', async () => {
     const uah = parseFloat(document.getElementById('uah').value);
