@@ -233,6 +233,21 @@
   .timer-value { font-weight: 700; color: var(--text); }
   .timer-line.warn .timer-value { color: var(--error); }
 
+  .text-btn {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    padding: 6px;
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-size: 13px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .text-btn:active { opacity: .6; }
+  .text-btn.danger { color: var(--error); opacity: .85; }
+
   button.primary {
     width: 100%;
     padding: 16px;
@@ -509,6 +524,7 @@
       <div class="hint" id="waitStatusHint" style="text-align:center; margin-top:10px;">Ждём оплату…</div>
 
       <button class="primary" id="newOrderBtn" style="margin-top:14px; display:none;">↺ Создать новую заявку</button>
+      <button type="button" class="text-btn danger" id="cancelOrderBtn">Отменить заявку</button>
     </div>
   </div>
 
@@ -752,6 +768,7 @@
   const STATUS_POLL_MS = 4000;
   let pollTimer = null;
   let countdownTimer = null;
+  let currentOrderId = null;
 
   function startCountdown(totalSeconds) {
     if (countdownTimer) clearInterval(countdownTimer);
@@ -847,13 +864,16 @@
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
           showSection('successSection');
         } else if (data.status === 'waiting_reserve') {
+          // Деньги уже пришли — отменять больше нечего, убираем кнопку.
           hint.textContent = 'Оплата получена! TON придёт совсем скоро.';
+          document.getElementById('cancelOrderBtn').style.display = 'none';
         } else if (data.status === 'expired') {
           stopTimers();
           clearSavedOrder();
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
           document.getElementById('openJarBtn').style.display = 'none';
           document.getElementById('newOrderBtn').style.display = '';
+          document.getElementById('cancelOrderBtn').style.display = 'none';
         }
         // pending_payment — молча продолжаем ждать, hint уже показывает "Ждём оплату…"
       } catch (e) {
@@ -882,6 +902,7 @@
   }
 
   function enterWaitingScreen(order) {
+    currentOrderId = order.order_id;
     document.getElementById('waitOrderId').textContent = order.order_id;
     document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(4)} TON`;
     document.getElementById('waitWallet').textContent = order.ton_wallet;
@@ -889,6 +910,7 @@
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     document.getElementById('openJarBtn').style.display = '';
     document.getElementById('newOrderBtn').style.display = 'none';
+    document.getElementById('cancelOrderBtn').style.display = '';
     updateStepper('pending_payment');
     document.getElementById('openJarBtn').onclick = () => {
       if (tg && typeof tg.openLink === 'function') {
@@ -911,6 +933,39 @@
     clearSavedOrder();
     showSection('formSection');
     recompute();
+  });
+
+  async function doCancelOrder() {
+    const btn = document.getElementById('cancelOrderBtn');
+    btn.textContent = 'Отменяем…';
+    btn.disabled = true;
+    try {
+      await apiCall('/api/exchange/cancel', { init_data: tg.initData, order_id: currentOrderId });
+      stopTimers();
+      clearSavedOrder();
+      showSection('formSection');
+      recompute();
+    } catch (e) {
+      console.error('cancel failed', e);
+      // Самый вероятный случай — платёж пришёл ровно в момент отмены
+      // (сервер отклоняет отмену не-pending заявки, см. webapi.py::
+      // handle_exchange_cancel), опрос статуса сам подхватит новое
+      // состояние на следующем тике.
+      alert('Не получилось отменить — похоже, оплата уже в пути. Обнови статус чуть позже.');
+    } finally {
+      btn.textContent = 'Отменить заявку';
+      btn.disabled = false;
+    }
+  }
+
+  document.getElementById('cancelOrderBtn').addEventListener('click', () => {
+    if (tg && typeof tg.showConfirm === 'function') {
+      tg.showConfirm('Точно отменить заявку?', (confirmed) => {
+        if (confirmed) doCancelOrder();
+      });
+    } else if (confirm('Точно отменить заявку?')) {
+      doCancelOrder();
+    }
   });
 
   // При открытии — если есть сохранённая незавершённая заявка, спрашиваем
@@ -936,6 +991,9 @@
           expires_in_seconds: data.expires_in_seconds,
         });
         updateStepper(data.status);
+        if (data.status === 'waiting_reserve') {
+          document.getElementById('cancelOrderBtn').style.display = 'none';
+        }
       } else {
         // expired / не найдена — этой заявки для клиента больше не существует.
         clearSavedOrder();
