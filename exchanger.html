@@ -199,6 +199,40 @@
 
   .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
 
+  .agree-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-bottom: 14px;
+    cursor: pointer;
+  }
+  .agree-row input[type="checkbox"] {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    margin-top: 1px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .agree-row a { color: var(--accent); text-decoration: none; }
+  .agree-row a:active { opacity: .7; }
+
+  .timer-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .timer-line.warn { color: var(--error); }
+  .timer-value { font-weight: 700; color: var(--text); }
+  .timer-line.warn .timer-value { color: var(--error); }
+
   button.primary {
     width: 100%;
     padding: 16px;
@@ -338,6 +372,14 @@
 
     <div class="limits" id="limits">От 100 до 50 000 грн за раз</div>
 
+    <label class="agree-row">
+      <input type="checkbox" id="agreeBox">
+      <span>Я проверил(а) свой TON-адрес и принимаю
+        <a href="#" id="termsLink">условия использования</a> и
+        <a href="#" id="privacyLink">политику конфиденциальности</a>
+      </span>
+    </label>
+
     <button class="primary" id="submitBtn" disabled>Введите сумму и адрес</button>
 
     <div class="footer-note">
@@ -357,6 +399,7 @@
         Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — TON улетит автоматически, ничего дальше нажимать не нужно.
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
+      <div class="timer-line" id="timerLine">Успей оплатить за <span class="timer-value" id="timerValue">30:00</span></div>
       <div class="status-line">
         <span class="status-dot" id="waitStatusDot"></span>
         <span id="waitStatusHint">Ждём оплату…</span>
@@ -496,11 +539,16 @@
       : 'Похоже, это не настоящий TON-адрес.';
 
     const amountOk = uah >= MIN_UAH && uah <= MAX_UAH;
-    const ready = amountOk && isValidTonAddress(walletRaw);
+    const agreed = document.getElementById('agreeBox').checked;
+    const ready = amountOk && isValidTonAddress(walletRaw) && agreed;
     submitBtn.disabled = !ready;
-    submitBtn.textContent = ready
-      ? 'Оплатить'
-      : (!amountOk ? `От ${MIN_UAH} до ${MAX_UAH} грн` : 'Введите сумму и адрес');
+    submitBtn.textContent = !amountOk
+      ? `От ${MIN_UAH} до ${MAX_UAH} грн`
+      : !isValidTonAddress(walletRaw)
+        ? 'Введите сумму и адрес'
+        : !agreed
+          ? 'Прими условия ниже'
+          : 'Оплатить';
 
     document.querySelectorAll('#amountChips .chip').forEach((chip) => {
       chip.classList.toggle('active', Number(chip.dataset.amount) === uah);
@@ -509,6 +557,28 @@
 
   document.getElementById('uah').addEventListener('input', recompute);
   document.getElementById('wallet').addEventListener('input', recompute);
+  document.getElementById('agreeBox').addEventListener('change', recompute);
+
+  // Ссылки условий — открывают /start terms и /start privacy В БОТЕ
+  // (см. bot/exchanger/handlers.py::cmd_start), а не просто текст на
+  // странице: так проще держать текст в одном месте и обновлять без
+  // передеплоя мини-аппа.
+  function openBotDeepLink(payload) {
+    const url = `https://t.me/tonexpressbot?start=${payload}`;
+    if (tg && typeof tg.openTelegramLink === 'function') {
+      tg.openTelegramLink(url);
+    } else {
+      window.open(url, '_blank');
+    }
+  }
+  document.getElementById('termsLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    openBotDeepLink('terms');
+  });
+  document.getElementById('privacyLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    openBotDeepLink('privacy');
+  });
 
   document.querySelectorAll('#amountChips .chip').forEach((chip) => {
     chip.addEventListener('click', () => {
@@ -523,6 +593,40 @@
   const WEBAPI_URL = 'https://qty-lips-blocks-allen.trycloudflare.com';
   const STATUS_POLL_MS = 4000;
   let pollTimer = null;
+  let countdownTimer = null;
+
+  function startCountdown(totalSeconds) {
+    if (countdownTimer) clearInterval(countdownTimer);
+    let remaining = totalSeconds;
+    const line = document.getElementById('timerLine');
+    const value = document.getElementById('timerValue');
+
+    function render() {
+      const clamped = Math.max(0, remaining);
+      const m = Math.floor(clamped / 60);
+      const s = clamped % 60;
+      value.textContent = `${m}:${String(s).padStart(2, '0')}`;
+      line.classList.toggle('warn', clamped <= 60);
+    }
+    render();
+
+    countdownTimer = setInterval(() => {
+      remaining -= 1;
+      render();
+      if (remaining <= 0) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+        // Сам статус "expired" придёт через опрос /api/exchange/status
+        // (см. startPolling) — таймер только показывает клиенту, сколько
+        // осталось, финальное решение всегда за сервером.
+      }
+    }, 1000);
+  }
+
+  function stopTimers() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+    if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
+  }
 
   function showSection(id) {
     ['formSection', 'waitingSection', 'successSection'].forEach((sec) => {
@@ -553,8 +657,7 @@
       try {
         const data = await apiCall('/api/exchange/status', { init_data: tg.initData, order_id: orderId });
         if (data.status === 'fulfilled') {
-          clearInterval(pollTimer);
-          pollTimer = null;
+          stopTimers();
           document.getElementById('successText').textContent =
             `Отправил ${data.ton_amount.toFixed(4)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
@@ -563,8 +666,7 @@
           dot.classList.add('ok');
           hint.textContent = 'Оплата получена! TON придёт совсем скоро.';
         } else if (data.status === 'expired') {
-          clearInterval(pollTimer);
-          pollTimer = null;
+          stopTimers();
           dot.classList.add('error');
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
           document.getElementById('openJarBtn').style.display = 'none';
@@ -596,6 +698,7 @@
     };
     showSection('waitingSection');
     startPolling(order.order_id);
+    startCountdown(order.expires_in_seconds || 30 * 60);
   }
 
   document.getElementById('closeAppBtn').addEventListener('click', () => {
