@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TonExpress</title>
+<style>
+  :root {
+    --bg: #0b0e14;
+    --card: #131722;
+    --border: #1f2532;
+    --text: #e8ecf4;
+    --muted: #8b93a7;
+    --accent: #3aa0ff;
+    --accent-dim: rgba(58, 160, 255, .12);
+    --error: #ff5c5c;
+    --ok: #4fd17a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 20px 16px 32px;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent), #1a5fb4);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .logo-name { font-size: 20px; font-weight: 700; letter-spacing: -.01em; }
+  .logo-tag { font-size: 12px; color: var(--muted); }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 14px;
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    margin-bottom: 8px;
+  }
+  .amount-row {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  input[type="number"], input[type="text"] {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 28px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    padding: 0;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  .unit { font-size: 16px; color: var(--muted); white-space: nowrap; }
+
+  .arrow { text-align: center; color: var(--muted); font-size: 18px; margin: -2px 0; }
+
+  .result-value { font-size: 28px; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .rate-line { margin-top: 8px; font-size: 12px; color: var(--muted); }
+
+  .wallet-input {
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .wallet-input::placeholder { color: var(--muted); font-family: inherit; }
+
+  .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .hint.error { color: var(--error); }
+
+  .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
+
+  button.primary {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: var(--accent);
+    color: #04101d;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  button.primary:disabled {
+    background: var(--border);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
+
+  .footer-note {
+    text-align: center;
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 16px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+  <div class="logo">
+    <div class="logo-icon">💎</div>
+    <div>
+      <div class="logo-name">TonExpress</div>
+      <div class="logo-tag">Мгновенный обмен грн ⇄ TON</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label for="uah">Отдаёте</label>
+    <div class="amount-row">
+      <input type="number" id="uah" inputmode="decimal" placeholder="0" min="0" step="1">
+      <span class="unit">грн</span>
+    </div>
+  </div>
+
+  <div class="arrow">↓</div>
+
+  <div class="card">
+    <label>Получаете</label>
+    <div class="result-value" id="result">0.0000 TON</div>
+    <div class="rate-line" id="rateLine">Курс загружается…</div>
+  </div>
+
+  <div class="card">
+    <label for="wallet">Ваш TON-адрес</label>
+    <input type="text" id="wallet" class="wallet-input" placeholder="UQ… или EQ…" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
+  </div>
+
+  <div class="limits" id="limits">От 100 до 50 000 грн за раз</div>
+
+  <button class="primary" id="submitBtn" disabled>Введите сумму и адрес</button>
+
+  <div class="footer-note">
+    После оплаты TON отправляется автоматически, обычно в течение минуты —<br>
+    ничего дополнительно подтверждать не нужно.
+  </div>
+
+<script>
+  const tg = window.Telegram && window.Telegram.WebApp;
+  if (tg) { tg.ready(); tg.expand(); }
+
+  // Та же наценка, что и на сервере (bot/exchanger/handlers.py::uah_to_ton) —
+  // тут только для ПРЕДПРОСМОТРА, финальная сумма всегда считается заново
+  // на сервере в момент отправки, эта цифра клиента ни на что не влияет.
+  const TON_MARGIN = 0.28;
+  const MIN_UAH = 100;
+  const MAX_UAH = 50000;
+
+  let liveRateUahPerTon = null;
+
+  async function fetchRate() {
+    try {
+      const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=uah');
+      const data = await resp.json();
+      const raw = data['the-open-network'] && data['the-open-network'].uah;
+      if (typeof raw === 'number' && raw > 0) {
+        liveRateUahPerTon = raw;
+      }
+    } catch (e) {
+      console.error('rate fetch failed', e);
+    }
+    renderRateLine();
+    recompute();
+  }
+
+  function renderRateLine() {
+    const el = document.getElementById('rateLine');
+    if (liveRateUahPerTon == null) {
+      el.textContent = 'Курс недоступен — попробуйте обновить страницу';
+      return;
+    }
+    const sellRate = liveRateUahPerTon * (1 + TON_MARGIN);
+    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн`;
+  }
+
+  function isValidTonAddress(v) {
+    // Best-effort проверка на клиенте (реальная — на сервере, ton_core.Address).
+    return /^(UQ|EQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(v.trim());
+  }
+
+  function recompute() {
+    const uahInput = document.getElementById('uah');
+    const walletInput = document.getElementById('wallet');
+    const resultEl = document.getElementById('result');
+    const walletHint = document.getElementById('walletHint');
+    const submitBtn = document.getElementById('submitBtn');
+
+    const uah = parseFloat(uahInput.value);
+    let ton = 0;
+    if (liveRateUahPerTon && uah > 0) {
+      const sellRate = liveRateUahPerTon * (1 + TON_MARGIN);
+      ton = uah / sellRate;
+    }
+    resultEl.textContent = `${ton.toFixed(4)} TON`;
+
+    const walletRaw = walletInput.value.trim();
+    const walletOk = walletRaw === '' || isValidTonAddress(walletRaw);
+    walletHint.classList.toggle('error', !walletOk);
+    walletHint.textContent = walletOk
+      ? 'TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.'
+      : 'Похоже, это не настоящий TON-адрес.';
+
+    const amountOk = uah >= MIN_UAH && uah <= MAX_UAH;
+    const ready = amountOk && isValidTonAddress(walletRaw);
+    submitBtn.disabled = !ready;
+    submitBtn.textContent = ready
+      ? 'Оплатить'
+      : (!amountOk ? `От ${MIN_UAH} до ${MAX_UAH} грн` : 'Введите сумму и адрес');
+  }
+
+  document.getElementById('uah').addEventListener('input', recompute);
+  document.getElementById('wallet').addEventListener('input', recompute);
+
+  document.getElementById('submitBtn').addEventListener('click', () => {
+    const uah = parseFloat(document.getElementById('uah').value);
+    const wallet = document.getElementById('wallet').value.trim();
+    if (!(uah >= MIN_UAH && uah <= MAX_UAH) || !isValidTonAddress(wallet)) return;
+
+    const payload = { uah_amount: uah, ton_wallet: wallet };
+    if (tg) {
+      tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success');
+      tg.sendData(JSON.stringify(payload));
+    } else {
+      console.log('sendData:', JSON.stringify(payload));
+    }
+  });
+
+  fetchRate();
+</script>
+</body>
+</html>
