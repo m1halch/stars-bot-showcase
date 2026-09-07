@@ -118,6 +118,57 @@
     margin-top: 16px;
     line-height: 1.6;
   }
+
+  .section { animation: fade-in .28s ease both; }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .waiting-wallet { word-break: break-all; }
+  .waiting-copy { font-size: 14px; color: var(--text); }
+
+  .status-line {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .status-dot.ok { background: var(--ok); animation: none; }
+  @keyframes pulse {
+    0%, 100% { opacity: .4; transform: scale(.8); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  .success-card { text-align: center; }
+  .success-icon {
+    font-size: 44px;
+    line-height: 1;
+    animation: pop-in .4s cubic-bezier(.34, 1.56, .64, 1) both;
+  }
+  @keyframes pop-in {
+    from { opacity: 0; transform: scale(.4); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .success-title { margin-top: 10px; }
+  .success-text { margin-top: 8px; }
+
+  button.primary { transition: transform .12s ease; }
+  button.primary:active:not(:disabled) { transform: scale(.98); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .section, .status-dot, .success-icon { animation: none; }
+  }
 </style>
 </head>
 <body>
@@ -130,7 +181,7 @@
     </div>
   </div>
 
-  <div id="formSection">
+  <div id="formSection" class="section">
     <div class="card">
       <label for="uah">Отдаёте</label>
       <div class="amount-row">
@@ -163,26 +214,29 @@
     </div>
   </div>
 
-  <div id="waitingSection" style="display:none;">
+  <div id="waitingSection" class="section" style="display:none;">
     <div class="card">
       <label>Заявка №<span id="waitOrderId"></span></label>
       <div class="result-value" id="waitTonAmount"></div>
-      <div class="rate-line">на адрес <code id="waitWallet" style="word-break:break-all;"></code></div>
+      <div class="rate-line">на адрес <code id="waitWallet" class="waiting-wallet"></code></div>
     </div>
     <div class="card">
-      <div class="hint" style="font-size:14px; color:var(--text);">
+      <div class="waiting-copy">
         Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — TON улетит автоматически, ничего дальше нажимать не нужно.
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
-      <div class="hint" id="waitStatusHint" style="margin-top:14px;">⏳ Ждём оплату…</div>
+      <div class="status-line">
+        <span class="status-dot" id="waitStatusDot"></span>
+        <span id="waitStatusHint">Ждём оплату…</span>
+      </div>
     </div>
   </div>
 
-  <div id="successSection" style="display:none; text-align:center;">
-    <div class="card">
-      <div style="font-size:40px;">✅</div>
-      <div class="result-value" style="margin-top:8px;">Готово!</div>
-      <div class="hint" id="successText" style="margin-top:8px;"></div>
+  <div id="successSection" class="section" style="display:none;">
+    <div class="card success-card">
+      <div class="success-icon">✅</div>
+      <div class="result-value success-title">Готово!</div>
+      <div class="hint success-text" id="successText"></div>
       <button class="primary" id="closeAppBtn" style="margin-top:14px;">Закрыть</button>
     </div>
   </div>
@@ -197,7 +251,6 @@
   // Тиры зеркалят bot/exchanger/handlers.py::_MARGIN_TIERS — чем больше
   // сумма, тем меньше наценка, как у настоящих обменников.
   const MARGIN_TIERS = [
-    [999, 0.25],
     [4999, 0.18],
     [14999, 0.12],
     [Infinity, 0.08],
@@ -309,6 +362,7 @@
   function startPolling(orderId) {
     if (pollTimer) clearInterval(pollTimer);
     const hint = document.getElementById('waitStatusHint');
+    const dot = document.getElementById('waitStatusDot');
     pollTimer = setInterval(async () => {
       try {
         const data = await apiCall('/api/exchange/status', { init_data: tg.initData, order_id: orderId });
@@ -320,7 +374,8 @@
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
           showSection('successSection');
         } else if (data.status === 'waiting_reserve') {
-          hint.textContent = '✅ Оплата получена! Небольшая задержка — TON придёт совсем скоро.';
+          dot.classList.add('ok');
+          hint.textContent = 'Оплата получена! TON придёт совсем скоро.';
         }
         // pending_payment — молча продолжаем ждать, hint уже показывает "Ждём оплату…"
       } catch (e) {
@@ -335,7 +390,8 @@
     document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(4)} TON`;
     document.getElementById('waitWallet').textContent = order.ton_wallet;
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
-    document.getElementById('waitStatusHint').textContent = '⏳ Ждём оплату…';
+    document.getElementById('waitStatusDot').classList.remove('ok');
+    document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     document.getElementById('openJarBtn').onclick = () => {
       if (tg && typeof tg.openLink === 'function') {
         tg.openLink(order.jar_link);
@@ -371,18 +427,7 @@
     // (это ограничение именно reply-кнопки), поэтому фолбэка на него нет —
     // при сетевой ошибке просто даём попробовать ещё раз.
     if (!tg || !tg.initData) {
-      // Временная самодиагностика — по официальной документации Telegram
-      // initData пустой ТОЛЬКО у reply-кнопки/inline mode, у инлайн-кнопки
-      // (которой открыт этот апп) быть не должно. Если это всё же
-      // срабатывает — печатаем в алерт всё нужное для разбора, вместо
-      // одной невнятной фразы.
-      alert(
-        'Диагностика: tg=' + (!!tg) +
-        ' initData_len=' + (tg && tg.initData ? tg.initData.length : 'n/a') +
-        ' platform=' + (tg ? tg.platform : 'n/a') +
-        ' version=' + (tg ? tg.version : 'n/a') +
-        ' unsafe_user=' + (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? 'yes' : 'no')
-      );
+      alert('Открой это через кнопку бота в Telegram, не в браузере.');
       btn.textContent = 'Оплатить';
       btn.disabled = false;
       return;
