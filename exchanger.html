@@ -366,39 +366,25 @@
     btn.textContent = 'Создаём заявку…';
     btn.disabled = true;
 
-    // Основной путь — остаться в мини-аппе (fetch на bot/webapi.py::/api/exchange/create,
-    // затем экран ожидания с опросом статуса тут же). sendData() для этого не годится —
-    // он закрывает мини-апп сразу после вызова, а тут клиенту нужно видеть статус оплаты
-    // не выходя в чат.
-    if (tg && tg.initData) {
-      try {
-        const order = await apiCall('/api/exchange/create', {
-          init_data: tg.initData, uah_amount: uah, ton_wallet: wallet,
-        });
-        enterWaitingScreen(order);
-        return;
-      } catch (e) {
-        console.error('exchange create via webapi failed, falling back to sendData', e);
-        // Сеть/туннель недоступны — не блокируем клиента, откатываемся на
-        // старый проверенный путь (sendData -> чат бота).
-      }
+    // Кнопка запуска — инлайн (см. bot/exchanger/handlers.py::_open_app_keyboard),
+    // поэтому tg.initData всегда есть; sendData() тут в принципе не сработал бы
+    // (это ограничение именно reply-кнопки), поэтому фолбэка на него нет —
+    // при сетевой ошибке просто даём попробовать ещё раз.
+    if (!tg || !tg.initData) {
+      alert('Открой это через кнопку бота в Telegram, не в браузере.');
+      btn.textContent = 'Оплатить';
+      btn.disabled = false;
+      return;
     }
 
-    const payload = { uah_amount: uah, ton_wallet: wallet };
-    if (tg && typeof tg.sendData === 'function') {
-      setTimeout(() => {
-        try {
-          tg.sendData(JSON.stringify(payload));
-        } catch (e) {
-          console.error('sendData failed', e);
-          alert('Не получилось отправить данные боту: ' + e.message);
-          btn.textContent = 'Оплатить';
-          btn.disabled = false;
-        }
-      }, 190);
-    } else {
-      console.log('sendData:', JSON.stringify(payload));
-      alert('Открой это через кнопку бота в Telegram, не в браузере.');
+    try {
+      const order = await apiCall('/api/exchange/create', {
+        init_data: tg.initData, uah_amount: uah, ton_wallet: wallet,
+      });
+      enterWaitingScreen(order);
+    } catch (e) {
+      console.error('exchange create failed', e);
+      alert('Не получилось создать заявку — проверь интернет и попробуй ещё раз.');
       btn.textContent = 'Оплатить';
       btn.disabled = false;
     }
