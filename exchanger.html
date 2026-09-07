@@ -160,12 +160,39 @@
   }
   .rate-line { margin-top: 8px; font-size: 12px; color: var(--muted); }
 
+  .wallet-field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, .2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 12px;
+  }
   .wallet-input {
-    font-size: 15px !important;
-    font-weight: 400 !important;
+    flex: 1;
+    min-width: 0;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    letter-spacing: .01em;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   }
   .wallet-input::placeholder { color: var(--muted); font-family: inherit; }
+
+  .paste-btn {
+    flex-shrink: 0;
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: color .15s ease, border-color .15s ease, transform .1s ease;
+  }
+  .paste-btn svg { width: 15px; height: 15px; }
+  .paste-btn:active { transform: scale(.92); }
+  .paste-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
   .hint.error { color: var(--error); }
@@ -297,7 +324,15 @@
 
     <div class="card card-input">
       <label for="wallet">Ваш TON-адрес</label>
-      <input type="text" id="wallet" class="wallet-input" placeholder="UQ… или EQ…" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="wallet-field">
+        <input type="text" id="wallet" class="wallet-input" placeholder="UQ… или EQ…" autocomplete="off" autocapitalize="off" spellcheck="false">
+        <button type="button" id="pasteBtn" class="paste-btn" title="Вставить из буфера" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="7" y="4" width="10" height="4" rx="1" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M8 6H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
       <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
     </div>
 
@@ -342,6 +377,24 @@
 <script>
   const tg = window.Telegram && window.Telegram.WebApp;
   if (tg) { tg.ready(); tg.expand(); }
+
+  // Вставка адреса из буфера — надёжнее, чем печатать вручную (TON-адрес
+  // обычно и так копируют из кошелька), снимает риск опечатки целиком, а
+  // не просто делает поле заметнее визуально. readTextFromClipboard —
+  // метод именно Telegram.WebApp (Bot API 6.4+), не обычный
+  // navigator.clipboard — тот в WebView часто блокируется без разрешения.
+  const pasteBtn = document.getElementById('pasteBtn');
+  if (tg && typeof tg.readTextFromClipboard === 'function') {
+    pasteBtn.style.display = '';
+    pasteBtn.addEventListener('click', () => {
+      tg.readTextFromClipboard((text) => {
+        if (!text) return;
+        document.getElementById('wallet').value = text.trim();
+        recompute();
+        try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
+      });
+    });
+  }
 
   // Та же наценка, что и на сервере (bot/exchanger/handlers.py::uah_to_ton) —
   // тут только для ПРЕДПРОСМОТРА, финальная сумма всегда считается заново
