@@ -257,11 +257,24 @@
     if (!(uah >= MIN_UAH && uah <= MAX_UAH) || !isValidTonAddress(wallet)) return;
 
     const payload = { uah_amount: uah, ton_wallet: wallet };
-    if (tg) {
-      tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success');
-      tg.sendData(JSON.stringify(payload));
+    if (tg && typeof tg.sendData === 'function') {
+      // Тактильный отклик — best-effort, не должен мешать основному
+      // действию: если HapticFeedback кинет исключение (несовпадение
+      // версии клиента и т.п.), sendData всё равно обязан выполниться.
+      try {
+        tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success');
+      } catch (e) {
+        console.error('haptic failed', e);
+      }
+      try {
+        tg.sendData(JSON.stringify(payload));
+      } catch (e) {
+        console.error('sendData failed', e);
+        alert('Не получилось отправить данные боту: ' + e.message);
+      }
     } else {
       console.log('sendData:', JSON.stringify(payload));
+      alert('Открой это через кнопку бота в Telegram, не в браузере.');
     }
   });
 
