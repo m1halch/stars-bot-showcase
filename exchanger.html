@@ -130,35 +130,61 @@
     </div>
   </div>
 
-  <div class="card">
-    <label for="uah">Отдаёте</label>
-    <div class="amount-row">
-      <input type="number" id="uah" inputmode="decimal" placeholder="0" min="0" step="1">
-      <span class="unit">грн</span>
+  <div id="formSection">
+    <div class="card">
+      <label for="uah">Отдаёте</label>
+      <div class="amount-row">
+        <input type="number" id="uah" inputmode="decimal" placeholder="0" min="0" step="1">
+        <span class="unit">грн</span>
+      </div>
+    </div>
+
+    <div class="arrow">↓</div>
+
+    <div class="card">
+      <label>Получаете</label>
+      <div class="result-value" id="result">0.0000 TON</div>
+      <div class="rate-line" id="rateLine">Курс загружается…</div>
+    </div>
+
+    <div class="card">
+      <label for="wallet">Ваш TON-адрес</label>
+      <input type="text" id="wallet" class="wallet-input" placeholder="UQ… или EQ…" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
+    </div>
+
+    <div class="limits" id="limits">От 100 до 50 000 грн за раз</div>
+
+    <button class="primary" id="submitBtn" disabled>Введите сумму и адрес</button>
+
+    <div class="footer-note">
+      После оплаты TON отправляется автоматически, обычно в течение минуты —<br>
+      ничего дополнительно подтверждать не нужно.
     </div>
   </div>
 
-  <div class="arrow">↓</div>
-
-  <div class="card">
-    <label>Получаете</label>
-    <div class="result-value" id="result">0.0000 TON</div>
-    <div class="rate-line" id="rateLine">Курс загружается…</div>
+  <div id="waitingSection" style="display:none;">
+    <div class="card">
+      <label>Заявка №<span id="waitOrderId"></span></label>
+      <div class="result-value" id="waitTonAmount"></div>
+      <div class="rate-line">на адрес <code id="waitWallet" style="word-break:break-all;"></code></div>
+    </div>
+    <div class="card">
+      <div class="hint" style="font-size:14px; color:var(--text);">
+        Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — TON улетит автоматически, ничего дальше нажимать не нужно.
+      </div>
+      <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
+      <div class="hint" id="waitStatusHint" style="margin-top:14px;">⏳ Ждём оплату…</div>
+    </div>
   </div>
 
-  <div class="card">
-    <label for="wallet">Ваш TON-адрес</label>
-    <input type="text" id="wallet" class="wallet-input" placeholder="UQ… или EQ…" autocomplete="off" autocapitalize="off" spellcheck="false">
-    <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
-  </div>
-
-  <div class="limits" id="limits">От 100 до 50 000 грн за раз</div>
-
-  <button class="primary" id="submitBtn" disabled>Введите сумму и адрес</button>
-
-  <div class="footer-note">
-    После оплаты TON отправляется автоматически, обычно в течение минуты —<br>
-    ничего дополнительно подтверждать не нужно.
+  <div id="successSection" style="display:none; text-align:center;">
+    <div class="card">
+      <div style="font-size:40px;">✅</div>
+      <div class="result-value" style="margin-top:8px;">Готово!</div>
+      <div class="hint" id="successText" style="margin-top:8px;"></div>
+      <button class="primary" id="closeAppBtn" style="margin-top:14px;">Закрыть</button>
+    </div>
   </div>
 
 <script>
@@ -252,28 +278,114 @@
   document.getElementById('uah').addEventListener('input', recompute);
   document.getElementById('wallet').addEventListener('input', recompute);
 
-  document.getElementById('submitBtn').addEventListener('click', () => {
+  // WEBAPI_URL — тот же локальный сервис и туннель, что и у mini_app/index.html
+  // (bot/webapi.py, слушает 127.0.0.1:WEBAPI_PORT). При смене URL туннеля
+  // обновлять константу в ОБОИХ файлах.
+  const WEBAPI_URL = 'https://qty-lips-blocks-allen.trycloudflare.com';
+  const STATUS_POLL_MS = 4000;
+  let pollTimer = null;
+
+  function showSection(id) {
+    ['formSection', 'waitingSection', 'successSection'].forEach((sec) => {
+      document.getElementById(sec).style.display = sec === id ? '' : 'none';
+    });
+  }
+
+  async function apiCall(path, body) {
+    const resp = await fetch(`${WEBAPI_URL}${path}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const data = await resp.json().catch(() => ({}));
+    if (!resp.ok) {
+      const err = new Error(data.error || `http_${resp.status}`);
+      err.data = data;
+      throw err;
+    }
+    return data;
+  }
+
+  function startPolling(orderId) {
+    if (pollTimer) clearInterval(pollTimer);
+    const hint = document.getElementById('waitStatusHint');
+    pollTimer = setInterval(async () => {
+      try {
+        const data = await apiCall('/api/exchange/status', { init_data: tg.initData, order_id: orderId });
+        if (data.status === 'fulfilled') {
+          clearInterval(pollTimer);
+          pollTimer = null;
+          document.getElementById('successText').textContent =
+            `Отправил ${data.ton_amount.toFixed(4)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+          try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+          showSection('successSection');
+        } else if (data.status === 'waiting_reserve') {
+          hint.textContent = '✅ Оплата получена! Небольшая задержка — TON придёт совсем скоро.';
+        }
+        // pending_payment — молча продолжаем ждать, hint уже показывает "Ждём оплату…"
+      } catch (e) {
+        console.error('status poll failed', e);
+        // Сеть моргнула — не сдаёмся, просто попробуем на следующем тике.
+      }
+    }, STATUS_POLL_MS);
+  }
+
+  function enterWaitingScreen(order) {
+    document.getElementById('waitOrderId').textContent = order.order_id;
+    document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(4)} TON`;
+    document.getElementById('waitWallet').textContent = order.ton_wallet;
+    document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
+    document.getElementById('waitStatusHint').textContent = '⏳ Ждём оплату…';
+    document.getElementById('openJarBtn').onclick = () => {
+      if (tg && typeof tg.openLink === 'function') {
+        tg.openLink(order.jar_link);
+      } else {
+        window.open(order.jar_link, '_blank');
+      }
+    };
+    showSection('waitingSection');
+    startPolling(order.order_id);
+  }
+
+  document.getElementById('closeAppBtn').addEventListener('click', () => {
+    if (tg && typeof tg.close === 'function') tg.close();
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', async () => {
     const uah = parseFloat(document.getElementById('uah').value);
     const wallet = document.getElementById('wallet').value.trim();
     if (!(uah >= MIN_UAH && uah <= MAX_UAH) || !isValidTonAddress(wallet)) return;
 
+    try {
+      tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success');
+    } catch (e) {
+      console.error('haptic failed', e);
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.textContent = 'Создаём заявку…';
+    btn.disabled = true;
+
+    // Основной путь — остаться в мини-аппе (fetch на bot/webapi.py::/api/exchange/create,
+    // затем экран ожидания с опросом статуса тут же). sendData() для этого не годится —
+    // он закрывает мини-апп сразу после вызова, а тут клиенту нужно видеть статус оплаты
+    // не выходя в чат.
+    if (tg && tg.initData) {
+      try {
+        const order = await apiCall('/api/exchange/create', {
+          init_data: tg.initData, uah_amount: uah, ton_wallet: wallet,
+        });
+        enterWaitingScreen(order);
+        return;
+      } catch (e) {
+        console.error('exchange create via webapi failed, falling back to sendData', e);
+        // Сеть/туннель недоступны — не блокируем клиента, откатываемся на
+        // старый проверенный путь (sendData -> чат бота).
+      }
+    }
+
     const payload = { uah_amount: uah, ton_wallet: wallet };
     if (tg && typeof tg.sendData === 'function') {
-      // Тактильный отклик — best-effort, не должен мешать основному
-      // действию: если HapticFeedback кинет исключение, sendData всё
-      // равно обязан выполниться.
-      try {
-        tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success');
-      } catch (e) {
-        console.error('haptic failed', e);
-      }
-      // Telegram закрывает мини-апп СРАЗУ после sendData — без видимой
-      // реакции ДО этого момента тап ощущается как "ничего не произошло"
-      // (экран просто исчезает). Короткая пауза с явной надписью на
-      // кнопке — тот же приём, что и в mini_app/index.html.
-      const btn = document.getElementById('submitBtn');
-      btn.textContent = 'Отправляем…';
-      btn.disabled = true;
       setTimeout(() => {
         try {
           tg.sendData(JSON.stringify(payload));
@@ -287,6 +399,8 @@
     } else {
       console.log('sendData:', JSON.stringify(payload));
       alert('Открой это через кнопку бота в Telegram, не в браузере.');
+      btn.textContent = 'Оплатить';
+      btn.disabled = false;
     }
   });
 
