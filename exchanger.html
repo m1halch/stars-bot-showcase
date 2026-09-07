@@ -174,6 +174,7 @@
     animation: pulse 1.4s ease-in-out infinite;
   }
   .status-dot.ok { background: var(--ok); animation: none; }
+  .status-dot.error { background: var(--error); animation: none; }
   @keyframes pulse {
     0%, 100% { opacity: .4; transform: scale(.8); }
     50% { opacity: 1; transform: scale(1); }
@@ -264,6 +265,7 @@
         <span class="status-dot" id="waitStatusDot"></span>
         <span id="waitStatusHint">Ждём оплату…</span>
       </div>
+      <button class="primary" id="newOrderBtn" style="margin-top:14px; display:none;">↺ Создать новую заявку</button>
     </div>
   </div>
 
@@ -422,6 +424,13 @@
         } else if (data.status === 'waiting_reserve') {
           dot.classList.add('ok');
           hint.textContent = 'Оплата получена! TON придёт совсем скоро.';
+        } else if (data.status === 'expired') {
+          clearInterval(pollTimer);
+          pollTimer = null;
+          dot.classList.add('error');
+          hint.textContent = 'Заявка истекла — курс TON мог измениться.';
+          document.getElementById('openJarBtn').style.display = 'none';
+          document.getElementById('newOrderBtn').style.display = '';
         }
         // pending_payment — молча продолжаем ждать, hint уже показывает "Ждём оплату…"
       } catch (e) {
@@ -436,8 +445,10 @@
     document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(4)} TON`;
     document.getElementById('waitWallet').textContent = order.ton_wallet;
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
-    document.getElementById('waitStatusDot').classList.remove('ok');
+    document.getElementById('waitStatusDot').classList.remove('ok', 'error');
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
+    document.getElementById('openJarBtn').style.display = '';
+    document.getElementById('newOrderBtn').style.display = 'none';
     document.getElementById('openJarBtn').onclick = () => {
       if (tg && typeof tg.openLink === 'function') {
         tg.openLink(order.jar_link);
@@ -451,6 +462,11 @@
 
   document.getElementById('closeAppBtn').addEventListener('click', () => {
     if (tg && typeof tg.close === 'function') tg.close();
+  });
+
+  document.getElementById('newOrderBtn').addEventListener('click', () => {
+    showSection('formSection');
+    recompute();
   });
 
   document.getElementById('submitBtn').addEventListener('click', async () => {
