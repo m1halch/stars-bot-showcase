@@ -306,8 +306,63 @@
   button.primary { transition: transform .12s ease; }
   button.primary:active:not(:disabled) { transform: scale(.98); }
 
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 8, 14, .65);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 20;
+  }
+  .modal-panel {
+    width: 100%;
+    max-width: 480px;
+    max-height: 78vh;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px 20px 0 0;
+    display: flex;
+    flex-direction: column;
+    animation: modal-in .22s ease both;
+  }
+  @keyframes modal-in {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    font: 700 15px/1 var(--font-display);
+    flex-shrink: 0;
+  }
+  .modal-close {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: var(--border);
+    color: var(--text);
+    font-size: 13px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .modal-body {
+    padding: 14px 18px 26px;
+    overflow-y: auto;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+  }
+  .modal-body p { margin: 0 0 12px; }
+  .modal-body ul { margin: 8px 0 12px; padding-left: 18px; }
+  .modal-body li { margin-bottom: 7px; }
+  .modal-body b { color: var(--text); }
+
   @media (prefers-reduced-motion: reduce) {
-    .section, .status-dot, .success-icon { animation: none; }
+    .section, .status-dot, .success-icon, .modal-panel { animation: none; }
   }
 </style>
 </head>
@@ -414,6 +469,16 @@
       <div class="result-value success-title">Готово!</div>
       <div class="hint success-text" id="successText"></div>
       <button class="primary" id="closeAppBtn" style="margin-top:14px;">Закрыть</button>
+    </div>
+  </div>
+
+  <div id="modalOverlay" class="modal-overlay" style="display:none;">
+    <div class="modal-panel">
+      <div class="modal-header">
+        <span id="modalTitle"></span>
+        <button type="button" id="modalClose" class="modal-close" aria-label="Закрыть">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
 
@@ -559,25 +624,69 @@
   document.getElementById('wallet').addEventListener('input', recompute);
   document.getElementById('agreeBox').addEventListener('change', recompute);
 
-  // Ссылки условий — открывают /start terms и /start privacy В БОТЕ
-  // (см. bot/exchanger/handlers.py::cmd_start), а не просто текст на
-  // странице: так проще держать текст в одном месте и обновлять без
-  // передеплоя мини-аппа.
-  function openBotDeepLink(payload) {
-    const url = `https://t.me/tonexpressbot?start=${payload}`;
-    if (tg && typeof tg.openTelegramLink === 'function') {
-      tg.openTelegramLink(url);
-    } else {
-      window.open(url, '_blank');
-    }
+  // Ссылки условий — раньше вели в чат бота (/start terms), но это
+  // закрывало мини-апп и клиент терял контекст (сумму/адрес приходилось
+  // вводить заново). Показываем текст модалкой прямо в мини-аппе. Текст
+  // задублирован с bot/exchanger/handlers.py::_TERMS_TEXT/_PRIVACY_TEXT
+  // (там — источник истины для /terms и /privacy в чате) — при правке
+  // юридического текста обновлять оба места.
+  const TERMS_HTML = `
+    <p>Это независимый обменный сервис от частного лица, не финансовая организация.</p>
+    <ul>
+      <li>TON отправляется автоматически сразу после оплаты, без ручной проверки —
+        и это блокчейн-перевод, он необратим. <b>Проверяй свой TON-адрес перед
+        оплатой сам</b> — если ввёл не тот адрес (опечатался, вставил чужой), а
+        TON уже улетел, вернуть его не сможем: это не наша ошибка, ответственность
+        за правильность адреса на тебе.</li>
+      <li>Курс фиксируется в момент создания заявки и действует 30 минут — не успел
+        оплатить, заявка истекает (курс мог измениться), нужно создать новую.</li>
+      <li>Сумма перевода должна ТОЧНО совпадать с той, что показал мини-апп — иначе
+        платёж не свяжется с заявкой автоматически, разбираемся вручную через
+        бота (команда /support).</li>
+      <li>Оставляем за собой право отменить подозрительную заявку и вернуть деньги
+        без объяснения причин.</li>
+      <li>Сумма заявки — от 100 до 50 000 грн.</li>
+    </ul>
+    <p>Вопрос или проблема — напиши в бота: /support [текст]</p>
+  `;
+  const PRIVACY_HTML = `
+    <p>TonExpress — независимый сервис обмена грн на TON, ведёт частное лицо.</p>
+    <p><b>Что собираем:</b></p>
+    <ul>
+      <li>Telegram id и username — чтобы привязать заявку к тебе и написать по её статусу</li>
+      <li>Данные заявки: сумма, TON-адрес получателя (тот, что ты сам ввёл), статус, дата</li>
+      <li>Оценку и комментарий, если оставляешь отзыв</li>
+    </ul>
+    <p><b>Что НЕ собираем:</b><br>Номер карты, паспортные данные, телефон,
+      геолокацию. Оплата идёт прямым переводом в Monobank — бот эти данные не
+      видит и не запрашивает.</p>
+    <p><b>Где хранится:</b><br>В приватной базе на сервере владельца бота, доступ
+      есть только у него. Третьим лицам не передаётся и не продаётся. Внешние
+      запросы бот делает только к CoinGecko за курсом TON — твои данные туда не идут.</p>
+    <p><b>Твои права:</b><br>Можешь попросить удалить свои данные — напиши в бота: /support.</p>
+    <p style="opacity:.65">⚠️ Это простое человеческое описание того, как всё устроено, а не юридический документ.</p>
+  `;
+
+  function showModal(kind) {
+    document.getElementById('modalTitle').textContent =
+      kind === 'terms' ? 'Условия использования' : 'Политика конфиденциальности';
+    document.getElementById('modalBody').innerHTML = kind === 'terms' ? TERMS_HTML : PRIVACY_HTML;
+    document.getElementById('modalOverlay').style.display = 'flex';
+  }
+  function hideModal() {
+    document.getElementById('modalOverlay').style.display = 'none';
   }
   document.getElementById('termsLink').addEventListener('click', (e) => {
     e.preventDefault();
-    openBotDeepLink('terms');
+    showModal('terms');
   });
   document.getElementById('privacyLink').addEventListener('click', (e) => {
     e.preventDefault();
-    openBotDeepLink('privacy');
+    showModal('privacy');
+  });
+  document.getElementById('modalClose').addEventListener('click', hideModal);
+  document.getElementById('modalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modalOverlay') hideModal();
   });
 
   document.querySelectorAll('#amountChips .chip').forEach((chip) => {
