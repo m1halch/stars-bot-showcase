@@ -371,7 +371,18 @@
     // (это ограничение именно reply-кнопки), поэтому фолбэка на него нет —
     // при сетевой ошибке просто даём попробовать ещё раз.
     if (!tg || !tg.initData) {
-      alert('Открой это через кнопку бота в Telegram, не в браузере.');
+      // Временная самодиагностика — по официальной документации Telegram
+      // initData пустой ТОЛЬКО у reply-кнопки/inline mode, у инлайн-кнопки
+      // (которой открыт этот апп) быть не должно. Если это всё же
+      // срабатывает — печатаем в алерт всё нужное для разбора, вместо
+      // одной невнятной фразы.
+      alert(
+        'Диагностика: tg=' + (!!tg) +
+        ' initData_len=' + (tg && tg.initData ? tg.initData.length : 'n/a') +
+        ' platform=' + (tg ? tg.platform : 'n/a') +
+        ' version=' + (tg ? tg.version : 'n/a') +
+        ' unsafe_user=' + (tg && tg.initDataUnsafe && tg.initDataUnsafe.user ? 'yes' : 'no')
+      );
       btn.textContent = 'Оплатить';
       btn.disabled = false;
       return;
