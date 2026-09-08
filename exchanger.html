@@ -628,7 +628,7 @@
   // bot/exchanger/handlers.py::uah_to_ton), а не через голый рыночный курс.
   // Теперь превью — тот же самый расчёт с сервера (/api/exchange/quote),
   // дебаунснутый, чтобы не долбить бэкенд на каждое нажатие клавиши.
-  const QUOTE_DEBOUNCE_MS = 350;
+  const QUOTE_DEBOUNCE_MS = 180;
   let quoteTimer = null;
   let quoteSeq = 0;
 
