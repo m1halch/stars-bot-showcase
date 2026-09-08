@@ -633,31 +633,11 @@
   const MIN_UAH = 100;
   const MAX_UAH = 50000;
 
-  // Наценка по тиру суммы — зеркалит bot/exchanger/handlers.py::_MARGIN_TIERS
-  // (чем больше сумма, тем меньше наценка, как у настоящих обменников). Это
-  // НЕ было причиной бага 2026-09-07 — тиры и без того совпадали 1-в-1.
-  // Реальная причина: базовый курс (до наценки) брался напрямую с
-  // CoinGecko TON/UAH, а сервер считает себестоимость иначе — через
-  // EUR_UAH_RATE/TON_EUR (курс монобанковской карты, см.
-  // pricing.calc_ton_cost_uah) — эти два курса расходятся на несколько
-  // процентов. Чинили НЕ переходом на пересчёт по каждой сумме на сервере
-  // (это давало на каждое нажатие клавиши сетевой round-trip через ngrok,
-  // ~150-300мс — набирать сумму стало ощутимо медленно), а тем, что теперь
-  // берём базовый курс с /api/exchange/rate (сервер, тот же источник, что
-  // и у реальной заявки) и считаем наценку локально, мгновенно, как и
-  // раньше.
-  const MARGIN_TIERS = [
-    [4999, 0.12],
-    [14999, 0.08],
-    [Infinity, 0.05],
-  ];
-
-  function marginFor(uah) {
-    for (const [upper, margin] of MARGIN_TIERS) {
-      if (uah <= upper) return margin;
-    }
-    return MARGIN_TIERS[MARGIN_TIERS.length - 1][1];
-  }
+  // Наценка — зеркалит bot/exchanger/handlers.py::_MARGIN. Раньше была
+  // скидка по тиру суммы (12/8/5%), убрали 2026-09-08 — на крупных суммах
+  // тир 5% уходил в минус против реальной себестоимости закупки (P2P), а
+  // не в плюс, как задумывалось. Теперь одна ставка для всех сумм.
+  const MARGIN = 0.07;
 
   let costUahPerTon = null;
   const RATE_REFRESH_MS = 60_000; // сервер сам кэширует курс на TON_RATE_CACHE_TTL (по умолчанию 5 мин) — чаще спрашивать смысла нет
@@ -688,7 +668,7 @@
       el.textContent = 'Курс загружается…';
       return;
     }
-    const sellRate = costUahPerTon * (1 + marginFor(uah));
+    const sellRate = costUahPerTon * (1 + MARGIN);
     el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн`;
   }
 
@@ -707,7 +687,7 @@
     const uah = parseFloat(uahInput.value);
     let ton = 0;
     if (costUahPerTon != null && uah > 0) {
-      const sellRate = costUahPerTon * (1 + marginFor(uah));
+      const sellRate = costUahPerTon * (1 + MARGIN);
       // Округление ВНИЗ до 2 знаков, как и на сервере (см.
       // bot/exchanger/handlers.py::uah_to_ton) — иначе превью снова
       // разъедется с реальной суммой заявки на копейки TON.
