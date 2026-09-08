@@ -972,37 +972,23 @@
 
 <section class="panel" id="panel-ton">
   <div class="grid">
-    <div class="card" data-type="ton" data-amount="1">
+    <div class="card wide" id="ton-tonexpress-card">
       <span class="icon">💎</span>
-      <div class="amount">1</div>
-      <div class="hint">TON</div>
-    </div>
-    <div class="card" data-type="ton" data-amount="5">
-      <span class="card-badge" data-i18n="badgeOptimal">Оптимально</span>
-      <span class="icon">💎</span>
-      <div class="amount">5</div>
-      <div class="hint">TON</div>
-    </div>
-    <div class="card" data-type="ton" data-amount="10">
-      <span class="icon">💎</span>
-      <div class="amount">10</div>
-      <div class="hint">TON</div>
-    </div>
-    <div class="card" data-type="ton" data-amount="25">
-      <span class="icon">💎</span>
-      <div class="amount">25</div>
-      <div class="hint">TON</div>
-    </div>
-    <div class="card wide" data-type="ton" data-amount="0">
-      <span class="icon">✏️</span>
-      <span class="amount" data-i18n="customAmount">Своя сумма</span>
+      <span class="amount" data-i18n="tonExpressCta">Обменять в TonExpress</span>
     </div>
   </div>
-  <p class="step-hint" data-i18n-html="stepHintTon"><b>Шаг 1 из 2</b> — дальше кошелёк и оплата в боте</p>
+  <!-- Покупка TON переехала в отдельного бота (@tonexpressbot, автоотправка
+       сразу после оплаты) — см. bot/handlers/ton.py::cmd_buy_ton и
+       bot/handlers/webapp.py::_handle_ton. Раньше тут были карточки
+       фиксированных пакетов (1/5/10/25 TON), которые вели в СТАРЫЙ флоу
+       этого бота (ручная выдача TON владельцем, другая наценка) — тот
+       больше не подключён к чат-команде, но витрина о переезде не знала
+       и продолжала его предлагать. -->
+  <p class="step-hint" data-i18n-html="stepHintTonExpress"><b>TonExpress</b> — гривна → TON за один перевод, без бирж и верификаций</p>
   <ul class="perk-list">
     <li data-i18n="perkTon1">Напрямую в твой TON-кошелёк</li>
     <li data-i18n="perkTon2">Без криптобирж и подтверждения возраста</li>
-    <li data-i18n="perkTon3">Гривна → TON за один перевод</li>
+    <li data-i18n="perkTon3">TON приходит автоматически сразу после оплаты</li>
   </ul>
 </section>
 
@@ -1160,14 +1146,15 @@
       tabGifts: '🎁 Подарки', tabReviews: '⭐ Отзывы',
       hintStars: 'звёзд', customAmount: 'Своя сумма', badgeOptimal: 'Оптимально',
       stepHintStars: '<b>Шаг 1 из 2</b> — дальше получатель и оплата в боте',
-      stepHintTon: '<b>Шаг 1 из 2</b> — дальше кошелёк и оплата в боте',
+      stepHintTonExpress: '<b>TonExpress</b> — гривна → TON за один перевод, без бирж и верификаций',
       stepHintPremium: '<b>Шаг 1 из 2</b> — дальше получатель и оплата в боте',
+      tonExpressCta: 'Обменять в TonExpress',
       perkStars1: 'Дешевле, чем в App Store',
       perkStars2: 'Оплата гривной, без карты в валюте',
       perkStars3: 'Можно дарить другому — просто укажи получателя',
       perkTon1: 'Напрямую в твой TON-кошелёк',
       perkTon2: 'Без криптобирж и подтверждения возраста',
-      perkTon3: 'Гривна → TON за один перевод',
+      perkTon3: 'TON приходит автоматически сразу после оплаты',
       premium3: '3 месяца Premium', premium6: '6 месяцев Premium', premium12: '12 месяцев Premium',
       perkPremium1: 'Официальная подписка Telegram Premium',
       perkPremium2: 'Оплата гривной вместо валютной карты',
@@ -1226,14 +1213,15 @@
       tabGifts: '🎁 Подарунки', tabReviews: '⭐ Відгуки',
       hintStars: 'зірок', customAmount: 'Своя сума', badgeOptimal: 'Оптимально',
       stepHintStars: '<b>Крок 1 із 2</b> — далі отримувач і оплата в боті',
-      stepHintTon: '<b>Крок 1 із 2</b> — далі гаманець і оплата в боті',
+      stepHintTonExpress: '<b>TonExpress</b> — гривня → TON за один переказ, без бірж і верифікацій',
       stepHintPremium: '<b>Крок 1 із 2</b> — далі отримувач і оплата в боті',
+      tonExpressCta: 'Обміняти в TonExpress',
       perkStars1: 'Дешевше, ніж в App Store',
       perkStars2: 'Оплата гривнею, без картки у валюті',
       perkStars3: 'Можна дарувати іншому — просто вкажи отримувача',
       perkTon1: 'Напряму на твій TON-гаманець',
       perkTon2: 'Без криптобірж і підтвердження віку',
-      perkTon3: 'Гривня → TON за один переказ',
+      perkTon3: 'TON приходить автоматично одразу після оплати',
       premium3: '3 місяці Premium', premium6: '6 місяців Premium', premium12: '12 місяців Premium',
       perkPremium1: 'Офіційна підписка Telegram Premium',
       perkPremium2: 'Оплата гривнею замість валютної картки',
@@ -1568,6 +1556,22 @@
       }
     });
   });
+
+  // Покупка TON переехала в TonExpress (см. bot/handlers/webapp.py::
+  // _handle_ton) — тут просто открываем чат другого бота, openTelegramLink
+  // (не sendData/openLink) — это правильный способ Telegram WebApp SDK
+  // передать управление в чат ДРУГОГО бота изнутри мини-аппа.
+  const tonExpressCard = document.getElementById('ton-tonexpress-card');
+  if (tonExpressCard) {
+    attachTapFeedback(tonExpressCard);
+    tonExpressCard.addEventListener('click', () => {
+      if (tg && typeof tg.openTelegramLink === 'function') {
+        tg.openTelegramLink('https://t.me/tonexpressbot');
+      } else {
+        window.open('https://t.me/tonexpressbot', '_blank');
+      }
+    });
+  }
 
   // --- "Своя сумма" — калькулятор (bot/webapi.py::/api/quote с "uah") -
   const calcModal = document.getElementById('calc-modal');
