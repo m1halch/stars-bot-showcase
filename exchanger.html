@@ -476,7 +476,7 @@
     <div class="card card-hero">
       <label><svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/><path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>Получаете</label>
       <div class="result-value" id="result">0.0000 TON</div>
-      <div class="rate-line" id="rateLine">Курс загружается…</div>
+      <div class="rate-line" id="rateLine">Введите сумму, чтобы увидеть курс</div>
     </div>
 
     <div class="card card-input">
@@ -618,51 +618,50 @@
     }
   });
 
-  // Та же наценка, что и на сервере (bot/exchanger/handlers.py::uah_to_ton) —
-  // тут только для ПРЕДПРОСМОТРА, финальная сумма всегда считается заново
-  // на сервере в момент отправки, эта цифра клиента ни на что не влияет.
-  // Тиры зеркалят bot/exchanger/handlers.py::_MARGIN_TIERS — чем больше
-  // сумма, тем меньше наценка, как у настоящих обменников.
-  const MARGIN_TIERS = [
-    [4999, 0.12],
-    [14999, 0.08],
-    [Infinity, 0.05],
-  ];
   const MIN_UAH = 100;
   const MAX_UAH = 50000;
 
-  function marginFor(uah) {
-    for (const [upper, margin] of MARGIN_TIERS) {
-      if (uah <= upper) return margin;
-    }
-    return MARGIN_TIERS[MARGIN_TIERS.length - 1][1];
-  }
+  // Превью курса раньше считалось на клиенте напрямую через CoinGecko
+  // TON/UAH + локальную копию наценки — эта цифра расходилась с реальной
+  // суммой заявки на несколько процентов, потому что сервер считает курс
+  // ИНАЧЕ (себестоимость через EUR_UAH_RATE/TON_EUR, см.
+  // bot/exchanger/handlers.py::uah_to_ton), а не через голый рыночный курс.
+  // Теперь превью — тот же самый расчёт с сервера (/api/exchange/quote),
+  // дебаунснутый, чтобы не долбить бэкенд на каждое нажатие клавиши.
+  const QUOTE_DEBOUNCE_MS = 350;
+  let quoteTimer = null;
+  let quoteSeq = 0;
 
-  let liveRateUahPerTon = null;
-
-  async function fetchRate() {
-    try {
-      const resp = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=the-open-network&vs_currencies=uah');
-      const data = await resp.json();
-      const raw = data['the-open-network'] && data['the-open-network'].uah;
-      if (typeof raw === 'number' && raw > 0) {
-        liveRateUahPerTon = raw;
-      }
-    } catch (e) {
-      console.error('rate fetch failed', e);
-    }
-    recompute();
-  }
-
-  function renderRateLine(uah) {
+  function renderRateLine(uah, tonAmount) {
     const el = document.getElementById('rateLine');
-    if (liveRateUahPerTon == null) {
-      el.textContent = 'Курс недоступен — попробуйте обновить страницу';
+    if (!(uah > 0) || tonAmount == null) {
+      el.textContent = uah > 0 ? 'Курс загружается…' : '';
       return;
     }
-    const margin = marginFor(uah > 0 ? uah : MIN_UAH);
-    const sellRate = liveRateUahPerTon * (1 + margin);
-    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн` + (uah > 0 ? '' : ' (зависит от суммы)');
+    const sellRate = uah / tonAmount;
+    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн`;
+  }
+
+  function scheduleQuote(uah) {
+    if (quoteTimer) clearTimeout(quoteTimer);
+    if (!(uah >= MIN_UAH && uah <= MAX_UAH) || !tg || !tg.initData) {
+      document.getElementById('result').textContent = '0.0000 TON';
+      renderRateLine(uah, null);
+      return;
+    }
+    const mySeq = ++quoteSeq;
+    quoteTimer = setTimeout(async () => {
+      try {
+        const data = await apiCall('/api/exchange/quote', { init_data: tg.initData, uah_amount: uah });
+        if (mySeq !== quoteSeq) return; // пришёл устаревший ответ, сумма уже другая
+        document.getElementById('result').textContent = `${data.ton_amount.toFixed(4)} TON`;
+        renderRateLine(uah, data.ton_amount);
+      } catch (e) {
+        if (mySeq !== quoteSeq) return;
+        console.error('quote failed', e);
+        renderRateLine(uah, null);
+      }
+    }, QUOTE_DEBOUNCE_MS);
   }
 
   function isValidTonAddress(v) {
@@ -673,18 +672,11 @@
   function recompute() {
     const uahInput = document.getElementById('uah');
     const walletInput = document.getElementById('wallet');
-    const resultEl = document.getElementById('result');
     const walletHint = document.getElementById('walletHint');
     const submitBtn = document.getElementById('submitBtn');
 
     const uah = parseFloat(uahInput.value);
-    let ton = 0;
-    if (liveRateUahPerTon && uah > 0) {
-      const sellRate = liveRateUahPerTon * (1 + marginFor(uah));
-      ton = uah / sellRate;
-    }
-    resultEl.textContent = `${ton.toFixed(4)} TON`;
-    renderRateLine(uah);
+    scheduleQuote(uah);
 
     const walletRaw = walletInput.value.trim();
     const walletOk = walletRaw === '' || isValidTonAddress(walletRaw);
@@ -1079,7 +1071,6 @@
     }
   });
 
-  fetchRate();
 </script>
 </body>
 </html>
