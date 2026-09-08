@@ -634,12 +634,11 @@
   const MIN_UAH = 100;
   const MAX_UAH = 50000;
 
-  // Наценка — зеркалит bot/exchanger/handlers.py::_MARGIN. costUahPerTon
-  // (см. fetchCostRate ниже) теперь тоже прямой рыночный курс CoinGecko
-  // (get_ton_uah_rate), а не себестоимость через EUR_UAH_RATE — поэтому и
-  // наценка 0.07, а не 0.045: база отсчёта стала ниже (прямой рынок
-  // дешевле старой EUR-себестоимости), см. комментарий в handlers.py.
-  const MARGIN = 0.07;
+  // Наценка — зеркалит bot/exchanger/handlers.py::_MARGIN (там же — вся
+  // история цифр). costUahPerTon (см. fetchCostRate ниже) — прямой
+  // рыночный курс CoinGecko (get_ton_uah_rate), не себестоимость через
+  // EUR_UAH_RATE.
+  const MARGIN = 0.05;
 
   let costUahPerTon = null;
   const RATE_REFRESH_MS = 60_000; // сервер сам кэширует курс на TON_RATE_CACHE_TTL (по умолчанию 5 мин) — чаще спрашивать смысла нет
