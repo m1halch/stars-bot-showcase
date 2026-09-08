@@ -531,6 +531,7 @@
       <label>Заявка №<span id="waitOrderId"></span></label>
       <div class="result-value" id="waitTonAmount"></div>
       <div class="rate-line">на адрес <code id="waitWallet" class="waiting-wallet"></code></div>
+      <div class="rate-line" id="waitCashbackNote" style="display:none;"></div>
     </div>
     <div class="card">
       <div class="waiting-copy">
@@ -944,6 +945,13 @@
     document.getElementById('waitWallet').textContent = order.ton_wallet;
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
+    const cashbackNote = document.getElementById('waitCashbackNote');
+    if (order.credit_used_uah > 0) {
+      cashbackNote.textContent = `🎁 включая бонусный TON за ${order.credit_used_uah.toFixed(2)} грн кэшбека`;
+      cashbackNote.style.display = '';
+    } else {
+      cashbackNote.style.display = 'none';
+    }
     document.getElementById('openJarBtn').style.display = '';
     document.getElementById('newOrderBtn').style.display = 'none';
     document.getElementById('cancelOrderBtn').style.display = '';
@@ -1026,6 +1034,7 @@
           ton_wallet: data.ton_wallet,
           jar_link: data.jar_link,
           expires_in_seconds: data.expires_in_seconds,
+          credit_used_uah: data.credit_used_uah,
         });
         updateStepper(data.status);
         if (data.status === 'waiting_reserve') {
