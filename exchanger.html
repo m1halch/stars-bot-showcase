@@ -696,9 +696,12 @@
     let ton = 0;
     if (costUahPerTon != null && uah > 0) {
       const sellRate = costUahPerTon * (1 + marginFor(uah));
-      ton = uah / sellRate;
+      // Округление ВНИЗ до 2 знаков, как и на сервере (см.
+      // bot/exchanger/handlers.py::uah_to_ton) — иначе превью снова
+      // разъедется с реальной суммой заявки на копейки TON.
+      ton = Math.floor((uah / sellRate) * 100) / 100;
     }
-    resultEl.textContent = `${ton.toFixed(4)} TON`;
+    resultEl.textContent = `${ton.toFixed(2)} TON`;
     renderRateLine(uah);
 
     const walletRaw = walletInput.value.trim();
@@ -901,7 +904,7 @@
           stopTimers();
           clearSavedOrder();
           document.getElementById('successText').textContent =
-            `Отправил ${data.ton_amount.toFixed(4)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+            `Отправил ${data.ton_amount.toFixed(2)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
           showSection('successSection');
         } else if (data.status === 'waiting_reserve') {
@@ -945,7 +948,7 @@
   function enterWaitingScreen(order) {
     currentOrderId = order.order_id;
     document.getElementById('waitOrderId').textContent = order.order_id;
-    document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(4)} TON`;
+    document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(2)} TON`;
     document.getElementById('waitWallet').textContent = order.ton_wallet;
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
@@ -1021,7 +1024,7 @@
       if (data.status === 'fulfilled') {
         clearSavedOrder();
         document.getElementById('successText').textContent =
-          `Отправил ${data.ton_amount.toFixed(4)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+          `Отправил ${data.ton_amount.toFixed(2)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
         showSection('successSection');
       } else if (data.status === 'pending_payment' || data.status === 'waiting_reserve') {
         enterWaitingScreen({
