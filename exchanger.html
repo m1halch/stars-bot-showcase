@@ -521,7 +521,7 @@
       <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
     </div>
 
-    <div class="limits" id="limits">От 50 до 50 000 грн (или от 1 TON) за раз</div>
+    <div class="limits" id="limits">От 1 TON до 50 000 грн за раз</div>
 
     <label class="agree-row">
       <input type="checkbox" id="agreeBox">
@@ -644,9 +644,18 @@
     }
   });
 
-  const MIN_UAH = 50;
   const MAX_UAH = 50000;
   const MIN_TON = 1;
+
+  // Минимум в режиме "грн" — РОВНО стоимость MIN_TON прямо сейчас (не
+  // фиксированное число), зеркалит bot/exchanger/handlers.py::_MIN_TON —
+  // тот тоже проверяет через uah_to_ton(uah) >= 1, а не сравнением с
+  // грн-константой. Считается в minUahNow() ниже, живёт вместе с курсом.
+  function minUahNow() {
+    if (costUahPerTon == null) return Infinity; // курс не загрузился — блокируем сумму, а не пускаем на глазок
+    const sellRate = costUahPerTon * (1 + MARGIN);
+    return Math.ceil(MIN_TON * sellRate * 100) / 100;
+  }
 
   // 'uah' (по умолчанию) — вводишь сумму в грн, видишь сколько TON получишь.
   // 'ton' — наоборот: вводишь желаемое количество TON (от MIN_TON), видишь
@@ -683,8 +692,11 @@
       return;
     }
     if (inputMode === 'uah') {
-      if (!(refAmount >= MIN_UAH && refAmount <= MAX_UAH)) {
-        el.textContent = `От ${MIN_UAH} до ${MAX_UAH} грн за раз`;
+      const minUah = minUahNow();
+      if (!(refAmount >= minUah && refAmount <= MAX_UAH)) {
+        el.textContent = minUah === Infinity
+          ? 'Курс загружается…'
+          : `От ${minUah.toFixed(2)} до ${MAX_UAH} грн за раз`;
         return;
       }
     } else if (refAmount < MIN_TON) {
@@ -731,7 +743,7 @@
         ton = Math.floor((uah / sellRate) * 100) / 100;
       }
       resultEl.textContent = `${ton.toFixed(2)} TON`;
-      amountOk = uah >= MIN_UAH && uah <= MAX_UAH;
+      amountOk = uah >= minUahNow() && uah <= MAX_UAH;
       finalUahToSubmit = uah;
     } else {
       const tonWanted = typed;
@@ -761,7 +773,7 @@
     const agreed = document.getElementById('agreeBox').checked;
     const ready = amountOk && isValidTonAddress(walletRaw) && agreed;
     submitBtn.disabled = !ready;
-    const limitHint = inputMode === 'uah' ? `От ${MIN_UAH} до ${MAX_UAH} грн` : `От ${MIN_TON} TON`;
+    const limitHint = inputMode === 'uah' ? `От ${minUahNow().toFixed(2)} до ${MAX_UAH} грн` : `От ${MIN_TON} TON`;
     submitBtn.textContent = !amountOk
       ? limitHint
       : !isValidTonAddress(walletRaw)
@@ -1146,7 +1158,11 @@
     // это НЕ то, что человек ввёл в поле (там TON), см. recompute().
     const uah = finalUahToSubmit;
     const wallet = document.getElementById('wallet').value.trim();
-    if (!(uah >= MIN_UAH && uah <= MAX_UAH) || !isValidTonAddress(wallet)) return;
+    // Полная проверка суммы (в т.ч. минимум = 1 TON) уже сделана в
+    // recompute() — submitBtn.disabled держит кнопку неактивной, пока
+    // amountOk не true. Тут только базовая защита от совсем пустого/
+    // отрицательного значения.
+    if (!(uah > 0 && uah <= MAX_UAH) || !isValidTonAddress(wallet)) return;
 
     try {
       tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success');
