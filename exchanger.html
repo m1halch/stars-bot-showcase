@@ -162,7 +162,14 @@
     color: var(--accent);
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 2px 8px rgba(0, 0, 0, .3);
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+    transition: transform .15s ease;
   }
+  .arrow-badge:active { transform: scale(.9); }
+  .arrow-badge.flipped svg { transform: rotate(180deg); }
+  .arrow-badge svg { transition: transform .15s ease; }
   .arrow-badge svg { width: 15px; height: 15px; }
 
   .result-value {
@@ -464,10 +471,10 @@
 
   <div id="formSection" class="section">
     <div class="card card-input">
-      <label for="uah">Отдаёте</label>
+      <label for="uah" id="inputLabel">Отдаёте</label>
       <div class="amount-row">
         <input type="number" id="uah" inputmode="decimal" placeholder="0" min="0" step="1">
-        <span class="unit">грн</span>
+        <span class="unit" id="inputUnit">грн</span>
       </div>
       <div class="chips" id="amountChips">
         <button type="button" class="chip" data-amount="500">500</button>
@@ -475,19 +482,25 @@
         <button type="button" class="chip" data-amount="3000">3 000</button>
         <button type="button" class="chip" data-amount="10000">10 000</button>
       </div>
-    </div>
-
-    <div class="arrow-divider">
-      <div class="arrow-badge">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 4V20M12 20L6 14M12 20L18 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+      <div class="chips" id="amountChipsTon" style="display:none;">
+        <button type="button" class="chip" data-amount="1">1</button>
+        <button type="button" class="chip" data-amount="5">5</button>
+        <button type="button" class="chip" data-amount="10">10</button>
+        <button type="button" class="chip" data-amount="25">25</button>
       </div>
     </div>
 
+    <div class="arrow-divider">
+      <button type="button" class="arrow-badge" id="modeToggleBtn" title="Ввести в TON вместо грн">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4V20M12 20L6 14M12 20L18 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+
     <div class="card card-hero">
-      <label><svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/><path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>Получаете</label>
-      <div class="result-value" id="result">0.0000 TON</div>
+      <label id="resultLabel"><svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/><path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>Получаете</label>
+      <div class="result-value" id="result">0.00 TON</div>
       <div class="rate-line" id="rateLine">Введите сумму, чтобы увидеть курс</div>
     </div>
 
@@ -508,7 +521,7 @@
       <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
     </div>
 
-    <div class="limits" id="limits">От 100 до 50 000 грн за раз</div>
+    <div class="limits" id="limits">От 50 до 50 000 грн (или от 1 TON) за раз</div>
 
     <label class="agree-row">
       <input type="checkbox" id="agreeBox">
@@ -631,8 +644,16 @@
     }
   });
 
-  const MIN_UAH = 100;
+  const MIN_UAH = 50;
   const MAX_UAH = 50000;
+  const MIN_TON = 1;
+
+  // 'uah' (по умолчанию) — вводишь сумму в грн, видишь сколько TON получишь.
+  // 'ton' — наоборот: вводишь желаемое количество TON (от MIN_TON), видишь
+  // сколько нужно заплатить в грн. Переключается стрелкой между карточками
+  // (modeToggleBtn). Оба режима в итоге шлют на сервер uah_amount — сервер
+  // как и раньше ничего не знает про "режимы", это чисто клиентский UX.
+  let inputMode = 'uah';
 
   // Наценка — зеркалит bot/exchanger/handlers.py::_MARGIN (там же — вся
   // история цифр). costUahPerTon (см. fetchCostRate ниже) — прямой
@@ -655,14 +676,19 @@
     recompute();
   }
 
-  function renderRateLine(uah) {
+  function renderRateLine(refAmount) {
     const el = document.getElementById('rateLine');
-    if (!(uah > 0)) {
+    if (!(refAmount > 0)) {
       el.textContent = '';
       return;
     }
-    if (!(uah >= MIN_UAH && uah <= MAX_UAH)) {
-      el.textContent = `От ${MIN_UAH} до ${MAX_UAH} грн за раз`;
+    if (inputMode === 'uah') {
+      if (!(refAmount >= MIN_UAH && refAmount <= MAX_UAH)) {
+        el.textContent = `От ${MIN_UAH} до ${MAX_UAH} грн за раз`;
+        return;
+      }
+    } else if (refAmount < MIN_TON) {
+      el.textContent = `От ${MIN_TON} TON за раз`;
       return;
     }
     if (costUahPerTon == null) {
@@ -678,6 +704,11 @@
     return /^(UQ|EQ|kQ|0Q)[A-Za-z0-9_-]{46}$/.test(v.trim());
   }
 
+  // То, что реально уйдёт в /api/exchange/create — в режиме 'ton' это не
+  // то же самое, что показано в поле ввода (там TON, а серверу нужна
+  // сумма в грн), см. recompute().
+  let finalUahToSubmit = 0;
+
   function recompute() {
     const uahInput = document.getElementById('uah');
     const walletInput = document.getElementById('wallet');
@@ -685,17 +716,39 @@
     const walletHint = document.getElementById('walletHint');
     const submitBtn = document.getElementById('submitBtn');
 
-    const uah = parseFloat(uahInput.value);
-    let ton = 0;
-    if (costUahPerTon != null && uah > 0) {
-      const sellRate = costUahPerTon * (1 + MARGIN);
-      // Округление ВНИЗ до 2 знаков, как и на сервере (см.
-      // bot/exchanger/handlers.py::uah_to_ton) — иначе превью снова
-      // разъедется с реальной суммой заявки на копейки TON.
-      ton = Math.floor((uah / sellRate) * 100) / 100;
+    const typed = parseFloat(uahInput.value);
+    let amountOk = false;
+    finalUahToSubmit = 0;
+
+    if (inputMode === 'uah') {
+      const uah = typed;
+      let ton = 0;
+      if (costUahPerTon != null && uah > 0) {
+        const sellRate = costUahPerTon * (1 + MARGIN);
+        // Округление ВНИЗ до 2 знаков, как и на сервере (см.
+        // bot/exchanger/handlers.py::uah_to_ton) — иначе превью снова
+        // разъедется с реальной суммой заявки на копейки TON.
+        ton = Math.floor((uah / sellRate) * 100) / 100;
+      }
+      resultEl.textContent = `${ton.toFixed(2)} TON`;
+      amountOk = uah >= MIN_UAH && uah <= MAX_UAH;
+      finalUahToSubmit = uah;
+    } else {
+      const tonWanted = typed;
+      let uahNeeded = 0;
+      if (costUahPerTon != null && tonWanted > 0) {
+        const sellRate = costUahPerTon * (1 + MARGIN);
+        // Округление ВВЕРХ (в отличие от режима "грн") — иначе клиент,
+        // попросивший ровно N TON, из-за floor() на сервере получил бы
+        // МЕНЬШЕ N после платежа. Небольшой запас в нашу пользу тут
+        // не проблема — то же самое обсуждали для базового округления.
+        uahNeeded = Math.ceil(tonWanted * sellRate * 100) / 100;
+      }
+      resultEl.textContent = `${uahNeeded.toFixed(2)} грн`;
+      amountOk = tonWanted >= MIN_TON && uahNeeded > 0 && uahNeeded <= MAX_UAH;
+      finalUahToSubmit = uahNeeded;
     }
-    resultEl.textContent = `${ton.toFixed(2)} TON`;
-    renderRateLine(uah);
+    renderRateLine(typed);
 
     const walletRaw = walletInput.value.trim();
     const walletOk = walletRaw === '' || isValidTonAddress(walletRaw);
@@ -705,22 +758,58 @@
       : 'Похоже, это не настоящий TON-адрес.';
     document.getElementById('walletCheckIcon').style.display = isValidTonAddress(walletRaw) ? '' : 'none';
 
-    const amountOk = uah >= MIN_UAH && uah <= MAX_UAH;
     const agreed = document.getElementById('agreeBox').checked;
     const ready = amountOk && isValidTonAddress(walletRaw) && agreed;
     submitBtn.disabled = !ready;
+    const limitHint = inputMode === 'uah' ? `От ${MIN_UAH} до ${MAX_UAH} грн` : `От ${MIN_TON} TON`;
     submitBtn.textContent = !amountOk
-      ? `От ${MIN_UAH} до ${MAX_UAH} грн`
+      ? limitHint
       : !isValidTonAddress(walletRaw)
         ? 'Введите сумму и адрес'
         : !agreed
           ? 'Прими условия ниже'
           : 'Оплатить';
 
-    document.querySelectorAll('#amountChips .chip').forEach((chip) => {
-      chip.classList.toggle('active', Number(chip.dataset.amount) === uah);
+    const activeChipsSelector = inputMode === 'uah' ? '#amountChips .chip' : '#amountChipsTon .chip';
+    document.querySelectorAll(activeChipsSelector).forEach((chip) => {
+      chip.classList.toggle('active', Number(chip.dataset.amount) === typed);
     });
   }
+
+  function setInputMode(mode) {
+    inputMode = mode;
+    const inputLabel = document.getElementById('inputLabel');
+    const inputUnit = document.getElementById('inputUnit');
+    const resultLabel = document.getElementById('resultLabel');
+    const toggleBtn = document.getElementById('modeToggleBtn');
+    const tonMarkSvg = '<svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">'
+      + '<path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/>'
+      + '<path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>';
+
+    if (mode === 'ton') {
+      inputLabel.textContent = 'Хочу получить';
+      inputUnit.textContent = 'TON';
+      resultLabel.innerHTML = `${tonMarkSvg}К оплате`;
+      document.getElementById('amountChips').style.display = 'none';
+      document.getElementById('amountChipsTon').style.display = '';
+      toggleBtn.classList.add('flipped');
+      toggleBtn.title = 'Ввести в грн вместо TON';
+    } else {
+      inputLabel.textContent = 'Отдаёте';
+      inputUnit.textContent = 'грн';
+      resultLabel.innerHTML = `${tonMarkSvg}Получаете`;
+      document.getElementById('amountChips').style.display = '';
+      document.getElementById('amountChipsTon').style.display = 'none';
+      toggleBtn.classList.remove('flipped');
+      toggleBtn.title = 'Ввести в TON вместо грн';
+    }
+    document.getElementById('uah').value = '';
+    recompute();
+  }
+
+  document.getElementById('modeToggleBtn').addEventListener('click', () => {
+    setInputMode(inputMode === 'uah' ? 'ton' : 'uah');
+  });
 
   document.getElementById('uah').addEventListener('input', recompute);
   document.getElementById('wallet').addEventListener('input', recompute);
@@ -791,7 +880,7 @@
     if (e.target.id === 'modalOverlay') hideModal();
   });
 
-  document.querySelectorAll('#amountChips .chip').forEach((chip) => {
+  document.querySelectorAll('#amountChips .chip, #amountChipsTon .chip').forEach((chip) => {
     chip.addEventListener('click', () => {
       document.getElementById('uah').value = chip.dataset.amount;
       recompute();
@@ -1053,7 +1142,9 @@
   resumeSavedOrderIfAny();
 
   document.getElementById('submitBtn').addEventListener('click', async () => {
-    const uah = parseFloat(document.getElementById('uah').value);
+    // finalUahToSubmit — то, что реально шлём на сервер; в режиме 'ton'
+    // это НЕ то, что человек ввёл в поле (там TON), см. recompute().
+    const uah = finalUahToSubmit;
     const wallet = document.getElementById('wallet').value.trim();
     if (!(uah >= MIN_UAH && uah <= MAX_UAH) || !isValidTonAddress(wallet)) return;
 
