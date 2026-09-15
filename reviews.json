@@ -1,7 +1,12 @@
 {
-  "count": 19,
+  "count": 20,
   "avgRating": 5.0,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "14.09"
+    },
     {
       "rating": 5,
       "comment": null,
