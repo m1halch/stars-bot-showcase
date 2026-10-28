@@ -1,7 +1,32 @@
 {
-  "count": 20,
+  "count": 29,
   "avgRating": 5.0,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Бистро четко супер",
+      "date": "28.09"
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "28.09"
+    },
+    {
+      "rating": 5,
+      "comment": "Очень хорошо",
+      "date": "20.09"
+    },
+    {
+      "rating": 5,
+      "comment": "Супер",
+      "date": "17.09"
+    },
+    {
+      "rating": 5,
+      "comment": "Бистро пришло",
+      "date": "14.09"
+    },
     {
       "rating": 5,
       "comment": null,
@@ -9,8 +34,28 @@
     },
     {
       "rating": 5,
+      "comment": "Все супер",
+      "date": "13.09"
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.09"
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.09"
+    },
+    {
+      "rating": 5,
       "comment": null,
       "date": "12.09"
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "11.09"
     },
     {
       "rating": 5,
