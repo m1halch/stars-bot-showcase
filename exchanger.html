@@ -1739,6 +1739,10 @@
   }
   document.getElementById('reviewsMoreBtn').addEventListener('click', renderReviewsPage);
 
+  // ?tab=stars|reviews|friends — бот открывает мини-апп сразу на нужной вкладке.
+  const startTab = new URLSearchParams(location.search).get('tab');
+  if (['stars', 'friends', 'reviews'].includes(startTab)) selectTab(startTab);
+
   loadReviews(); // ради строки доверия «★ 5.0 · N отзывов» на главной
   renderRatePill();
   fetchCostRate();
