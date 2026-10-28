@@ -755,12 +755,12 @@
     <div class="card">
       <label>Заявка №<span id="waitOrderId"></span></label>
       <div class="result-value" id="waitTonAmount"></div>
-      <div class="rate-line">на адрес <code id="waitWallet" class="waiting-wallet"></code></div>
+      <div class="rate-line" id="waitDest">на адрес <code id="waitWallet" class="waiting-wallet"></code></div>
       <div class="rate-line" id="waitCashbackNote" style="display:none;"></div>
     </div>
     <div class="card">
       <div class="waiting-copy">
-        Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — TON улетит автоматически, ничего дальше нажимать не нужно.
+        Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
       <div class="timer-line" id="timerLine">Успей оплатить за <span class="timer-value" id="timerValue">30:00</span></div>
@@ -776,7 +776,7 @@
         </div>
         <div class="step" data-step="sent">
           <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span class="step-label">TON отправлен</span>
+          <span class="step-label" id="stepSentLabel">TON отправлен</span>
         </div>
       </div>
       <div class="hint" id="waitStatusHint" style="text-align:center; margin-top:10px;">Ждём оплату…</div>
@@ -836,7 +836,7 @@
     </div>
 
     <button class="primary" id="starsSubmitBtn" disabled>Скоро — запускаем на днях</button>
-    <div class="footer-note">Цену можно посчитать уже сейчас. Оплата звёзд откроется здесь же, в этой вкладке.</div>
+    <div class="footer-note" id="starsFooterNote">Цену можно посчитать уже сейчас. Оплата звёзд откроется здесь же, в этой вкладке.</div>
   </section>
 
   <section class="tab-panel" id="panel-friends" role="tabpanel" aria-labelledby="tab-friends" hidden>
@@ -1331,7 +1331,7 @@
   // fulfilled -> оба шага done; expired -> "Оплата получена" в error-стиле.
   function updateStepper(status) {
     const stepState = { paid: '', sent: '' };
-    if (status === 'waiting_reserve') {
+    if (status === 'waiting_reserve' || status === 'fulfilling' || status === 'needs_review') {
       stepState.paid = 'done';
       stepState.sent = 'current';
     } else if (status === 'fulfilled') {
@@ -1359,14 +1359,20 @@
         if (data.status === 'fulfilled') {
           stopTimers();
           clearSavedOrder();
-          document.getElementById('successText').textContent =
-            `Отправил ${data.ton_amount.toFixed(2)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+          document.getElementById('successText').textContent = successTextFor(data);
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
           showSection('successSection');
-        } else if (data.status === 'waiting_reserve') {
+        } else if (data.status === 'waiting_reserve' || data.status === 'fulfilling') {
           // Деньги уже пришли — отменять больше нечего, убираем кнопку.
-          hint.textContent = 'Оплата получена! TON придёт совсем скоро.';
+          hint.textContent = data.product === 'stars'
+            ? 'Оплата получена! Звёзды оформляются — пара минут.'
+            : 'Оплата получена! TON придёт совсем скоро.';
           document.getElementById('cancelOrderBtn').style.display = 'none';
+        } else if (data.status === 'needs_review') {
+          stopTimers();
+          hint.textContent = 'Оплата получена — заявку проверяем вручную, всё придёт. Если что, напишем в чате.';
+          document.getElementById('cancelOrderBtn').style.display = 'none';
+          document.getElementById('openJarBtn').style.display = 'none';
         } else if (data.status === 'expired') {
           stopTimers();
           clearSavedOrder();
@@ -1401,11 +1407,40 @@
     try { return localStorage.getItem(SAVED_ORDER_KEY); } catch (e) { return null; }
   }
 
+  // Экран заявки общий для TON и звёзд: живёт в панели TON, но для звёзд
+  // остаёмся в золотой теме и подменяем подписи.
+  let currentProduct = 'ton';
+  function showOrderScreen(product) {
+    currentProduct = product === 'stars' ? 'stars' : 'ton';
+    document.querySelectorAll('.tab-panel').forEach((panel) => { panel.hidden = panel.id !== 'panel-ton'; });
+    document.querySelectorAll('.tab-btn').forEach((btn) => {
+      btn.setAttribute('aria-selected', String(btn.dataset.tab === currentProduct));
+    });
+    document.body.dataset.tab = currentProduct;
+    const isStars = currentProduct === 'stars';
+    document.getElementById('stepSentLabel').textContent = isStars ? 'Звёзды зачислены' : 'TON отправлен';
+    document.getElementById('waitAutoText').textContent = isStars
+      ? 'звёзды зачислятся автоматически' : 'TON улетит автоматически';
+  }
+  function successTextFor(data) {
+    return (data.product === 'stars')
+      ? `Зачислил ${data.stars_amount} ⭐ на @${data.recipient}. Спасибо, что пользуешься TonExpress!`
+      : `Отправил ${data.ton_amount.toFixed(2)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+  }
+
   function enterWaitingScreen(order) {
     currentOrderId = order.order_id;
+    showOrderScreen(order.product);
     document.getElementById('waitOrderId').textContent = order.order_id;
-    document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(2)} TON`;
-    document.getElementById('waitWallet').textContent = order.ton_wallet;
+    if (order.product === 'stars') {
+      const starIco = document.querySelector('.unit .unit-star').outerHTML;
+      document.getElementById('waitTonAmount').innerHTML = `${Number(order.stars_amount)} ${starIco}`;
+      document.getElementById('waitDest').textContent = `для @${order.recipient}`;
+    } else {
+      document.getElementById('waitTonAmount').textContent = `${order.ton_amount.toFixed(2)} TON`;
+      document.getElementById('waitDest').innerHTML = 'на адрес <code id="waitWallet" class="waiting-wallet"></code>';
+      document.getElementById('waitWallet').textContent = order.ton_wallet;
+    }
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     const cashbackNote = document.getElementById('waitCashbackNote');
@@ -1439,6 +1474,7 @@
   document.getElementById('newOrderBtn').addEventListener('click', () => {
     clearSavedOrder();
     showSection('formSection');
+    if (currentProduct === 'stars') selectTab('stars');
     recompute();
   });
 
@@ -1452,6 +1488,7 @@
       stopTimers();
       clearSavedOrder();
       showSection('formSection');
+      if (currentProduct === 'stars') selectTab('stars');
       recompute();
     } catch (e) {
       console.error('cancel failed', e);
@@ -1486,10 +1523,10 @@
       const data = await apiCall('/api/exchange/status', { init_data: tg.initData, order_id: Number(savedId) });
       if (data.status === 'fulfilled') {
         clearSavedOrder();
-        document.getElementById('successText').textContent =
-          `Отправил ${data.ton_amount.toFixed(2)} TON на твой адрес. Спасибо, что пользуешься TonExpress!`;
+        showOrderScreen(data.product);
+        document.getElementById('successText').textContent = successTextFor(data);
         showSection('successSection');
-      } else if (data.status === 'pending_payment' || data.status === 'waiting_reserve') {
+      } else if (['pending_payment', 'waiting_reserve', 'fulfilling', 'needs_review'].includes(data.status)) {
         enterWaitingScreen({
           order_id: savedId,
           uah_amount: data.uah_amount,
@@ -1498,9 +1535,12 @@
           jar_link: data.jar_link,
           expires_in_seconds: data.expires_in_seconds,
           credit_used_uah: data.credit_used_uah,
+          product: data.product,
+          stars_amount: data.stars_amount,
+          recipient: data.recipient,
         });
         updateStepper(data.status);
-        if (data.status === 'waiting_reserve') {
+        if (data.status !== 'pending_payment') {
           document.getElementById('cancelOrderBtn').style.display = 'none';
         }
       } else {
@@ -1601,15 +1641,33 @@
   const STAR_PRICE_UAH = 0.72;
   const STARS_MIN = 50;
   const STARS_MAX = 20000;
+  let starPrice = STAR_PRICE_UAH;
+  let starsEnabled = false;
+  let starsMax = STARS_MAX;
+  async function fetchStarsInfo() {
+    try {
+      // POST, как и остальные вызовы WebAPI (через тот же туннель ngrok).
+      const d = await apiCall('/api/stars/info', {});
+      if (d && d.price_uah) starPrice = d.price_uah;
+      if (d && d.max) starsMax = d.max;
+      starsEnabled = !!(d && d.enabled);
+    } catch (e) {
+      console.error('stars info failed', e);
+      starsEnabled = false;
+    }
+    recomputeStars();
+  }
+  function isValidStarsRecipient(r) { return /^@?[A-Za-z][A-Za-z0-9_]{3,31}$/.test(r); }
+
   function recomputeStars() {
     const n = Math.floor(parseFloat(document.getElementById('starsAmount').value) || 0);
-    const total = Math.ceil(n * STAR_PRICE_UAH * 100) / 100;
+    const total = Math.ceil(n * starPrice * 100) / 100;
     document.getElementById('starsTotal').textContent = `${total.toFixed(2)} грн`;
     const line = document.getElementById('starsRateLine');
     const star = document.querySelector('.unit .unit-star').outerHTML;
     if (n > 0 && n < STARS_MIN) line.innerHTML = `Минимум ${STARS_MIN} ${star}`;
-    else if (n > STARS_MAX) line.innerHTML = `Максимум ${STARS_MAX.toLocaleString('ru-RU')} ${star} за раз`;
-    else line.innerHTML = `1 ${star} = ${STAR_PRICE_UAH.toFixed(2)} грн`;
+    else if (n > starsMax) line.innerHTML = `Максимум ${starsMax.toLocaleString('ru-RU')} ${star} за раз`;
+    else line.innerHTML = `1 ${star} = ${starPrice.toFixed(2)} грн`;
     document.querySelectorAll('#starsChips .chip').forEach((chip) => {
       chip.classList.toggle('active', Number(chip.dataset.amount) === n);
     });
@@ -1620,7 +1678,52 @@
     hint.textContent = okName
       ? 'Нужен публичный @username — без него Fragment не сможет зачислить звёзды.'
       : 'Так username не выглядит — от 5 символов, латиница, цифры и _.';
+
+    const btn = document.getElementById('starsSubmitBtn');
+    const note = document.getElementById('starsFooterNote');
+    if (!starsEnabled) {
+      btn.disabled = true;
+      btn.textContent = 'Скоро — запускаем на днях';
+      note.textContent = 'Цену можно посчитать уже сейчас. Оплата звёзд откроется здесь же, в этой вкладке.';
+      return;
+    }
+    note.textContent = 'Оплата переводом в банку monobank — звёзды зачисляются автоматически через Fragment, обычно за пару минут.';
+    const amountOk = n >= STARS_MIN && n <= starsMax;
+    const recipientOk = r !== '' && isValidStarsRecipient(r);
+    btn.disabled = !(amountOk && recipientOk);
+    btn.textContent = !amountOk ? `От ${STARS_MIN} звёзд`
+      : !recipientOk ? 'Укажи, кому зачислить'
+      : `Оплатить ${total.toFixed(2)} грн`;
   }
+
+  document.getElementById('starsSubmitBtn').addEventListener('click', async () => {
+    const n = Math.floor(parseFloat(document.getElementById('starsAmount').value) || 0);
+    const recipient = document.getElementById('starsRecipient').value.trim().replace(/^@/, '');
+    if (!starsEnabled || !(n >= STARS_MIN && n <= starsMax) || !isValidStarsRecipient(recipient)) return;
+    if (!tg || !tg.initData) { alert('Открой это через кнопку бота в Telegram, не в браузере.'); return; }
+    const btn = document.getElementById('starsSubmitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Проверяем получателя…';
+    try {
+      const order = await apiCall('/api/stars/create', { init_data: tg.initData, stars_amount: n, recipient });
+      try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+      enterWaitingScreen(order);
+    } catch (e) {
+      console.error('stars create failed', e);
+      const code = e.data && e.data.error;
+      const msg = {
+        recipient_not_found: `Fragment не нашёл @${recipient} — проверь username. Звёзды можно отправить только на личный аккаунт, не на канал или бота.`,
+        invalid_recipient: 'Так username не выглядит — проверь, пожалуйста.',
+        fragment_unavailable: 'Fragment сейчас не отвечает — попробуй через пару минут.',
+        stars_disabled: 'Покупка звёзд временно на паузе — загляни чуть позже.',
+        too_many_active_orders: 'У тебя уже есть несколько активных заявок — сначала оплати или отмени одну из них.',
+        rate_limited: 'Слишком много попыток подряд — подожди немного и попробуй снова.',
+        maintenance: 'Сейчас проводим технические работы — загляни чуть позже 🙂',
+      }[code] || 'Не получилось создать заявку — проверь интернет и попробуй ещё раз.';
+      alert(msg);
+      recomputeStars();
+    }
+  });
   document.getElementById('starsAmount').addEventListener('input', recomputeStars);
   document.getElementById('starsRecipient').addEventListener('input', recomputeStars);
   document.querySelectorAll('#starsChips .chip').forEach((chip) => {
@@ -1743,6 +1846,7 @@
   const startTab = new URLSearchParams(location.search).get('tab');
   if (['stars', 'friends', 'reviews'].includes(startTab)) selectTab(startTab);
 
+  fetchStarsInfo();
   loadReviews(); // ради строки доверия «★ 5.0 · N отзывов» на главной
   renderRatePill();
   fetchCostRate();
