@@ -85,7 +85,7 @@
     width: 38px; height: 38px;
     flex-shrink: 0;
     border-radius: 11px;
-    background: linear-gradient(135deg, var(--accent), #4b3fa0);
+    background: linear-gradient(135deg, #7c6fee, #4b3fa0); /* логотип не перекрашивается вместе с вкладкой */
     display: flex; align-items: center; justify-content: center;
     box-shadow: 0 4px 14px rgba(124, 111, 238, .4);
   }
@@ -155,6 +155,25 @@
   .notice b { color: var(--text); }
 
   .tab-panel[hidden] { display: none; }
+
+  /* Вкладка звёзд живёт в своём, золотом цвете — тот же интерфейс, но
+     сразу видно, что это другой товар. Переопределяем только акцент,
+     вся остальная система (карточки, чипы, кнопка) подхватывает его сама. */
+  body[data-tab="stars"] {
+    --accent: #f2b83b;
+    --accent-dim: rgba(242, 184, 59, .13);
+  }
+  body[data-tab="stars"]::before {
+    background: radial-gradient(closest-side, rgba(242, 184, 59, .16), transparent 70%);
+  }
+  body[data-tab="stars"] .card-hero { border-color: rgba(242, 184, 59, .38); }
+  body[data-tab="stars"] button.primary:not(:disabled) { color: #2a1d02; }
+  body::before { transition: background .3s ease; }
+  .tab-btn[data-tab="stars"] { color: #a8915a; }
+  .tab-btn[data-tab="stars"][aria-selected="true"] { color: #f2b83b; }
+  .tab-btn[data-tab="stars"] svg path { fill: rgba(242, 184, 59, .18); }
+  .tab-btn[data-tab="stars"][aria-selected="true"] svg path { fill: rgba(242, 184, 59, .9); }
+  .panel-title .gold { color: #f2b83b; }
 
   /* Нижние вкладки — как в нативных приложениях: фиксировано, с отступом
      под домашнюю полоску iPhone. Подложка размыта, потому что контент
@@ -630,7 +649,7 @@
   }
 </style>
 </head>
-<body>
+<body data-tab="ton">
 
   <div class="topbar">
   <div class="logo">
@@ -784,7 +803,7 @@
   </section>
 
   <section class="tab-panel" id="panel-stars" role="tabpanel" aria-labelledby="tab-stars" hidden>
-    <h1 class="panel-title">Звёзды Telegram</h1>
+    <h1 class="panel-title"><span class="gold">Звёзды</span> Telegram</h1>
     <p class="panel-lead">Покупка звёзд за гривны — на свой аккаунт или в подарок другу. Звёзды зачисляются автоматически через Fragment.</p>
 
     <div class="card card-input">
@@ -1555,6 +1574,7 @@
     try { tg && tg.HapticFeedback && tg.HapticFeedback.selectionChanged(); } catch (e) {}
   }
   function selectTab(name) {
+    document.body.dataset.tab = name;
     document.querySelectorAll('.tab-btn').forEach((btn) => {
       btn.setAttribute('aria-selected', String(btn.dataset.tab === name));
     });
