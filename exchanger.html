@@ -253,6 +253,24 @@
   .how-list b { color: var(--text); }
   .how-list span { color: var(--muted); }
 
+  .ref-link {
+    flex: 1;
+    min-width: 0;
+    font: 600 14px/1.4 var(--font-body);
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .ref-actions { display: flex; gap: 10px; margin-top: 12px; }
+  .ref-actions .ref-share { flex: 1.4; padding: 13px; }
+  .ref-actions .ref-copy { flex: 1; margin-top: 0; }
+  .ref-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
+  .ref-num { font: 800 24px/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .ref-cap { margin-top: 4px; font-size: 11.5px; line-height: 1.3; color: var(--muted); }
+  .ref-balance { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); text-align: center; }
+  .ref-balance b { color: var(--ok); }
+  .notice.ref-newbie { border-color: rgba(79, 209, 122, .3); background: rgba(79, 209, 122, .08); color: #c9f5d8; }
+  .notice.ref-newbie svg { color: var(--ok); }
+
   .reviews-summary { display: flex; align-items: center; gap: 14px; }
   .reviews-score { font: 800 40px/1 var(--font-display); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
   .reviews-meta { font-size: 13px; color: var(--muted); }
@@ -841,15 +859,41 @@
 
   <section class="tab-panel" id="panel-friends" role="tabpanel" aria-labelledby="tab-friends" hidden>
     <h1 class="panel-title">Приглашай друзей</h1>
-    <p class="panel-lead">Делись TonExpress с друзьями и получай бонус с их обменов на свой баланс. Бонусом можно оплатить часть следующего обмена.</p>
+    <p class="panel-lead">Получай бонус с каждого обмена друга — навсегда. Бонус копится на балансе и приходит дополнительным TON на твоём следующем обмене.</p>
+
+    <div class="notice ref-newbie" id="refNewbie" hidden>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 11h16v9H4zM2.5 7.5h19V11h-19zM12 7.5V20M12 7.5c-1.5-3-5-3.5-5-1.2S9.6 7.5 12 7.5zm0 0c1.5-3 5-3.5 5-1.2s-2.6 1.2-5 1.2z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <span><b>Тебя пригласил друг.</b> На первый обмен TON — <b>+1% бонусом</b> (до 20 грн), придёт дополнительным TON.</span>
+    </div>
+
+    <div class="card">
+      <label>Твоя ссылка</label>
+      <div class="wallet-field">
+        <span class="ref-link" id="refLink">Загружаем…</span>
+      </div>
+      <div class="ref-actions">
+        <button type="button" class="primary ref-share" id="refShareBtn" disabled>Поделиться</button>
+        <button type="button" class="ghost-btn ref-copy" id="refCopyBtn" disabled>Скопировать</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ref-stats">
+        <div><div class="ref-num" id="refInvited">–</div><div class="ref-cap">пришло по ссылке</div></div>
+        <div><div class="ref-num" id="refActive">–</div><div class="ref-cap">уже обменивались</div></div>
+        <div><div class="ref-num" id="refEarned">–</div><div class="ref-cap">заработано, грн</div></div>
+      </div>
+      <div class="ref-balance" id="refBalance"></div>
+    </div>
+
     <div class="card">
       <ul class="how-list">
-        <li><span class="how-num">1</span><div><b>Отправь другу свою ссылку</b><br><span>Она появится здесь, когда запустим программу.</span></div></li>
-        <li><span class="how-num">2</span><div><b>Друг меняет гривны на TON или звёзды</b><br><span>По твоей ссылке, как обычно — для него ничего не меняется.</span></div></li>
-        <li><span class="how-num">3</span><div><b>Ты получаешь бонус с каждого его обмена</b><br><span>Он копится на балансе и списывается со следующей заявки.</span></div></li>
+        <li><span class="how-num">1</span><div><b>Отправь другу свою ссылку</b><br><span>Через «Поделиться» — сразу в нужный чат.</span></div></li>
+        <li><span class="how-num">2</span><div><b>Друг получает +1% к первому обмену</b><br><span>До 20 грн дополнительным TON — приятный повод прийти именно по ссылке.</span></div></li>
+        <li><span class="how-num">3</span><div><b>Ты получаешь бонус с каждого его обмена</b><br><span>0.4% от суммы обмена TON и 0.25% от звёзд — копится на балансе и тратится на твой следующий обмен TON.</span></div></li>
       </ul>
     </div>
-    <button class="primary" disabled>Скоро</button>
+    <div class="footer-note" id="refFooter">Бонус начисляется после того, как обмен друга выполнен. Себя пригласить нельзя 🙂</div>
   </section>
 
   <section class="tab-panel" id="panel-reviews" role="tabpanel" aria-labelledby="tab-reviews" hidden>
@@ -1467,8 +1511,11 @@
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     const cashbackNote = document.getElementById('waitCashbackNote');
-    if (order.credit_used_uah > 0) {
-      cashbackNote.textContent = `🎁 включая бонусный TON за ${order.credit_used_uah.toFixed(2)} грн кэшбека`;
+    const bonusParts = [];
+    if (order.credit_used_uah > 0) bonusParts.push(`${order.credit_used_uah.toFixed(2)} грн с бонусного баланса`);
+    if (order.ref_bonus_uah > 0) bonusParts.push(`${order.ref_bonus_uah.toFixed(2)} грн бонуса новичка`);
+    if (bonusParts.length) {
+      cashbackNote.textContent = `🎁 включая бонусный TON: ${bonusParts.join(' + ')}`;
       cashbackNote.style.display = '';
     } else {
       cashbackNote.style.display = 'none';
@@ -1652,6 +1699,7 @@
     });
     window.scrollTo({ top: 0 });
     if (name === 'reviews') loadReviews();
+    if (name === 'friends') loadRefInfo();
   }
   document.querySelectorAll('.tab-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
@@ -1871,6 +1919,54 @@
     return reviewsLoading;
   }
   document.getElementById('reviewsMoreBtn').addEventListener('click', renderReviewsPage);
+
+  // ---------- Друзья (рефералка) ----------
+  let refInfo = null;
+  async function loadRefInfo() {
+    if (!tg || !tg.initData) {
+      document.getElementById('refLink').textContent = 'Открой TonExpress в Telegram, чтобы получить свою ссылку';
+      return;
+    }
+    try {
+      refInfo = await apiCall('/api/ref/info', { init_data: tg.initData });
+    } catch (e) {
+      console.error('ref info failed', e);
+      document.getElementById('refLink').textContent = 'Не удалось загрузить — попробуй позже';
+      return;
+    }
+    document.getElementById('refLink').textContent = refInfo.link;
+    document.getElementById('refShareBtn').disabled = false;
+    document.getElementById('refCopyBtn').disabled = false;
+    document.getElementById('refInvited').textContent = refInfo.invited;
+    document.getElementById('refActive').textContent = refInfo.active;
+    document.getElementById('refEarned').textContent = Number(refInfo.earned_uah || 0).toFixed(2);
+    const bal = Number(refInfo.balance_uah || 0);
+    const rank = refInfo.month_rank ? ` · в этом месяце ты #${refInfo.month_rank} по приглашениям` : '';
+    document.getElementById('refBalance').innerHTML = bal > 0
+      ? `Бонусный баланс: <b>${bal.toFixed(2)} грн</b> — придёт TON-ом на следующем обмене${rank}`
+      : `Бонусный баланс пока 0 грн${rank}`;
+    document.getElementById('refNewbie').hidden = !(refInfo.newbie_bonus_pct > 0);
+  }
+  document.getElementById('refShareBtn').addEventListener('click', () => {
+    if (!refInfo) return;
+    const text = 'Меняю гривны на TON и звёзды в TonExpress — приходит само за минуту. По моей ссылке +1% к первому обмену 💎';
+    const url = `https://t.me/share/url?url=${encodeURIComponent(refInfo.link)}&text=${encodeURIComponent(text)}`;
+    try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
+    if (tg && typeof tg.openTelegramLink === 'function') tg.openTelegramLink(url);
+    else window.open(url, '_blank');
+  });
+  document.getElementById('refCopyBtn').addEventListener('click', async () => {
+    if (!refInfo) return;
+    const btn = document.getElementById('refCopyBtn');
+    try {
+      await navigator.clipboard.writeText(refInfo.link);
+      btn.textContent = 'Скопировано ✓';
+      try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+    } catch (e) {
+      btn.textContent = 'Зажми ссылку выше';
+    }
+    setTimeout(() => { btn.textContent = 'Скопировать'; }, 2000);
+  });
 
   // ?tab=stars|reviews|friends — бот открывает мини-апп сразу на нужной вкладке.
   const startTab = new URLSearchParams(location.search).get('tab');
