@@ -1514,7 +1514,10 @@
     const bonusParts = [];
     if (order.credit_used_uah > 0) bonusParts.push(`${order.credit_used_uah.toFixed(2)} грн с бонусного баланса`);
     if (order.ref_bonus_uah > 0 && order.product !== 'stars') bonusParts.push(`${order.ref_bonus_uah.toFixed(2)} грн бонуса новичка`);
-    if (order.product === 'stars' && order.ref_bonus_stars > 0) {
+    if (order.ref_bonus_skipped) {
+      cashbackNote.textContent = 'ℹ️ Бонус новичка действует, когда покупаешь себе или другим людям — не на кошелёк или ник того, кто тебя пригласил.';
+      cashbackNote.style.display = '';
+    } else if (order.product === 'stars' && order.ref_bonus_stars > 0) {
       cashbackNote.textContent = `🎁 включая +${order.ref_bonus_stars} ⭐ бонуса новичка`;
       cashbackNote.style.display = '';
     } else if (bonusParts.length) {
