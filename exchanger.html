@@ -1895,7 +1895,7 @@
     if (count) {
       document.getElementById('trustScore').textContent = avgRating.toFixed(1);
       document.getElementById('trustCount').textContent = `· ${count} ${reviewsWord(count)}`;
-      document.getElementById('trustReviews').hidden = false;
+      // 10-29: «★ 5.0 · N отзывов» на главной скрыт (владелец: пока мало) — вкладка «Отзывы» остаётся.
     }
   }
   let reviewsLoading = null;
