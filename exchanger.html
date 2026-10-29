@@ -976,6 +976,9 @@
   const MARGIN = 0.05;
 
   let costUahPerTon = null;
+  // Сколько TON сейчас реально можно купить (свободный остаток горячего
+  // кошелька, считает сервер); null — неизвестно, не ограничиваем.
+  let maxTonAvailable = null;
   // 'loading' — ещё не знаем курс; 'ok' — курс есть; 'closed' — обменник
   // выключен рубильником (webapi.py::_EXCHANGER_ENABLED → 503
   // exchanger_disabled); 'error' — сеть/сервер; 'outside' — открыто не из
@@ -988,6 +991,7 @@
       try {
         const data = await apiCall('/api/exchange/rate', { init_data: tg.initData });
         costUahPerTon = data.cost_uah_per_ton;
+        maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         rateState = 'ok';
       } catch (e) {
         console.error('rate fetch failed', e);
@@ -1100,7 +1104,7 @@
         ton = Math.floor((uah / sellRate) * 100) / 100;
       }
       resultEl.textContent = `${ton.toFixed(2)} TON`;
-      amountOk = uah >= minUahNow() && uah <= MAX_UAH;
+      amountOk = uah >= minUahNow() && uah <= MAX_UAH && !(maxTonAvailable != null && ton > maxTonAvailable);
       finalUahToSubmit = uah;
     } else {
       const tonWanted = typed;
@@ -1114,7 +1118,8 @@
         uahNeeded = Math.ceil(tonWanted * sellRate * 100) / 100;
       }
       resultEl.textContent = `${uahNeeded.toFixed(2)} грн`;
-      amountOk = tonWanted >= MIN_TON && uahNeeded > 0 && uahNeeded <= MAX_UAH;
+      amountOk = tonWanted >= MIN_TON && uahNeeded > 0 && uahNeeded <= MAX_UAH
+        && !(maxTonAvailable != null && tonWanted > maxTonAvailable);
       finalUahToSubmit = uahNeeded;
     }
     renderRateLine(typed);
@@ -1138,6 +1143,24 @@
     if (costUahPerTon == null) {
       submitBtn.disabled = true;
       submitBtn.textContent = noRateLabel();
+      return;
+    }
+    const limitsEl = document.getElementById('limits');
+    if (maxTonAvailable != null && maxTonAvailable < MIN_TON) {
+      limitsEl.textContent = 'TON временно закончились — пополняем, загляни чуть позже';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Временно нет TON в наличии';
+      return;
+    }
+    limitsEl.textContent = maxTonAvailable != null
+      ? `От 1 TON · сейчас доступно до ${maxTonAvailable.toFixed(2)} TON`
+      : 'От 1 TON до 50 000 грн за раз';
+    const overReserve = maxTonAvailable != null && typed > 0 && (inputMode === 'uah'
+      ? Math.floor((typed / (costUahPerTon * (1 + MARGIN))) * 100) / 100 > maxTonAvailable
+      : typed > maxTonAvailable);
+    if (overReserve) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = `Сейчас доступно до ${maxTonAvailable.toFixed(2)} TON`;
       return;
     }
     submitBtn.textContent = !amountOk
@@ -1597,6 +1620,12 @@
       const code = e.data && e.data.error;
       if (code === 'maintenance') {
         alert('Сейчас проводим технические работы, новые заявки временно не принимаем. Загляни чуть позже 🙂');
+      } else if (code === 'not_enough_reserve') {
+        const max = e.data && typeof e.data.max_ton === 'number' ? e.data.max_ton : null;
+        alert(max != null && max >= MIN_TON
+          ? `Сейчас можем отдать до ${max.toFixed(2)} TON за раз — уменьши сумму или загляни чуть позже.`
+          : 'TON временно закончились — пополняем, загляни чуть позже.');
+        fetchCostRate();
       } else if (code === 'too_many_active_orders') {
         alert('У тебя уже есть несколько активных заявок — сначала оплати или отмени одну из них.');
       } else if (code === 'rate_limited') {
@@ -1716,6 +1745,7 @@
         invalid_recipient: 'Так username не выглядит — проверь, пожалуйста.',
         fragment_unavailable: 'Fragment сейчас не отвечает — попробуй через пару минут.',
         stars_disabled: 'Покупка звёзд временно на паузе — загляни чуть позже.',
+        not_enough_reserve: 'Сейчас не можем оформить столько звёзд — попробуй меньше или загляни чуть позже.',
         too_many_active_orders: 'У тебя уже есть несколько активных заявок — сначала оплати или отмени одну из них.',
         rate_limited: 'Слишком много попыток подряд — подожди немного и попробуй снова.',
         maintenance: 'Сейчас проводим технические работы — загляни чуть позже 🙂',
