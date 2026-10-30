@@ -1,18 +1,32 @@
 {
-  "count": 39,
+  "count": 41,
   "avgRating": 5.0,
   "clients": 7,
   "reviews": [
     {
       "rating": 5.0,
-      "comment": "Кайф",
+      "comment": "Спасибо",
       "date": "30.10",
       "name": "@tr***eg",
-      "orders": 25,
+      "orders": 26,
       "bought": {
-        "orders": 25,
+        "orders": 26,
         "stars": 150,
-        "ton": 30.9,
+        "ton": 35.6,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "67",
+      "date": "30.10",
+      "name": "@fi***ps",
+      "orders": 4,
+      "bought": {
+        "orders": 4,
+        "stars": 0,
+        "ton": 35.1,
         "premium": 0,
         "gifts": 0
       }
@@ -22,11 +36,11 @@
       "comment": "А***нно",
       "date": "30.10",
       "name": "@j***",
-      "orders": 3,
+      "orders": 4,
       "bought": {
-        "orders": 3,
+        "orders": 4,
         "stars": 0,
-        "ton": 60.0,
+        "ton": 78.2,
         "premium": 0,
         "gifts": 0
       }
@@ -41,20 +55,6 @@
         "orders": 3,
         "stars": 0,
         "ton": 5.6,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "Нормас быстро",
-      "date": "30.10",
-      "name": "@fi***ps",
-      "orders": 3,
-      "bought": {
-        "orders": 3,
-        "stars": 0,
-        "ton": 21.6,
         "premium": 0,
         "gifts": 0
       }
