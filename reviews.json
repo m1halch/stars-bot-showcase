@@ -1,151 +1,174 @@
 {
-  "count": 29,
+  "count": 28,
   "avgRating": 5.0,
   "reviews": [
     {
       "rating": 5,
       "comment": "Бистро четко супер",
-      "date": "28.09"
+      "date": "28.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "28.09"
+      "date": "28.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Очень хорошо",
-      "date": "20.09"
+      "date": "20.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Супер",
-      "date": "17.09"
+      "date": "17.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Бистро пришло",
-      "date": "14.09"
+      "date": "14.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "14.09"
+      "date": "14.09",
+      "name": "@as***at"
     },
     {
       "rating": 5,
       "comment": "Все супер",
-      "date": "13.09"
+      "date": "13.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "13.09"
+      "date": "13.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "13.09"
+      "date": "13.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "12.09"
+      "date": "12.09",
+      "name": "@as***at"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "11.09"
+      "date": "08.09",
+      "name": "@yu***os"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "08.09"
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "05.09"
+      "date": "05.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": ".",
-      "date": "05.09"
+      "date": "05.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "04.09"
+      "date": "04.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Спасибо",
-      "date": "04.09"
+      "date": "04.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Бистро пришло Спасибо",
-      "date": "04.09"
+      "date": "04.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Все бистро пришло",
-      "date": "03.09"
+      "date": "03.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Пришло бистро",
-      "date": "02.09"
+      "date": "02.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Все хорошо",
-      "date": "02.09"
+      "date": "02.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "01.09"
+      "date": "01.09",
+      "name": "@yu***os"
     },
     {
       "rating": 5,
       "comment": "Бистре пришло",
-      "date": "01.09"
+      "date": "01.09",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "30.08"
+      "date": "30.08",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "28.08"
+      "date": "28.08",
+      "name": "@yu***os"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "27.08"
+      "date": "27.08",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": null,
-      "date": "27.08"
+      "date": "27.08",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Все четко",
-      "date": "25.08"
+      "date": "25.08",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "Михаил продал тони пришли сразу",
-      "date": "25.08"
+      "date": "25.08",
+      "name": "@tr***eg"
     },
     {
       "rating": 5,
       "comment": "а***нно 👍",
-      "date": "24.08"
+      "date": "24.08",
+      "name": null
     }
   ]
 }

@@ -1870,7 +1870,7 @@
       head.appendChild(starsSvg(r.rating));
       const date = document.createElement('span');
       date.className = 'review-date';
-      date.textContent = r.date || '';
+      date.textContent = [r.name, r.date].filter(Boolean).join(' · ');
       head.appendChild(date);
       row.appendChild(head);
       if (r.comment) {
