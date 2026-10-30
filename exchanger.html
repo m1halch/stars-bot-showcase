@@ -1917,7 +1917,7 @@
           comment: r.comment && /[\p{L}\p{N}]{2,}/u.test(r.comment) ? r.comment.trim() : null,
         }));
         all.sort((a, b) => (b.comment ? 1 : 0) - (a.comment ? 1 : 0));
-        reviewsData = { count: data.count || all.length, avgRating: data.avgRating || 0, reviews: all };
+        reviewsData = { count: data.count || all.length, avgRating: data.avgRating || 0, reviews: all, clients: data.clients || 0 };
         renderReviewsSummary();
         if (all.length) renderReviewsPage();
         else document.getElementById('reviewsList').hidden = true;
