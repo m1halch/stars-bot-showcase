@@ -1849,6 +1849,12 @@
     }
     return wrap;
   }
+  function ordersWord(n) {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return 'заказ';
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'заказа';
+    return 'заказов';
+  }
   function reviewsWord(n) {
     const m10 = n % 10, m100 = n % 100;
     if (m10 === 1 && m100 !== 11) return 'отзыв';
@@ -1870,7 +1876,7 @@
       head.appendChild(starsSvg(r.rating));
       const date = document.createElement('span');
       date.className = 'review-date';
-      date.textContent = [r.name, r.date].filter(Boolean).join(' · ');
+      date.textContent = [r.name, r.orders > 1 ? `${r.orders} ${ordersWord(r.orders)}` : null, r.date].filter(Boolean).join(' · ');
       head.appendChild(date);
       row.appendChild(head);
       if (r.comment) {
@@ -1890,7 +1896,7 @@
     const starsBox = document.getElementById('reviewsStars');
     starsBox.replaceWith(Object.assign(starsSvg(avgRating || 0), { id: 'reviewsStars' }));
     document.getElementById('reviewsMeta').textContent = count
-      ? `${count} ${reviewsWord(count)} от клиентов`
+      ? (reviewsData.clients ? `${count} ${reviewsWord(count)} от ${reviewsData.clients} ${reviewsData.clients % 10 === 1 && reviewsData.clients % 100 !== 11 ? 'клиента' : 'клиентов'}` : `${count} ${reviewsWord(count)} от клиентов`)
       : 'Пока нет отзывов — твой может стать первым.';
     if (count) {
       document.getElementById('trustScore').textContent = avgRating.toFixed(1);
