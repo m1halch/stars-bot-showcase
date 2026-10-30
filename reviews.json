@@ -1,7 +1,7 @@
 {
-  "count": 33,
+  "count": 37,
   "avgRating": 5.0,
-  "clients": 6,
+  "clients": 7,
   "reviews": [
     {
       "rating": 5.0,
@@ -13,6 +13,20 @@
         "orders": 25,
         "stars": 150,
         "ton": 30.9,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "Нормас быстро",
+      "date": "30.10",
+      "name": "@fi***ps",
+      "orders": 3,
+      "bought": {
+        "orders": 3,
+        "stars": 0,
+        "ton": 21.6,
         "premium": 0,
         "gifts": 0
       }
@@ -33,14 +47,28 @@
     },
     {
       "rating": 5.0,
-      "comment": "Окак",
+      "comment": "мишаня литвин харош",
       "date": "30.10",
-      "name": "@fi***ps",
+      "name": "@md***ti",
       "orders": 2,
       "bought": {
         "orders": 2,
         "stars": 0,
-        "ton": 8.7,
+        "ton": 4.2,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "Всьо быстро",
+      "date": "30.10",
+      "name": "@j***",
+      "orders": 2,
+      "bought": {
+        "orders": 2,
+        "stars": 0,
+        "ton": 40.0,
         "premium": 0,
         "gifts": 0
       }
@@ -55,20 +83,6 @@
         "orders": 2,
         "stars": 150,
         "ton": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "Всьо быстро",
-      "date": "30.10",
-      "name": "@j***",
-      "orders": 1,
-      "bought": {
-        "orders": 1,
-        "stars": 0,
-        "ton": 20.0,
         "premium": 0,
         "gifts": 0
       }
