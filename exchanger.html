@@ -1005,7 +1005,7 @@
   // грн-константой. Считается в minUahNow() ниже, живёт вместе с курсом.
   function minUahNow() {
     if (costUahPerTon == null) return Infinity; // курс не загрузился — блокируем сумму, а не пускаем на глазок
-    const sellRate = costUahPerTon * (1 + MARGIN);
+    const sellRate = sellRateNow();
     return Math.ceil(MIN_TON * sellRate * 100) / 100;
   }
 
@@ -1021,6 +1021,9 @@
   // рыночный курс CoinGecko (get_ton_uah_rate), не себестоимость через
   // EUR_UAH_RATE.
   const MARGIN = 0.055;
+  // 10-30: нижняя граница цены (handlers._MIN_PRICE_UAH), приходит из /api/exchange/rate.
+  let minPriceUah = 56.5;
+  function sellRateNow() { return Math.max(costUahPerTon * (1 + MARGIN), minPriceUah); }
 
   let costUahPerTon = null;
   // Сколько TON сейчас реально можно купить (свободный остаток горячего
@@ -1038,6 +1041,7 @@
       try {
         const data = await apiCall('/api/exchange/rate', { init_data: tg.initData });
         costUahPerTon = data.cost_uah_per_ton;
+        if (typeof data.min_price_uah === 'number') minPriceUah = data.min_price_uah;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         rateState = 'ok';
       } catch (e) {
@@ -1061,7 +1065,7 @@
     const text = document.getElementById('ratePillText');
     pill.dataset.state = rateState;
     if (rateState === 'ok' && costUahPerTon != null) {
-      const sell = costUahPerTon * (1 + MARGIN);
+      const sell = sellRateNow();
       text.innerHTML = `1 TON <span class="rate-sub">·</span> ${sell.toFixed(2)} ₴`;
     } else if (rateState === 'closed') {
       text.textContent = 'Пауза';
@@ -1115,7 +1119,7 @@
       el.textContent = 'Курс загружается…';
       return;
     }
-    const sellRate = costUahPerTon * (1 + MARGIN);
+    const sellRate = sellRateNow();
     el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн`;
   }
 
@@ -1144,7 +1148,7 @@
       const uah = typed;
       let ton = 0;
       if (costUahPerTon != null && uah > 0) {
-        const sellRate = costUahPerTon * (1 + MARGIN);
+        const sellRate = sellRateNow();
         // Округление ВНИЗ до 2 знаков, как и на сервере (см.
         // bot/exchanger/handlers.py::uah_to_ton) — иначе превью снова
         // разъедется с реальной суммой заявки на копейки TON.
@@ -1157,7 +1161,7 @@
       const tonWanted = typed;
       let uahNeeded = 0;
       if (costUahPerTon != null && tonWanted > 0) {
-        const sellRate = costUahPerTon * (1 + MARGIN);
+        const sellRate = sellRateNow();
         // Округление ВВЕРХ (в отличие от режима "грн") — иначе клиент,
         // попросивший ровно N TON, из-за floor() на сервере получил бы
         // МЕНЬШЕ N после платежа. Небольшой запас в нашу пользу тут
@@ -1203,7 +1207,7 @@
       ? `От 1 TON · сейчас доступно до ${maxTonAvailable.toFixed(2)} TON`
       : 'От 1 TON до 50 000 грн за раз';
     const overReserve = maxTonAvailable != null && typed > 0 && (inputMode === 'uah'
-      ? Math.floor((typed / (costUahPerTon * (1 + MARGIN))) * 100) / 100 > maxTonAvailable
+      ? Math.floor((typed / (sellRateNow())) * 100) / 100 > maxTonAvailable
       : typed > maxTonAvailable);
     if (overReserve) {
       submitBtn.disabled = true;
