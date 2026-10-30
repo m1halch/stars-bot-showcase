@@ -8,28 +8,56 @@
       "comment": "Бистро четко супер",
       "date": "28.09",
       "name": "@tr***eg",
-      "orders": 22
+      "orders": 23,
+      "bought": {
+        "orders": 23,
+        "stars": 150,
+        "ton": 24.8,
+        "premium": 0,
+        "gifts": 0
+      }
     },
     {
       "rating": 5.0,
       "comment": null,
       "date": "08.09",
       "name": "@yu***os",
-      "orders": 3
+      "orders": 3,
+      "bought": {
+        "orders": 3,
+        "stars": 850,
+        "ton": 0,
+        "premium": 0,
+        "gifts": 0
+      }
     },
     {
       "rating": 5.0,
       "comment": null,
       "date": "14.09",
       "name": "@as***at",
-      "orders": 2
+      "orders": 2,
+      "bought": {
+        "orders": 2,
+        "stars": 150,
+        "ton": 0,
+        "premium": 0,
+        "gifts": 0
+      }
     },
     {
       "rating": 5.0,
       "comment": "а***нно 👍",
       "date": "24.08",
       "name": null,
-      "orders": 1
+      "orders": 1,
+      "bought": {
+        "orders": 1,
+        "stars": 2500,
+        "ton": 0,
+        "premium": 0,
+        "gifts": 0
+      }
     }
   ]
 }
