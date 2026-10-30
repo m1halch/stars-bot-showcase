@@ -766,7 +766,8 @@
 
     <div class="footer-note">
       После оплаты TON отправляется автоматически, обычно в течение минуты —<br>
-      ничего дополнительно подтверждать не нужно.
+      ничего дополнительно подтверждать не нужно.<br>
+      Оплата с любой карты (Приват, моно и др.) или Apple Pay / Google Pay.
     </div>
   </div>
 
@@ -782,6 +783,7 @@
         Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
+      <div class="hint" style="text-align:center; margin-top:10px;">Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.</div>
       <div class="timer-line" id="timerLine">Успей оплатить за <span class="timer-value" id="timerValue">30:00</span></div>
 
       <div class="stepper" id="stepper">
@@ -1771,7 +1773,7 @@
       note.textContent = 'Цену можно посчитать уже сейчас. Оплата звёзд откроется здесь же, в этой вкладке.';
       return;
     }
-    note.textContent = 'Оплата переводом в банку monobank — звёзды зачисляются автоматически через Fragment, обычно за пару минут.';
+    note.textContent = 'Оплата в банку monobank с любой карты или Apple Pay — звёзды зачисляются автоматически через Fragment, обычно за пару минут.';
     const amountOk = n >= STARS_MIN && n <= starsMax;
     const recipientOk = r !== '' && isValidStarsRecipient(r);
     btn.disabled = !(amountOk && recipientOk);
