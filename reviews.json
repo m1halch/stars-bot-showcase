@@ -1,6 +1,6 @@
 {
-  "count": 41,
-  "avgRating": 5.0,
+  "count": 42,
+  "avgRating": 4.9,
   "clients": 7,
   "reviews": [
     {
@@ -18,15 +18,15 @@
       }
     },
     {
-      "rating": 5.0,
-      "comment": "67",
+      "rating": 4.2,
+      "comment": "Задержка",
       "date": "30.10",
       "name": "@fi***ps",
-      "orders": 4,
+      "orders": 5,
       "bought": {
-        "orders": 4,
+        "orders": 5,
         "stars": 0,
-        "ton": 35.1,
+        "ton": 44.0,
         "premium": 0,
         "gifts": 0
       }
