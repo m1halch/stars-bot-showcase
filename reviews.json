@@ -1,18 +1,18 @@
 {
-  "count": 28,
+  "count": 33,
   "avgRating": 5.0,
-  "clients": 4,
+  "clients": 6,
   "reviews": [
     {
       "rating": 5.0,
-      "comment": "Бистро четко супер",
-      "date": "28.09",
+      "comment": "Кайф",
+      "date": "30.10",
       "name": "@tr***eg",
-      "orders": 23,
+      "orders": 25,
       "bought": {
-        "orders": 23,
+        "orders": 25,
         "stars": 150,
-        "ton": 24.8,
+        "ton": 30.9,
         "premium": 0,
         "gifts": 0
       }
@@ -33,6 +33,20 @@
     },
     {
       "rating": 5.0,
+      "comment": "Окак",
+      "date": "30.10",
+      "name": "@fi***ps",
+      "orders": 2,
+      "bought": {
+        "orders": 2,
+        "stars": 0,
+        "ton": 8.7,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
       "comment": null,
       "date": "14.09",
       "name": "@as***at",
@@ -41,6 +55,20 @@
         "orders": 2,
         "stars": 150,
         "ton": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "Всьо быстро",
+      "date": "30.10",
+      "name": "@j***",
+      "orders": 1,
+      "bought": {
+        "orders": 1,
+        "stars": 0,
+        "ton": 20.0,
         "premium": 0,
         "gifts": 0
       }
