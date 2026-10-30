@@ -431,6 +431,11 @@
   .paste-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  .card-pay { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border, rgba(255,255,255,.08)); text-align: center; }
+  .card-pay-title { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .card-pay-row { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .card-pay-number { font-size: 17px; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+  .card-pay-copy { width: auto; margin: 0; padding: 8px 14px; }
   .hint.error { color: var(--error); }
 
   .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
@@ -780,10 +785,18 @@
     </div>
     <div class="card">
       <div class="waiting-copy">
-        Оплати <b id="waitUahAmount"></b> грн по ссылке ниже — <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
+        Оплати ровно <b id="waitUahAmount"></b> грн — в банку или на карту ниже, <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
       <div class="hint" style="text-align:center; margin-top:10px;">Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.</div>
+      <div id="cardPayBlock" class="card-pay" hidden>
+        <div class="card-pay-title">или переводом на карту monobank</div>
+        <div class="card-pay-row">
+          <code id="cardNumber" class="card-pay-number"></code>
+          <button type="button" class="ghost-btn card-pay-copy" id="copyCardBtn">Скопировать</button>
+        </div>
+        <div class="hint" style="text-align:center;">Сумма — ровно <b id="cardAmount"></b> грн. Копейки важны: по ним бот узнаёт твой платёж.</div>
+      </div>
       <div class="timer-line" id="timerLine">Успей оплатить за <span class="timer-value" id="timerValue">30:00</span></div>
 
       <div class="stepper" id="stepper">
@@ -1021,7 +1034,7 @@
   // рыночный курс CoinGecko (get_ton_uah_rate), не себестоимость через
   // EUR_UAH_RATE.
   const MARGIN = 0.055;
-  // 10-30: нижняя граница цены (handlers._MIN_PRICE_UAH), приходит из /api/exchange/rate.
+  // 10-30: нижняя граница цены (bot/exchanger/inventory.py), приходит из /api/exchange/rate.
   let minPriceUah = 56.5;
   function sellRateNow() { return Math.max(costUahPerTon * (1 + MARGIN), minPriceUah); }
 
@@ -1446,12 +1459,12 @@
           stopTimers();
           hint.textContent = 'Оплата получена — заявку проверяем вручную, всё придёт. Если что, напишем в чате.';
           document.getElementById('cancelOrderBtn').style.display = 'none';
-          document.getElementById('openJarBtn').style.display = 'none';
+          document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
         } else if (data.status === 'expired') {
           stopTimers();
           clearSavedOrder();
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
-          document.getElementById('openJarBtn').style.display = 'none';
+          document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
           document.getElementById('newOrderBtn').style.display = '';
           document.getElementById('cancelOrderBtn').style.display = 'none';
         }
@@ -1534,6 +1547,25 @@
       cashbackNote.style.display = 'none';
     }
     document.getElementById('openJarBtn').style.display = '';
+    const cardBlock = document.getElementById('cardPayBlock');
+    if (order.card_number) {
+      const formatted = String(order.card_number).replace(/(\d{4})(?=\d)/g, '$1 ');
+      document.getElementById('cardNumber').textContent = formatted;
+      document.getElementById('cardAmount').textContent = `${order.uah_amount.toFixed(2)}`;
+      document.getElementById('copyCardBtn').onclick = async () => {
+        const btn = document.getElementById('copyCardBtn');
+        try {
+          await navigator.clipboard.writeText(String(order.card_number));
+          btn.textContent = 'Скопировано ✓';
+        } catch (e) {
+          btn.textContent = 'Выдели номер вручную';
+        }
+        setTimeout(() => { btn.textContent = 'Скопировать'; }, 2000);
+      };
+      cardBlock.hidden = false;
+    } else {
+      cardBlock.hidden = true;
+    }
     document.getElementById('newOrderBtn').style.display = 'none';
     document.getElementById('cancelOrderBtn').style.display = '';
     updateStepper('pending_payment');
@@ -1616,6 +1648,7 @@
           ton_amount: data.ton_amount,
           ton_wallet: data.ton_wallet,
           jar_link: data.jar_link,
+          card_number: data.card_number,
           expires_in_seconds: data.expires_in_seconds,
           credit_used_uah: data.credit_used_uah,
           product: data.product,
