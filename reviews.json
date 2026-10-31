@@ -1,6 +1,6 @@
 {
-  "count": 42,
-  "avgRating": 4.9,
+  "count": 44,
+  "avgRating": 4.91,
   "clients": 7,
   "reviews": [
     {
@@ -18,6 +18,20 @@
       }
     },
     {
+      "rating": 5.0,
+      "comment": "Ням ням",
+      "date": "30.10",
+      "name": "@j***",
+      "orders": 7,
+      "bought": {
+        "orders": 7,
+        "stars": 0,
+        "ton": 126.4,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
       "rating": 4.2,
       "comment": "Задержка",
       "date": "30.10",
@@ -27,20 +41,6 @@
         "orders": 5,
         "stars": 0,
         "ton": 44.0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "А***нно",
-      "date": "30.10",
-      "name": "@j***",
-      "orders": 4,
-      "bought": {
-        "orders": 4,
-        "stars": 0,
-        "ton": 78.2,
         "premium": 0,
         "gifts": 0
       }
