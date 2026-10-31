@@ -1,7 +1,7 @@
 {
-  "count": 45,
-  "avgRating": 4.91,
-  "clients": 7,
+  "count": 50,
+  "avgRating": 4.92,
+  "clients": 8,
   "reviews": [
     {
       "rating": 5.0,
@@ -20,13 +20,27 @@
     {
       "rating": 5.0,
       "comment": "Ням ням",
-      "date": "30.10",
+      "date": "31.10",
       "name": "@j***",
-      "orders": 7,
+      "orders": 10,
       "bought": {
-        "orders": 7,
+        "orders": 10,
         "stars": 0,
-        "ton": 126.4,
+        "ton": 156.2,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "крут",
+      "date": "31.10",
+      "name": "@md***ti",
+      "orders": 5,
+      "bought": {
+        "orders": 5,
+        "stars": 0,
+        "ton": 9.1,
         "premium": 0,
         "gifts": 0
       }
@@ -47,14 +61,14 @@
     },
     {
       "rating": 5.0,
-      "comment": "крут",
+      "comment": "пиздо",
       "date": "31.10",
-      "name": "@md***ti",
-      "orders": 4,
+      "name": "@cl***le",
+      "orders": 3,
       "bought": {
-        "orders": 4,
+        "orders": 3,
         "stars": 0,
-        "ton": 8.0,
+        "ton": 100.0,
         "premium": 0,
         "gifts": 0
       }
