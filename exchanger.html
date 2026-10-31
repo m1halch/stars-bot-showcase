@@ -1133,7 +1133,9 @@
       return;
     }
     const sellRate = sellRateNow();
-    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн`;
+    // 10-31: к сумме заявки добавляются копейки-номер (до +0,99) — говорим об этом
+    // заранее, иначе «≈ 57» → «56,75» выглядит как другой курс.
+    el.textContent = `Курс: 1 TON ≈ ${sellRate.toFixed(2)} грн · точная сумма с копейками — после «Оплатить»`;
   }
 
   function isValidTonAddress(v) {
