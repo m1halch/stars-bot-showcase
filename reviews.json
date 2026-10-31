@@ -1,5 +1,5 @@
 {
-  "count": 51,
+  "count": 52,
   "avgRating": 4.92,
   "clients": 8,
   "reviews": [
@@ -22,25 +22,25 @@
       "comment": "Ням ням",
       "date": "31.10",
       "name": "@j***",
-      "orders": 13,
+      "orders": 14,
       "bought": {
-        "orders": 13,
+        "orders": 14,
         "stars": 0,
-        "ton": 292.4,
+        "ton": 335.6,
         "premium": 0,
         "gifts": 0
       }
     },
     {
-      "rating": 4.3,
-      "comment": "Базара нет",
+      "rating": 4.4,
+      "comment": "Рорм",
       "date": "31.10",
       "name": "@fi***ps",
-      "orders": 6,
+      "orders": 7,
       "bought": {
-        "orders": 6,
+        "orders": 7,
         "stars": 0,
-        "ton": 49.3,
+        "ton": 53.1,
         "premium": 0,
         "gifts": 0
       }
