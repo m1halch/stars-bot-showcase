@@ -785,7 +785,7 @@
     </div>
     <div class="card">
       <div class="waiting-copy">
-        Оплати ровно <b id="waitUahAmount"></b> грн — в банку или на карту ниже, <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
+        Оплати ровно <b id="waitUahAmount"></b> грн, <b>с копейками</b> (копейки — номер твоей заявки) — в банку или на карту ниже, <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
       <div class="hint" style="text-align:center; margin-top:10px;">Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.</div>
@@ -1181,7 +1181,10 @@
         // не проблема — то же самое обсуждали для базового округления.
         uahNeeded = Math.ceil(tonWanted * sellRate * 100) / 100;
       }
-      resultEl.textContent = `${uahNeeded.toFixed(2)} грн`;
+      // 10-31: без копеек — точная сумма (с уникальными копейками) появляется
+      // только после создания заявки; клиенты платили превью 61,42 вместо 61,99.
+      // Итоговая сумма = floor + 0.01..0.99 ≥ превью, т.е. никогда не больше ceil.
+      resultEl.textContent = `≈ ${Math.ceil(uahNeeded)} грн`;
       amountOk = tonWanted >= MIN_TON && uahNeeded > 0 && uahNeeded <= MAX_UAH
         && !(maxTonAvailable != null && tonWanted > maxTonAvailable);
       finalUahToSubmit = uahNeeded;
