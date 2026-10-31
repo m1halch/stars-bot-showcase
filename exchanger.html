@@ -882,6 +882,19 @@
       <span><b>Тебя пригласил друг.</b> На первый заказ — бонус: <b>+1% TON</b> (до 20 грн) или <b>+3% звёзд</b> (до 30 ⭐) сверху.</span>
     </div>
 
+    <div class="card contest-card" id="contestCard" hidden>
+      <label>🎟 Розыгрыш NFT-подарка</label>
+      <div class="contest-dates" id="contestDates"></div>
+      <div class="ref-stats" style="margin-top:10px">
+        <div><div class="ref-num" id="contestMine">0</div><div class="ref-cap">твоих билетов</div></div>
+      </div>
+      <ul class="how-list" style="margin-top:10px">
+        <li><span class="how-num">1</span><div><b>Обмен TON от <span class="contestMin">500</span> грн</b><br><span>= 1 билет. Каждый обмен — ещё билет.</span></div></li>
+        <li><span class="how-num">2</span><div><b>Друг по твоей ссылке</b><br><span>сделал первый обмен от <span class="contestMin">500</span> грн = <b>+3 билета</b> тебе.</span></div></li>
+      </ul>
+      <div class="footer-note" style="margin-top:6px">Победителя бот выберет случайно — чем больше билетов, тем выше шанс. Итоги в канале.</div>
+    </div>
+
     <div class="card">
       <label>Твоя ссылка</label>
       <div class="wallet-field">
@@ -2021,6 +2034,16 @@
       ? `Бонусный баланс: <b>${bal.toFixed(2)} грн</b> — придёт TON-ом на следующем обмене${rank}`
       : `Бонусный баланс пока 0 грн${rank}`;
     document.getElementById('refNewbie').hidden = !(refInfo.newbie_bonus_pct > 0);
+    // 10-31: розыгрыш 2–8.11 — карточка видна с момента анонса до конца
+    const c = refInfo.contest;
+    if (c && Date.now() < Date.parse(c.end)) {
+      const f = (iso) => new Date(iso).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kyiv' });
+      document.getElementById('contestCard').hidden = false;
+      document.getElementById('contestMine').textContent = c.my_tickets;
+      document.getElementById('contestDates').textContent = c.active
+        ? `Идёт до ${f(c.end)} (Киев)` : `Старт ${f(c.start)} · итоги ${f(c.end)} (Киев)`;
+      document.querySelectorAll('.contestMin').forEach((el) => { el.textContent = Math.round(c.min_uah); });
+    }
   }
   document.getElementById('refShareBtn').addEventListener('click', () => {
     if (!refInfo) return;
