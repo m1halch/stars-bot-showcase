@@ -1,6 +1,6 @@
 {
-  "count": 52,
-  "avgRating": 4.92,
+  "count": 55,
+  "avgRating": 4.93,
   "clients": 8,
   "reviews": [
     {
@@ -22,11 +22,11 @@
       "comment": "Ням ням",
       "date": "31.10",
       "name": "@j***",
-      "orders": 14,
+      "orders": 15,
       "bought": {
-        "orders": 14,
+        "orders": 15,
         "stars": 0,
-        "ton": 335.6,
+        "ton": 396.3,
         "premium": 0,
         "gifts": 0
       }
