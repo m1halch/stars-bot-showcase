@@ -1,5 +1,5 @@
 {
-  "count": 44,
+  "count": 45,
   "avgRating": 4.91,
   "clients": 7,
   "reviews": [
@@ -47,14 +47,14 @@
     },
     {
       "rating": 5.0,
-      "comment": "красава маратик",
-      "date": "30.10",
+      "comment": "крут",
+      "date": "31.10",
       "name": "@md***ti",
-      "orders": 3,
+      "orders": 4,
       "bought": {
-        "orders": 3,
+        "orders": 4,
         "stars": 0,
-        "ton": 5.6,
+        "ton": 8.0,
         "premium": 0,
         "gifts": 0
       }
