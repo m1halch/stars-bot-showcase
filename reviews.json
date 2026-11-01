@@ -1,6 +1,6 @@
 {
-  "count": 60,
-  "avgRating": 4.93,
+  "count": 61,
+  "avgRating": 4.92,
   "clients": 8,
   "reviews": [
     {
@@ -33,14 +33,14 @@
     },
     {
       "rating": 4.6,
-      "comment": "Окак",
+      "comment": "Хз",
       "date": "01.11",
       "name": "@fi***ps",
-      "orders": 11,
+      "orders": 12,
       "bought": {
-        "orders": 11,
+        "orders": 12,
         "stars": 0,
-        "ton": 105.1,
+        "ton": 127.1,
         "premium": 0,
         "gifts": 0
       }
