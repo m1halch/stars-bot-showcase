@@ -671,7 +671,8 @@
     .section, .success-badge, .modal-panel, .skeleton { animation: none; }
     .tab-btn svg { transition: none; }
   }
-.lang-btn { margin-left: 6px; padding: 1px 7px; border: 1px solid rgba(255,255,255,.22); border-radius: 8px; background: transparent; color: inherit; font: inherit; font-size: 11px; font-weight: 600; line-height: 1.5; cursor: pointer; }
+.head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.lang-btn { padding: 5px 11px; border: 1.5px solid var(--accent, #7c6fee); border-radius: 999px; background: color-mix(in srgb, var(--accent, #7c6fee) 18%, transparent); color: #fff; font: 600 13px/1.2 var(--font-body, inherit); white-space: nowrap; cursor: pointer; }
 </style>
 </head>
 <body data-tab="ton">
@@ -687,11 +688,14 @@
     </div>
     <div>
       <div class="logo-name">TonExpress</div>
-      <div class="logo-tag">Обмен грн ⇄ TON <button type="button" id="langBtn" class="lang-btn" aria-label="UA / RU">UA</button></div>
+      <div class="logo-tag">Обмен грн ⇄ TON</div>
     </div>
   </div>
+  <div class="head-right">
   <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
     <span class="live-dot"></span><span id="ratePillText">Курс…</span>
+  </div>
+  <button type="button" id="langBtn" class="lang-btn">🌐 Українська</button>
   </div>
   </div>
 
@@ -991,7 +995,7 @@
   const initLangBtn = () => {
     const btn = document.getElementById('langBtn');
     if (!btn) return;
-    btn.textContent = lang === 'uk' ? 'RU' : 'UA';
+    btn.textContent = lang === 'uk' ? '🌐 Русский' : '🌐 Українська';
     btn.addEventListener('click', () => {
       try { localStorage.setItem('tonexpress_lang', lang === 'uk' ? 'ru' : 'uk'); } catch (e) {}
       location.reload();
