@@ -671,6 +671,7 @@
     .section, .success-badge, .modal-panel, .skeleton { animation: none; }
     .tab-btn svg { transition: none; }
   }
+.lang-btn { margin-left: 6px; padding: 1px 7px; border: 1px solid rgba(255,255,255,.22); border-radius: 8px; background: transparent; color: inherit; font: inherit; font-size: 11px; font-weight: 600; line-height: 1.5; cursor: pointer; }
 </style>
 </head>
 <body data-tab="ton">
@@ -686,7 +687,7 @@
     </div>
     <div>
       <div class="logo-name">TonExpress</div>
-      <div class="logo-tag">Обмен грн ⇄ TON</div>
+      <div class="logo-tag">Обмен грн ⇄ TON <button type="button" id="langBtn" class="lang-btn" aria-label="UA / RU">UA</button></div>
     </div>
   </div>
   <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
@@ -982,8 +983,21 @@
 (function () {
   const tgUser = window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user;
   const forced = new URLSearchParams(location.search).get('lang');
-  const lang = forced || (tgUser && tgUser.language_code) || '';
+  // Выбор кнопкой UA/RU важнее языка Telegram: language_code не всегда меняется вместе с языком приложения.
+  let saved = null;
+  try { saved = localStorage.getItem('tonexpress_lang'); } catch (e) {}
+  const lang = forced || saved || (tgUser && tgUser.language_code) || '';
   window.__t = (s) => s;
+  const initLangBtn = () => {
+    const btn = document.getElementById('langBtn');
+    if (!btn) return;
+    btn.textContent = lang === 'uk' ? 'RU' : 'UA';
+    btn.addEventListener('click', () => {
+      try { localStorage.setItem('tonexpress_lang', lang === 'uk' ? 'ru' : 'uk'); } catch (e) {}
+      location.reload();
+    });
+  };
+  document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', initLangBtn) : initLangBtn();
   if (lang !== 'uk') return;
   document.documentElement.lang = 'uk';
   const PAIRS = [
