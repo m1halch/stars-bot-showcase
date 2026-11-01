@@ -1,7 +1,7 @@
 {
-  "count": 61,
+  "count": 63,
   "avgRating": 4.92,
-  "clients": 8,
+  "clients": 9,
   "reviews": [
     {
       "rating": 5.0,
@@ -33,14 +33,14 @@
     },
     {
       "rating": 4.6,
-      "comment": "Хз",
+      "comment": "67521488",
       "date": "01.11",
       "name": "@fi***ps",
-      "orders": 12,
+      "orders": 13,
       "bought": {
-        "orders": 12,
+        "orders": 13,
         "stars": 0,
-        "ton": 127.1,
+        "ton": 142.4,
         "premium": 0,
         "gifts": 0
       }
@@ -83,6 +83,20 @@
         "orders": 3,
         "stars": 850,
         "ton": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "Нормалды",
+      "date": "01.11",
+      "name": "@v***",
+      "orders": 2,
+      "bought": {
+        "orders": 2,
+        "stars": 0,
+        "ton": 4.0,
         "premium": 0,
         "gifts": 0
       }
