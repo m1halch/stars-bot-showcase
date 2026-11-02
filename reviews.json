@@ -1,7 +1,7 @@
 {
-  "count": 65,
-  "avgRating": 4.8,
-  "clients": 10,
+  "count": 67,
+  "avgRating": 4.81,
+  "clients": 11,
   "reviews": [
     {
       "rating": 5.0,
@@ -75,6 +75,20 @@
     },
     {
       "rating": 5.0,
+      "comment": "Нормалды",
+      "date": "02.11",
+      "name": "@v***",
+      "orders": 3,
+      "bought": {
+        "orders": 3,
+        "stars": 0,
+        "ton": 6.0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
       "comment": null,
       "date": "08.09",
       "name": "@yu***os",
@@ -89,20 +103,6 @@
     },
     {
       "rating": 5.0,
-      "comment": "Нормалды",
-      "date": "01.11",
-      "name": "@v***",
-      "orders": 2,
-      "bought": {
-        "orders": 2,
-        "stars": 0,
-        "ton": 4.0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
       "comment": null,
       "date": "14.09",
       "name": "@as***at",
@@ -111,6 +111,20 @@
         "orders": 2,
         "stars": 150,
         "ton": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
+      "comment": "все бвстро ваде кайфы",
+      "date": "02.11",
+      "name": "@l***",
+      "orders": 1,
+      "bought": {
+        "orders": 1,
+        "stars": 0,
+        "ton": 1.0,
         "premium": 0,
         "gifts": 0
       }
