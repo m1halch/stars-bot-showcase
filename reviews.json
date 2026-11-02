@@ -1,11 +1,11 @@
 {
-  "count": 67,
-  "avgRating": 4.81,
-  "clients": 11,
+  "count": 61,
+  "avgRating": 4.79,
+  "clients": 10,
   "reviews": [
     {
       "rating": 5.0,
-      "comment": "Спасибо",
+      "comment": "Михаил продал тони пришли сразу",
       "date": "30.10",
       "name": "@tr***eg",
       "orders": 26,
@@ -19,7 +19,7 @@
     },
     {
       "rating": 5.0,
-      "comment": "Ням ням",
+      "comment": "Всьо быстро",
       "date": "31.10",
       "name": "@j***",
       "orders": 21,
@@ -33,7 +33,7 @@
     },
     {
       "rating": 4.6,
-      "comment": "67521488",
+      "comment": "Нормас быстро",
       "date": "01.11",
       "name": "@fi***ps",
       "orders": 13,
@@ -47,21 +47,7 @@
     },
     {
       "rating": 5.0,
-      "comment": "крут",
-      "date": "01.11",
-      "name": "@md***ti",
-      "orders": 6,
-      "bought": {
-        "orders": 6,
-        "stars": 0,
-        "ton": 10.1,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "пиздо",
+      "comment": "закупаюсь тут",
       "date": "31.10",
       "name": "@cl***le",
       "orders": 5,
@@ -89,6 +75,20 @@
     },
     {
       "rating": 5.0,
+      "comment": "все бвстро ваде кайфы",
+      "date": "02.11",
+      "name": "@l***",
+      "orders": 1,
+      "bought": {
+        "orders": 1,
+        "stars": 0,
+        "ton": 1.0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5.0,
       "comment": null,
       "date": "08.09",
       "name": "@yu***os",
@@ -110,34 +110,6 @@
       "bought": {
         "orders": 2,
         "stars": 150,
-        "ton": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "все бвстро ваде кайфы",
-      "date": "02.11",
-      "name": "@l***",
-      "orders": 1,
-      "bought": {
-        "orders": 1,
-        "stars": 0,
-        "ton": 1.0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "а***нно 👍",
-      "date": "24.08",
-      "name": null,
-      "orders": 1,
-      "bought": {
-        "orders": 1,
-        "stars": 2500,
         "ton": 0,
         "premium": 0,
         "gifts": 0
