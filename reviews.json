@@ -1,8 +1,20 @@
 {
-  "count": 61,
+  "count": 62,
   "avgRating": 4.79,
-  "clients": 10,
+  "clients": 11,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Михалыч красавчик",
+      "date": "03.11",
+      "name": "@h***",
+      "bought": {
+        "ton": 0,
+        "stars": 52,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "все бвстро ваде кайфы",
