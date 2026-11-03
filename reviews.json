@@ -4,113 +4,685 @@
   "clients": 10,
   "reviews": [
     {
-      "rating": 5.0,
-      "comment": "Михаил продал тони пришли сразу",
-      "date": "30.10",
-      "name": "@tr***eg",
-      "orders": 26,
-      "bought": {
-        "orders": 26,
-        "stars": 150,
-        "ton": 35.6,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "Всьо быстро",
-      "date": "31.10",
-      "name": "@j***",
-      "orders": 22,
-      "bought": {
-        "orders": 22,
-        "stars": 0,
-        "ton": 473.4,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 4.6,
-      "comment": "Нормас быстро",
-      "date": "01.11",
-      "name": "@fi***ps",
-      "orders": 13,
-      "bought": {
-        "orders": 13,
-        "stars": 0,
-        "ton": 142.4,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "закупаюсь тут",
-      "date": "31.10",
-      "name": "@cl***le",
-      "orders": 5,
-      "bought": {
-        "orders": 5,
-        "stars": 0,
-        "ton": 115.5,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
-      "comment": "Нормалды",
-      "date": "02.11",
-      "name": "@v***",
-      "orders": 4,
-      "bought": {
-        "orders": 4,
-        "stars": 0,
-        "ton": 10.0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5.0,
+      "rating": 5,
       "comment": "все бвстро ваде кайфы",
       "date": "02.11",
       "name": "@l***",
-      "orders": 1,
       "bought": {
-        "orders": 1,
-        "stars": 0,
         "ton": 1.0,
+        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
     },
     {
-      "rating": 5.0,
+      "rating": 5,
       "comment": null,
-      "date": "08.09",
-      "name": "@yu***os",
-      "orders": 3,
+      "date": "02.11",
+      "name": "@v***",
       "bought": {
-        "orders": 3,
-        "stars": 850,
-        "ton": 0,
+        "ton": 2.0,
+        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
     },
     {
-      "rating": 5.0,
+      "rating": 5,
+      "comment": "Нормалды",
+      "date": "01.11",
+      "name": "@v***",
+      "bought": {
+        "ton": 2.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "01.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 15.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": null,
+      "date": "01.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 22.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "01.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 17.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "01.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 10.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "01.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 4.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "01.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 20.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 54.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 60.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 43.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 3.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Базара нет",
+      "date": "31.10",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 5.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@cl***le",
+      "bought": {
+        "ton": 40.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 13.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "закупаюсь тут",
+      "date": "31.10",
+      "name": "@cl***le",
+      "bought": {
+        "ton": 30.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "31.10",
+      "name": "@cl***le",
+      "bought": {
+        "ton": 30.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 16.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Ням ням",
+      "date": "30.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 16.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Спасибо",
+      "date": "30.10",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 4.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 13.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 20.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 20.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Нормас быстро",
+      "date": "30.10",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 12.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 2.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 3.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 7.4,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.10",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 1.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Всьо быстро",
+      "date": "30.10",
+      "name": "@j***",
+      "bought": {
+        "ton": 20.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Бистро четко супер",
+      "date": "28.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "28.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Очень хорошо",
+      "date": "20.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Супер",
+      "date": "17.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Бистро пришло",
+      "date": "14.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
       "comment": null,
       "date": "14.09",
       "name": "@as***at",
-      "orders": 2,
       "bought": {
-        "orders": 2,
-        "stars": 150,
         "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Все супер",
+      "date": "13.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 4.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "12.09",
+      "name": "@as***at",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "08.09",
+      "name": "@yu***os",
+      "bought": {
+        "ton": 0,
+        "stars": 250,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "05.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "05.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "04.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Спасибо",
+      "date": "04.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Бистро пришло Спасибо",
+      "date": "04.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Все бистро пришло",
+      "date": "03.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Пришло бистро",
+      "date": "02.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 2.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Все хорошо",
+      "date": "02.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "01.09",
+      "name": "@yu***os",
+      "bought": {
+        "ton": 0,
+        "stars": 500,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Бистре пришло",
+      "date": "01.09",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "30.08",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "28.08",
+      "name": "@yu***os",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.08",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.08",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Все четко",
+      "date": "25.08",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 0.4,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Михаил продал тони пришли сразу",
+      "date": "25.08",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
