@@ -764,6 +764,11 @@
 
     <div class="limits" id="limits">От 1 TON до 50 000 грн за раз</div>
 
+    <label class="agree-row" id="privatRow" style="display:none">
+      <input type="checkbox" id="privatBox">
+      <span>Плачу с карты Приват — компенсируем комиссию банка: +<b id="privatBonus">0.00</b> TON</span>
+    </label>
+
     <label class="agree-row">
       <input type="checkbox" id="agreeBox">
       <span>Я проверил(а) свой TON-адрес и принимаю
@@ -1017,6 +1022,7 @@
     ['Вставить из буфера', 'Вставити з буфера'],
     ['TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.', 'TON прийде сюди одразу після оплати — перевірте адресу перед відправленням.'],
     ['Похоже, это не настоящий TON-адрес.', 'Схоже, це не справжня TON-адреса.'],
+    ['Плачу с карты Приват — компенсируем комиссию банка:', 'Плачу з картки Приват — компенсуємо комісію банку:'],
     ['Я проверил(а) свой TON-адрес и принимаю', 'Я перевірив(ла) свою TON-адресу та приймаю'], ['условия использования', 'умови використання'], ['политику конфиденциальности', 'політику конфіденційності'], [' и ', ' і '],
     ['Введите сумму и адрес', 'Введіть суму та адресу'], ['Прими условия ниже', 'Прийми умови нижче'],
     ['После оплаты TON отправляется автоматически, обычно в течение минуты —', 'Після оплати TON надсилається автоматично, зазвичай протягом хвилини —'],
@@ -1200,6 +1206,7 @@
   const MARGIN = 0.055;
   // 10-30: нижняя граница цены (bot/exchanger/inventory.py), приходит из /api/exchange/rate.
   let minPriceUah = 56.5;
+  let privatComp = null;
   function sellRateNow() { return Math.max(costUahPerTon * (1 + MARGIN), minPriceUah); }
 
   let costUahPerTon = null;
@@ -1219,6 +1226,7 @@
         const data = await apiCall('/api/exchange/rate', { init_data: tg.initData });
         costUahPerTon = data.cost_uah_per_ton;
         if (typeof data.min_price_uah === 'number') minPriceUah = data.min_price_uah;
+        privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         rateState = 'ok';
       } catch (e) {
@@ -1356,6 +1364,13 @@
       finalUahToSubmit = uahNeeded;
     }
     renderRateLine(typed);
+
+    const privatOk = !!privatComp && costUahPerTon != null && finalUahToSubmit >= privatComp.min_uah;
+    document.getElementById('privatRow').style.display = privatOk ? '' : 'none';
+    if (privatOk) {
+      document.getElementById('privatBonus').textContent =
+        (Math.ceil((finalUahToSubmit * privatComp.pct / sellRateNow()) * 100) / 100).toFixed(2);
+    }
 
     const walletRaw = walletInput.value.trim();
     const walletOk = walletRaw === '' || isValidTonAddress(walletRaw);
@@ -1877,6 +1892,7 @@
     try {
       const order = await apiCall('/api/exchange/create', {
         init_data: tg.initData, uah_amount: uah, ton_wallet: wallet,
+        privat: !!privatComp && uah >= privatComp.min_uah && document.getElementById('privatBox').checked,
       });
       enterWaitingScreen(order);
     } catch (e) {
