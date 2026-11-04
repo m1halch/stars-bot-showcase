@@ -1,8 +1,20 @@
 {
-  "count": 62,
+  "count": 63,
   "avgRating": 4.79,
   "clients": 11,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Спасибо бистро",
+      "date": "04.11",
+      "name": "@tr***eg",
+      "bought": {
+        "ton": 1.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Михалыч красавчик",
