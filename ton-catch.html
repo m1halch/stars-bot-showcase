@@ -20,13 +20,13 @@
 (() => {
   const UK = /^uk/i.test(navigator.language || '');
   const T = UK ? {
-    title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: 'Води пальцем: лови TON, тікай від червоних',
+    title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: '30 секунд: лови TON і бонуси, тікай від червоних',
     best: 'Рекорд', score: 'Рахунок', again: 'Тапни — ще раз', newBest: 'Новий рекорд!', bot: '@tonexpressbot · обмін грн ⇄ TON',
-    level: 'Рівень', combo: 'Комбо',
+    combo: 'Комбо', magnet: 'Магніт!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит врятував!', rain: 'Дощ з TON!',
   } : {
-    title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: 'Води пальцем: лови TON, беги от красных',
+    title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: '30 секунд: лови TON и бонусы, беги от красных',
     best: 'Рекорд', score: 'Счёт', again: 'Тапни — ещё раз', newBest: 'Новый рекорд!', bot: '@tonexpressbot · обмен грн ⇄ TON',
-    level: 'Уровень', combo: 'Комбо',
+    combo: 'Комбо', magnet: 'Магнит!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит спас!', rain: 'Дождь из TON!',
   };
 
   const tg = window.Telegram && window.Telegram.WebApp;
@@ -96,25 +96,37 @@
   const SAD = new Path2D('M38 82 Q51 72 64 82');
   const WOW = new Path2D('M44 78 A8 9 0 1 0 60 78 A8 9 0 1 0 44 78');
 
+  const ROUND = 30;
   const state = {
-    mode: 'menu', score: 0, lives: 3, x: W / 2, tx: W / 2, items: [], pops: [], parts: [], t: 0, spawnIn: 0,
-    mood: 0, shake: 0, flash: 0, flashColor: '#fff', squash: 0, combo: 0, level: 1, banner: 0, newBest: false, overAt: 0,
+    mode: 'menu', score: 0, x: W / 2, tx: W / 2, items: [], pops: [], parts: [], t: 0, spawnIn: 0, left: ROUND,
+    mood: 0, shake: 0, flash: 0, flashColor: '#fff', squash: 0, combo: 0, banner: 0, bannerText: '', newBest: false, overAt: 0,
+    magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0,
   };
   let seed = 1;
   const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 
   function reset() {
-    Object.assign(state, { mode: 'play', score: 0, lives: 3, items: [], pops: [], parts: [], t: 0, spawnIn: .4, mood: 0, shake: 0,
-      flash: 0, squash: 0, combo: 0, level: 1, banner: 0, newBest: false });
+    Object.assign(state, { mode: 'play', score: 0, items: [], pops: [], parts: [], t: 0, spawnIn: .4, left: ROUND, mood: 0, shake: 0,
+      flash: 0, squash: 0, combo: 0, banner: 0, newBest: false, magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0 });
     seed = (Date.now() % 100000) + 1;
     sfx.start(); buzz('light');
   }
 
+  const elapsed = () => ROUND - state.left;
+
   function spawn() {
-    const lvl = Math.min(state.score / 40, 1);
-    const r = rnd();
-    const kind = r < .1 ? 'gold' : r < .1 + .16 + lvl * .14 ? 'bad' : 'ton';
-    state.items.push({ kind, x: 22 + rnd() * (W - 44), y: -20, v: 110 + state.score * 3.2 + rnd() * 40, rot: rnd() * 6 });
+    const r = rnd(), e = elapsed();
+    let kind = 'ton';
+    if (state.rain > 0) kind = rnd() < .15 ? 'gold' : 'ton';
+    else if (r < .025) kind = 'diamond';
+    else if (r < .055) kind = 'magnet';
+    else if (r < .08) kind = 'shield';
+    else if (r < .11) kind = 'x2';
+    else if (r < .2) kind = 'gold';
+    else if (r < .36 + e * .004) kind = 'bad';
+    const zig = (kind === 'ton' || kind === 'gold' || kind === 'bad') && rnd() < .3 ? 20 + rnd() * 25 : 0;
+    const x = 30 + rnd() * (W - 60);
+    state.items.push({ kind, x, x0: x, zig, ph: rnd() * 6, y: -20, v: (state.rain > 0 ? 170 : 115) + e * 5 + rnd() * 40, rot: rnd() * 6 });
   }
 
   function pop(x, y, text, color, size) { state.pops.push({ x, y, text, color, size: size || 20, life: .9 }); }
@@ -126,6 +138,7 @@
     }
   }
   const flash = (c, v) => { state.flash = v || .35; state.flashColor = c; };
+  const banner = (s) => { state.banner = 1.4; state.bannerText = s; };
 
   // Запущена из Telegram Game (кнопка «Играть» под карточкой) — шлём счёт боту,
   // он пишет его в таблицу рекордов чата. Токен подписан ботом (bot/exchanger/game.py).
@@ -140,41 +153,52 @@
     } catch (e) {}
   }
 
-  function hurt(isMiss) {
-    state.lives -= 1; state.combo = 0; state.mood = -1; state.shake = .35;
-    flash('#ff4d5e', .3);
-    if (isMiss) sfx.miss(); else sfx.bad();
-    buzz('error');
-    if (state.lives <= 0) {
-      state.mode = 'over'; state.overAt = state.t;
-      if (state.score > best) { best = state.score; state.newBest = true; store('tonCatchBest', String(best)); }
-      sfx.over(state.newBest);
-      reportScore(state.score);
-      buzz(state.newBest ? 'ok' : 'heavy');
-      if (state.newBest) for (let i = 0; i < 4; i++) burst(60 + i * 80, 120, ['#ffd93d', '#fff', '#7dd3ff', '#b9b4ff'], 18, 1.4);
+  function endRound() {
+    state.mode = 'over'; state.overAt = state.t;
+    if (state.score > best) { best = state.score; state.newBest = true; store('tonCatchBest', String(best)); }
+    sfx.over(state.newBest);
+    reportScore(state.score);
+    buzz(state.newBest ? 'ok' : 'heavy');
+    if (state.newBest) for (let i = 0; i < 4; i++) burst(60 + i * 80, 120, ['#ffd93d', '#fff', '#7dd3ff', '#b9b4ff'], 18, 1.4);
+  }
+
+  function hitBad(it) {
+    if (state.shield) {
+      state.shield = false; pop(it.x, it.y, T.shieldUsed, '#7dffa8', 20); sfx.level(); buzz('medium');
+      burst(it.x, it.y, ['#7dffa8', '#fff'], 14, 1); return;
     }
+    state.score = Math.max(0, state.score - 5); state.combo = 0; state.mood = -1; state.shake = .35;
+    pop(it.x, it.y, '−5', '#ff6b6b', 24); burst(it.x, it.y, ['#ff5c6c', '#ff9aa5'], 12, 1);
+    flash('#ff4d5e', .3); sfx.bad(); buzz('error');
   }
 
   function catchItem(it) {
-    const mult = state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1;
-    const base = it.kind === 'gold' ? 3 : 1;
+    const k = it.kind;
+    state.mood = 1; state.squash = 1;
+    if (k === 'magnet' || k === 'shield' || k === 'x2') {
+      if (k === 'magnet') state.magnet = 5;
+      if (k === 'x2') state.x2 = 6;
+      if (k === 'shield') state.shield = true;
+      banner(T[k]); sfx.level(); buzz('medium'); flash('#ffffff', .2);
+      burst(it.x, it.y, ['#fff', '#b9b4ff', '#ffd93d'], 16, 1.1);
+      return;
+    }
+    const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1);
+    const base = k === 'diamond' ? 10 : k === 'gold' ? 3 : 1;
     const add = base * mult;
-    const before = state.score;
-    state.score += add; state.combo += 1; state.mood = 1; state.squash = 1;
-    if (it.kind === 'gold') {
+    state.score += add; state.combo += 1;
+    if (k === 'diamond') {
+      sfx.level(); sfx.gold(); buzz('heavy'); flash('#bff4ff', .35);
+      burst(it.x, it.y, ['#bff4ff', '#7dd3ff', '#fff', '#ffd93d'], 26, 1.5);
+    } else if (k === 'gold') {
       sfx.gold(); buzz('medium'); flash('#ffd93d', .28);
       burst(it.x, it.y, ['#ffd93d', '#fff3b0', '#fff'], 16, 1.2);
     } else {
       sfx.catch(state.combo); buzz('light');
       burst(it.x, it.y, ['#7dd3ff', '#0098ea', '#fff'], 9, .9);
     }
-    pop(it.x, it.y - 6, '+' + add, it.kind === 'gold' ? '#ffd93d' : '#bfe9ff', mult > 1 ? 24 : 20);
+    pop(it.x, it.y - 6, '+' + add, k === 'ton' ? '#bfe9ff' : '#ffd93d', mult > 1 || k === 'diamond' ? 26 : 20);
     if (state.combo === 5 || state.combo === 15) { pop(state.x, H - 110, `${T.combo} x${state.combo === 5 ? 2 : 3}!`, '#ffd93d', 22); buzz('rigid'); }
-    const lv = 1 + Math.floor(state.score / 25);
-    if (lv > state.level && Math.floor(before / 25) < Math.floor(state.score / 25)) {
-      state.level = lv; state.banner = 1.4; sfx.level(); buzz('ok'); flash('#ffffff', .25);
-      burst(W / 2, H / 2, ['#fff', '#ffd93d', '#b9b4ff'], 24, 1.3);
-    }
   }
 
   function update(dt) {
@@ -190,22 +214,30 @@
     state.parts = state.parts.filter((p) => p.life > 0);
     state.t += dt;
     if (state.mode !== 'play') return;
+    state.left -= dt;
+    state.magnet = Math.max(0, state.magnet - dt);
+    state.x2 = Math.max(0, state.x2 - dt);
+    state.rain = Math.max(0, state.rain - dt);
+    if (!state.rainDone && state.left < 17) { state.rainDone = true; state.rain = 3.5; banner(T.rain); sfx.level(); buzz('ok'); }
+    const sec = Math.ceil(state.left);
+    if (sec <= 5 && sec > 0 && sec !== state.lastBeep) { state.lastBeep = sec; tone(880, .07, 'square', .06); buzz('light'); }
+    if (state.left <= 0) { state.left = 0; endRound(); return; }
     state.spawnIn -= dt;
     if (state.spawnIn <= 0) {
       spawn();
-      state.spawnIn = Math.max(.32, .95 - state.score * .012) * (.75 + rnd() * .5);
+      state.spawnIn = state.rain > 0 ? .09 : Math.max(.28, .8 - elapsed() * .015) * (.75 + rnd() * .5);
     }
     const hx = state.x, hy = H - 46;
     for (const it of state.items) {
-      if (state.mode !== 'play') break;
-      it.y += it.v * dt; it.rot += dt * 2;
+      it.y += it.v * dt; it.rot += dt * 2; it.ph += dt * 3;
+      if (it.zig) it.x = Math.max(18, Math.min(W - 18, it.x0 + Math.sin(it.ph) * it.zig));
+      if (state.magnet > 0 && it.kind !== 'bad' && it.y > 120) { it.x0 += (hx - it.x0) * Math.min(1, dt * 5); if (!it.zig) it.x = it.x0; }
       if (!it.done && it.y > hy - 30 && it.y < hy + 10 && Math.abs(it.x - hx) < 38) {
         it.done = true;
-        if (it.kind === 'bad') { pop(it.x, it.y, '−1', '#ff6b6b', 24); burst(it.x, it.y, ['#ff5c6c', '#ff9aa5'], 12, 1); hurt(false); }
-        else catchItem(it);
+        if (it.kind === 'bad') hitBad(it); else catchItem(it);
       } else if (!it.done && it.y > H + 20) {
         it.done = true;
-        if (it.kind !== 'bad') hurt(true);
+        if (it.kind === 'ton' || it.kind === 'gold' || it.kind === 'diamond') { if (state.combo >= 5) sfx.miss(); state.combo = 0; }
       }
     }
     state.items = state.items.filter((it) => !it.done);
@@ -216,7 +248,7 @@
     gr.addColorStop(0, '#4b4cca'); gr.addColorStop(.5, '#5f63d2'); gr.addColorStop(1, '#8474e0');
     g.fillStyle = gr; g.fillRect(0, 0, W, H);
     g.fillStyle = 'rgba(255,255,255,.07)';
-    const off = (state.t * (12 + state.level * 4)) % 64;
+    const off = (state.t * (12 + (state.mode === 'play' ? elapsed() * .8 : 0))) % 64;
     for (let y = -64; y < H + 64; y += 64) for (let x = 0; x < W + 64; x += 64) {
       for (const [ox, oy] of [[16, 8], [48, 38]]) {
         const cx = x + ox, cy = y + oy + off;
@@ -227,6 +259,24 @@
 
   function coin(it) {
     g.save(); g.translate(it.x, it.y);
+    if (it.kind === 'diamond') {
+      g.fillStyle = 'rgba(191,244,255,.35)'; g.beginPath(); g.arc(0, 0, 26 + Math.sin(state.t * 12) * 4, 0, 7); g.fill();
+      g.fillStyle = '#bff4ff'; g.strokeStyle = '#0d0620'; g.lineWidth = 3; g.lineJoin = 'round';
+      g.beginPath(); g.moveTo(-16, -6); g.lineTo(-8, -15); g.lineTo(8, -15); g.lineTo(16, -6); g.lineTo(0, 17); g.closePath(); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(-16, -6); g.lineTo(16, -6); g.moveTo(-6, -6); g.lineTo(0, 17); g.lineTo(6, -6); g.stroke();
+      g.restore(); return;
+    }
+    if (it.kind === 'magnet' || it.kind === 'shield' || it.kind === 'x2') {
+      g.rotate(Math.sin(it.rot) * .2);
+      g.fillStyle = it.kind === 'magnet' ? '#ff9f43' : it.kind === 'shield' ? '#4fd17a' : '#b14cff';
+      g.strokeStyle = '#0d0620'; g.lineWidth = 3;
+      g.beginPath(); g.arc(0, 0, 16, 0, 7); g.fill(); g.stroke();
+      g.strokeStyle = '#fff'; g.fillStyle = '#fff'; g.lineWidth = 3.4; g.lineCap = 'round'; g.lineJoin = 'round';
+      if (it.kind === 'magnet') { g.beginPath(); g.moveTo(-7, -7); g.lineTo(-7, 2); g.arc(0, 2, 7, Math.PI, 0, true); g.lineTo(7, -7); g.stroke(); }
+      else if (it.kind === 'shield') { g.beginPath(); g.moveTo(0, -9); g.lineTo(8, -5); g.lineTo(6, 4); g.lineTo(0, 9); g.lineTo(-6, 4); g.lineTo(-8, -5); g.closePath(); g.stroke(); }
+      else { g.font = '900 13px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('x2', 0, 1); }
+      g.restore(); return;
+    }
     if (it.kind === 'bad') {
       g.fillStyle = '#ff5c6c'; g.strokeStyle = '#0d0620'; g.lineWidth = 3;
       g.beginPath(); g.arc(0, 0, 15, 0, 7); g.fill(); g.stroke();
@@ -272,13 +322,6 @@
     g.strokeText(s, x, y); g.fillStyle = color || '#fff'; g.fillText(s, x, y);
   }
 
-  function heart(x, y, on) {
-    g.save(); g.translate(x, y);
-    g.beginPath(); g.moveTo(0, 8); g.bezierCurveTo(-14, -2, -8, -14, 0, -6); g.bezierCurveTo(8, -14, 14, -2, 0, 8);
-    g.fillStyle = on ? '#ff5c6c' : 'rgba(255,255,255,.25)'; g.fill();
-    g.strokeStyle = '#0d0620'; g.lineWidth = 2.5; g.stroke(); g.restore();
-  }
-
   // Кнопка звука в углу (рисованная, без эмодзи).
   const SND = { x: W / 2, y: 26, r: 15 };
   function soundBtn() {
@@ -294,9 +337,14 @@
   function hud() {
     coin({ kind: 'ton', x: 30, y: 26, rot: 0 });
     text(String(state.score), 52, 26, 24, '#fff', 'left');
-    for (let i = 0; i < 3; i++) heart(W - 26 - i * 26, 26, i < state.lives);
-    const mult = state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1;
-    if (mult > 1) text('x' + mult, 30, 54, 16, '#ffd93d');
+    const sec = Math.ceil(state.left);
+    text(`0:${String(sec).padStart(2, '0')}`, W - 16, 26, 22, sec <= 5 ? '#ff6b6b' : '#fff', 'right');
+    const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1);
+    const tags = [];
+    if (mult > 1) tags.push(['x' + mult, '#ffd93d']);
+    if (state.magnet > 0) tags.push([`${T.magnet.replace('!', '')} ${Math.ceil(state.magnet)}`, '#ff9f43']);
+    if (state.shield) tags.push([T.shield.replace('!', ''), '#7dffa8']);
+    tags.forEach(([s, c], i) => text(s, 18, 56 + i * 22, 14, c, 'left'));
   }
 
   function overlay(lines) {
@@ -322,7 +370,7 @@
       if (state.banner > 0) {
         const k = Math.min(1, (1.4 - state.banner) * 6);
         g.globalAlpha = Math.min(1, state.banner * 2);
-        text(`${T.level} ${state.level}!`, W / 2, H / 2 - 40, 30 * (0.7 + 0.3 * k), '#ffd93d');
+        text(state.bannerText, W / 2, H / 2 - 40, 30 * (0.7 + 0.3 * k), '#ffd93d');
         g.globalAlpha = 1;
       }
     }
