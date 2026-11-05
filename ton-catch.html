@@ -142,7 +142,8 @@
 
   // Запущена из Telegram Game (кнопка «Играть» под карточкой) — шлём счёт боту,
   // он пишет его в таблицу рекордов чата. Токен подписан ботом (bot/exchanger/game.py).
-  const GAME_TOKEN = (location.hash.match(/[#&]t=([^&]+)/) || [])[1] || '';
+  let GAME_TOKEN = (location.hash.match(/[#&]t=([^&]+)/) || [])[1] || '';
+  try { if (!GAME_TOKEN && tg && tg.initDataUnsafe && tg.initDataUnsafe.start_param) GAME_TOKEN = tg.initDataUnsafe.start_param; } catch (e) {}
   function reportScore(score) {
     if (!GAME_TOKEN || score <= 0) return;
     try {
