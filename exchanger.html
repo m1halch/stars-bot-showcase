@@ -19,7 +19,7 @@
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800&family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0b0e14;
@@ -673,31 +673,146 @@
   }
 .head-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .lang-btn { padding: 5px 11px; border: 1.5px solid var(--accent, #7c6fee); border-radius: 999px; background: color-mix(in srgb, var(--accent, #7c6fee) 18%, transparent); color: #fff; font: 600 13px/1.2 var(--font-body, inherit); white-space: nowrap; cursor: pointer; }
+/* === Индиго-стиль: цвета сняты с профиля владельца, Мистер Тон в шапке === */
+:root {
+  --bg: #16141c; --card: #25222e; --border: #322e3d; --muted: #9b96ad;
+  --accent: #8c86ec; --accent-dim: rgba(124, 120, 230, .16);
+  --btn: #6365d4;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --font-brand: 'Unbounded', var(--font-display);
+}
+body { padding-top: 0; padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px)); }
+body::before { display: none; }
+.trust { display: none; }
+body[data-section="successSection"] .hero { display: none; }
+body[data-section="successSection"] #successSection { margin-top: 16px; }
+body[data-tab="stars"] { --btn: #f2b83b; }
+button.primary:not(:disabled) { background: var(--btn); color: #fff; }
+
+.hero {
+  position: relative;
+  display: block;
+  margin: 0 -16px 14px;
+  padding: 14px 16px 16px;
+  min-height: 172px;
+  overflow: hidden;
+  color: #fff;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Cpath d='M16 8l8 7-8 14-8-14zM48 38l8 7-8 14-8-14z' fill='%23fff' opacity='.07'/%3E%3C/svg%3E"),
+    linear-gradient(180deg, #4b4cca 0%, #5f63d2 45%, #8474e0 100%);
+}
+.hero-text { position: relative; z-index: 2; }
+.hero-text > * { animation: fade-in .22s var(--ease-out) backwards; }
+.hero-text > :nth-child(2) { animation-delay: 40ms; }
+.hero-text > :nth-child(3) { animation-delay: 80ms; }
+.hero-text > :nth-child(4) { animation-delay: 120ms; }
+.hero-text > :nth-child(5) { animation-delay: 160ms; }
+.hero .lang-btn {
+  display: inline-block;
+  margin-bottom: 11px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 255, 255, .35);
+  background: rgba(255, 255, 255, .12);
+  color: #fff;
+  font: 600 12px/1 var(--font-body);
+}
+.hero .logo-name { font: 800 22px/1.1 var(--font-brand); margin-bottom: 4px; }
+.hero .logo-tag { margin-top: 2px; font-size: 12.5px; line-height: 1.35; color: #fff; opacity: .86; }
+.hero .rate-pill {
+  margin-top: 10px;
+  padding: 8px 13px;
+  border: none;
+  background: rgba(22, 18, 60, .38);
+  color: #fff;
+  font: 700 15px/1 var(--font-display);
+}
+.hero .rate-pill .live-dot { background: rgba(255, 255, 255, .55); }
+.hero .rate-pill[data-state="ok"] .live-dot { background: #7dffa8; }
+.hero .rate-pill[data-state="closed"] .live-dot,
+.hero .rate-pill[data-state="error"] .live-dot { background: #ff8a8a; }
+
+.mascot { position: relative; display: block; width: 126px; aspect-ratio: 360 / 468; padding: 0; border: 0; background: none; }
+.mascot img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.topbar .mascot {
+  position: absolute;
+  right: 4px;
+  bottom: 0;
+  z-index: 1;
+  cursor: pointer;
+  animation: mascot-rise .28s var(--ease-out) backwards;
+}
+.mascot-shades {
+  transform-origin: 50% 25%;
+  transition: transform .18s var(--ease-out);
+  animation: shades-drop .26s var(--ease-out) .22s backwards;
+}
+.mascot.peek .mascot-shades { transform: translateY(-13%) rotate(-7deg); }
+@keyframes mascot-rise { from { opacity: 0; transform: translateY(14%); } }
+@keyframes shades-drop { from { opacity: 0; transform: translateY(-26%); } }
+
+.ex-card { padding: 16px 18px; }
+.ex-card > .card { background: none; border: 0; padding: 0; margin: 0; border-radius: 0; }
+.ex-card > .arrow-divider { margin: 10px 0; }
+.ex-card .result-value { font: 800 26px/1.15 var(--font-brand); color: #fff; }
+.chip:active { transform: scale(.97); }
+
+.tabbar { left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); padding: 5px; border: 1px solid rgba(255, 255, 255, .13); border-radius: 30px; background: rgba(37, 34, 46, .92); }
+.tabbar-inner { position: relative; }
+.tab-btn { position: relative; z-index: 1; }
+.tab-ind {
+  position: absolute;
+  top: 0; bottom: 0; left: 0;
+  width: 25%;
+  border-radius: 24px;
+  background: var(--accent-dim);
+  transition: transform .24s var(--ease-in-out), background-color .24s ease;
+}
+body[data-tab="stars"] .tab-ind { transform: translateX(100%); }
+body[data-tab="friends"] .tab-ind { transform: translateX(200%); }
+body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
+#panel-stars:not([hidden]), #panel-friends:not([hidden]), #panel-reviews:not([hidden]) { animation: fade-in .18s var(--ease-out); }
+
+.step-dot svg path { stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .28s var(--ease-out); }
+.step.done .step-dot svg path { stroke-dashoffset: 0; }
+
+.success-hero {
+  position: relative;
+  height: 150px;
+  margin: -18px -18px 16px;
+  border-radius: 15px 15px 0 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, #4b4cca 0%, #8474e0 100%);
+}
+.mascot-success { position: absolute; left: 50%; bottom: 0; width: 112px; margin-left: -56px; animation: mascot-rise .28s var(--ease-out) backwards; }
+.success-hero .success-badge { position: absolute; left: 50%; bottom: 10px; width: 38px; height: 38px; margin: 0 0 0 40px; box-shadow: none; animation-delay: .34s; }
+.success-hero .success-badge svg { width: 19px; height: 19px; }
+.spark { position: absolute; left: 50%; top: 42%; width: 9px; height: 9px; border-radius: 2px; opacity: 0; pointer-events: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-text > *, .topbar .mascot, .mascot-success, .mascot-shades,
+  #panel-stars:not([hidden]), #panel-friends:not([hidden]), #panel-reviews:not([hidden]) { animation: none; }
+  .tab-ind, .mascot-shades, .step-dot svg path { transition: none; }
+}
 </style>
 </head>
 <body data-tab="ton">
 
-  <div class="topbar">
-  <div class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/>
-        <path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/>
-        <path d="M12 2L9 9L12 22L15 9L12 2Z" fill="currentColor" fill-opacity=".25"/>
-      </svg>
-    </div>
-    <div>
+  <header class="topbar hero">
+    <div class="hero-text">
+      <button type="button" id="langBtn" class="lang-btn">🌐 Українська</button>
       <div class="logo-name">TonExpress</div>
       <div class="logo-tag">Обмен грн ⇄ TON</div>
+      <div class="logo-tag">TON за ~1 минуту</div>
+      <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
+        <span class="live-dot"></span><span id="ratePillText">Курс…</span>
+      </div>
     </div>
-  </div>
-  <div class="head-right">
-  <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
-    <span class="live-dot"></span><span id="ratePillText">Курс…</span>
-  </div>
-  <button type="button" id="langBtn" class="lang-btn">🌐 Українська</button>
-  </div>
-  </div>
+    <button type="button" class="mascot" id="heroMascot" aria-label="Мистер Тон">
+      <img src="mister-ton.png" width="360" height="468" alt="">
+      <img class="mascot-shades" src="mister-ton-shades.png" width="360" height="468" alt="">
+    </button>
+  </header>
 
   <section class="tab-panel" id="panel-ton" role="tabpanel" aria-labelledby="tab-ton">
   <button type="button" class="trust" id="trustRow" aria-label="Открыть отзывы">
@@ -711,6 +826,7 @@
   </div>
 
   <div id="formSection" class="section">
+    <div class="card ex-card">
     <div class="card card-input">
       <label for="uah" id="inputLabel">Отдаёте</label>
       <div class="amount-row">
@@ -743,6 +859,7 @@
       <label id="resultLabel"><svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/><path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>Получаете</label>
       <div class="result-value" id="result">0.00 TON</div>
       <div class="rate-line" id="rateLine">Введите сумму, чтобы увидеть курс</div>
+    </div>
     </div>
 
     <div class="card card-input">
@@ -835,8 +952,14 @@
 
   <div id="successSection" class="section" style="display:none;">
     <div class="card success-card">
+      <div class="success-hero" id="successHero">
+      <div class="mascot mascot-success">
+        <img src="mister-ton.png" width="360" height="468" alt="">
+        <img class="mascot-shades" src="mister-ton-shades.png" width="360" height="468" alt="">
+      </div>
       <div class="success-badge">
         <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#04140a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
       </div>
       <div class="result-value success-title">Готово!</div>
       <div class="hint success-text" id="successText"></div>
@@ -957,6 +1080,7 @@
 
   <nav class="tabbar" role="tablist" aria-label="Разделы">
     <div class="tabbar-inner">
+      <span class="tab-ind" aria-hidden="true"></span>
       <button type="button" class="tab-btn" id="tab-ton" role="tab" aria-selected="true" aria-controls="panel-ton" data-tab="ton">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4.5 9L12 2.8 19.5 9 12 21.2 4.5 9z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4.5 9h15M12 2.8V21.2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
         TON
@@ -1245,13 +1369,49 @@
     recompute();
   }
 
+  const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let lastRateText = '';
+
+  // Разовый «салют» ромбиками, когда TON реально ушёл клиенту. Только живое
+  // подтверждение из опроса статуса — при повторном открытии заявки не играет.
+  function celebrate() {
+    const box = document.getElementById('successHero');
+    if (!box || REDUCED_MOTION || !box.animate) return;
+    const colors = ['#ffffff', '#f5c451', '#b9b4ff'];
+    for (let i = 0; i < 14; i++) {
+      const el = document.createElement('span');
+      el.className = 'spark';
+      el.style.background = colors[i % colors.length];
+      box.appendChild(el);
+      const angle = Math.PI * (1 + (i + 0.5) / 14);
+      const dist = 70 + Math.random() * 70;
+      const x = Math.cos(angle) * dist;
+      const y = Math.sin(angle) * dist;
+      el.animate(
+        [
+          { opacity: 1, transform: 'translate(0, 0) rotate(45deg) scale(1)' },
+          { opacity: 0, transform: `translate(${x}px, ${y}px) rotate(${180 + i * 25}deg) scale(.6)` },
+        ],
+        { duration: 650 + Math.random() * 350, delay: 240, easing: 'cubic-bezier(0.23, 1, 0.32, 1)', fill: 'backwards' }
+      ).onfinish = () => el.remove();
+    }
+  }
+
   function renderRatePill() {
     const pill = document.getElementById('ratePill');
     const text = document.getElementById('ratePillText');
     pill.dataset.state = rateState;
     if (rateState === 'ok' && costUahPerTon != null) {
       const sell = sellRateNow();
-      text.innerHTML = `1 TON <span class="rate-sub">·</span> ${sell.toFixed(2)} ₴`;
+      const rateText = `1 TON = ${sell.toFixed(2)} грн`;
+      if (lastRateText && lastRateText !== rateText && !REDUCED_MOTION) {
+        pill.animate(
+          [{ transform: 'scale(1)' }, { transform: 'scale(1.05)' }, { transform: 'scale(1)' }],
+          { duration: 260, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }
+        );
+      }
+      lastRateText = rateText;
+      text.textContent = rateText;
     } else if (rateState === 'closed') {
       text.textContent = 'Пауза';
     } else if (rateState === 'error') {
@@ -1577,6 +1737,7 @@
   }
 
   function showSection(id) {
+    document.body.dataset.section = id;
     ['formSection', 'waitingSection', 'successSection'].forEach((sec) => {
       document.getElementById(sec).style.display = sec === id ? '' : 'none';
     });
@@ -1635,6 +1796,7 @@
           document.getElementById('successText').textContent = successTextFor(data);
           try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
           showSection('successSection');
+          celebrate();
         } else if (data.status === 'waiting_reserve' || data.status === 'fulfilling') {
           // Деньги уже пришли — отменять больше нечего, убираем кнопку.
           hint.textContent = data.product === 'stars'
@@ -1927,6 +2089,24 @@
   function haptic(kind) {
     try { tg && tg.HapticFeedback && tg.HapticFeedback.selectionChanged(); } catch (e) {}
   }
+  try {
+    tg.setHeaderColor('#4b4cca');
+    tg.setBackgroundColor('#16141c');
+    tg.setBottomBarColor && tg.setBottomBarColor('#16141c');
+  } catch (e) {}
+
+  // Тап по Мистеру Тону: приподнимает очки и подмигивает глазами.
+  (function () {
+    const m = document.getElementById('heroMascot');
+    let timer = null;
+    m.addEventListener('click', () => {
+      haptic();
+      m.classList.add('peek');
+      clearTimeout(timer);
+      timer = setTimeout(() => m.classList.remove('peek'), 1000);
+    });
+  })();
+
   function selectTab(name) {
     document.body.dataset.tab = name;
     document.querySelectorAll('.tab-btn').forEach((btn) => {
