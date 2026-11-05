@@ -776,7 +776,27 @@ button.primary:not(:disabled) { background: var(--btn); color: #fff; }
   background: #fff;
   transform: rotate(45deg);
 }
-body[data-section="waitingSection"] .hero-say { display: block; }
+body[data-section="waitingSection"] .hero-say,
+body[data-mood="sleep"]:not([data-section="waitingSection"]) .hero-say,
+body[data-mood="sad"]:not([data-section="waitingSection"]) .hero-say { display: block; }
+body[data-mood="sleep"] .hero .logo-tag, body[data-mood="sad"] .hero .logo-tag { display: none; }
+
+/* Настроения маскота: золотой на «Звёздах», спит на паузе, грустит без курса/по истёкшей заявке */
+.mascot .mood-gold, .mascot .mood-sleep, .mascot .mood-sad { opacity: 0; }
+body[data-tab="stars"] .topbar .mood-base { opacity: 0; }
+body[data-tab="stars"] .topbar .mood-gold { opacity: 1; }
+body[data-mood="sleep"] .topbar .mood-sleep,
+body[data-mood="sad"] .topbar .mood-sad,
+body[data-expired][data-section="waitingSection"] .topbar .mood-sad { opacity: 1; }
+body[data-mood="sleep"] .topbar .mood-base, body[data-mood="sleep"] .topbar .mood-gold, body[data-mood="sleep"] .topbar .mascot-shades,
+body[data-mood="sad"] .topbar .mood-base, body[data-mood="sad"] .topbar .mood-gold, body[data-mood="sad"] .topbar .mascot-shades,
+body[data-expired][data-section="waitingSection"] .topbar .mood-base,
+body[data-expired][data-section="waitingSection"] .topbar .mascot-shades { opacity: 0; }
+.topbar .mascot img { transition: opacity .2s ease; }
+
+/* Плашки паузы/ошибки — спокойная карточка вместо красной тревоги, грусть показывает маскот */
+.notice { border-color: var(--border); background: var(--card); color: var(--text); }
+.notice svg { color: var(--accent); }
 body[data-section="waitingSection"] .hero .logo-tag,
 body[data-section="waitingSection"] .hero .rate-pill,
 body[data-section="waitingSection"] .hero .lang-btn { display: none; }
@@ -861,8 +881,11 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       </div>
     </div>
     <button type="button" class="mascot" id="heroMascot" aria-label="Мистер Тон">
-      <img src="mister-ton.png" width="360" height="468" alt="">
+      <img class="mood-base" src="mister-ton.png" width="360" height="468" alt="">
+      <img class="mood-gold" src="mister-ton-gold.png" width="360" height="468" alt="">
       <img class="mascot-shades" src="mister-ton-shades.png" width="360" height="468" alt="">
+      <img class="mood-sleep" src="mister-ton-sleep.png" width="360" height="468" alt="">
+      <img class="mood-sad" src="mister-ton-sad.png" width="360" height="468" alt="">
     </button>
   </header>
 
@@ -1213,7 +1236,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['или переводом на карту monobank', 'або переказом на картку monobank'], ['Скопировать', 'Скопіювати'], ['Скопировано ✓', 'Скопійовано ✓'], ['Выдели номер вручную', 'Виділи номер вручну'], ['Зажми ссылку выше', 'Затисни посилання вище'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
-    ['Мой адрес', 'Моя адреса'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
+    ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
     ['Ждём оплату…', 'Чекаємо на оплату…'], ['↺ Создать новую заявку', '↺ Створити нову заявку'], ['Отменить заявку', 'Скасувати заявку'], ['Отменяем…', 'Скасовуємо…'], ['Точно отменить заявку?', 'Точно скасувати заявку?'],
     ['Готово!', 'Готово!'], ['Закрыть', 'Закрити'],
     ['Звёзды', 'Зірки'], ['Покупка звёзд за гривны — на свой аккаунт или в подарок другу. Звёзды зачисляются автоматически через Fragment.', 'Купівля зірок за гривні — на свій акаунт або в подарунок другу. Зірки зараховуються автоматично через Fragment.'],
@@ -1468,6 +1491,13 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     const pill = document.getElementById('ratePill');
     const text = document.getElementById('ratePillText');
     pill.dataset.state = rateState;
+    // Настроение Мистера Тона в шапке: спит на паузе, грустит без курса.
+    const mood = rateState === 'closed' ? 'sleep' : rateState === 'error' ? 'sad' : '';
+    if (document.body.dataset.mood !== mood) {
+      document.body.dataset.mood = mood;
+      if (mood === 'sleep') mascotSay('Перерыв, скоро вернусь');
+      if (mood === 'sad') mascotSay('Связь шалит, попробуй ещё раз');
+    }
     if (rateState === 'ok' && costUahPerTon != null) {
       const sell = sellRateNow();
       const rateText = `1 TON = ${sell.toFixed(2)} грн`;
@@ -1881,6 +1911,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
           stopTimers();
           clearSavedOrder();
           mascotSay('Время вышло, создай новую заявку');
+          document.body.dataset.expired = '1';
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
           document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
           document.getElementById('newOrderBtn').style.display = '';
@@ -1949,6 +1980,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     mascotSay('Не вопрос, жду перевод');
+    delete document.body.dataset.expired;
     const cashbackNote = document.getElementById('waitCashbackNote');
     const bonusParts = [];
     if (order.credit_used_uah > 0) bonusParts.push(`${order.credit_used_uah.toFixed(2)} грн с бонусного баланса`);
@@ -2514,8 +2546,22 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       document.querySelectorAll('.contestMin').forEach((el) => { el.textContent = Math.round(c.min_uah); });
     }
   }
-  document.getElementById('refShareBtn').addEventListener('click', () => {
+  document.getElementById('refShareBtn').addEventListener('click', async () => {
     if (!refInfo) return;
+    // 11-05: карточка с Мистером Тоном через подготовленное сообщение (Bot API 8.0+);
+    // старый Telegram или ошибка — обычная ссылка, как раньше.
+    try {
+      if (tg && tg.shareMessage && tg.isVersionAtLeast && tg.isVersionAtLeast('8.0')) {
+        const r = await apiCall('/api/ref/share', { init_data: tg.initData });
+        if (r && r.id) {
+          try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
+          tg.shareMessage(r.id);
+          return;
+        }
+      }
+    } catch (e) {
+      console.error('ref share card failed', e);
+    }
     const text = 'Меняю гривны на TON и звёзды в TonExpress — приходит само за минуту. По моей ссылке бонус к первому заказу: +1% TON или +3% звёзд 💎';
     const url = `https://t.me/share/url?url=${encodeURIComponent(refInfo.link)}&text=${encodeURIComponent(window.__t(text))}`;
     try { tg.HapticFeedback && tg.HapticFeedback.impactOccurred('light'); } catch (e) {}
