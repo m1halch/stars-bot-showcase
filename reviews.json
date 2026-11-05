@@ -1,8 +1,32 @@
 {
-  "count": 66,
-  "avgRating": 4.8,
-  "clients": 12,
+  "count": 68,
+  "avgRating": 4.81,
+  "clients": 13,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "05.11",
+      "name": "@p_***_o",
+      "bought": {
+        "ton": 2.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Чотко",
+      "date": "05.11",
+      "name": "@p_***_o",
+      "bought": {
+        "ton": 17.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
