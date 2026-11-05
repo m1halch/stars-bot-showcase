@@ -751,6 +751,56 @@ button.primary:not(:disabled) { background: var(--btn); color: #fff; }
 @keyframes mascot-rise { from { opacity: 0; transform: translateY(14%); } }
 @keyframes shades-drop { from { opacity: 0; transform: translateY(-26%); } }
 
+.hero-say {
+  display: none;
+  position: relative;
+  width: fit-content;
+  max-width: calc(100% - 128px);
+  margin-top: 8px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  background: #fff;
+  color: #211c5c;
+  font: 600 13.5px/1.3 var(--font-body);
+  transform-origin: 100% 50%;
+}
+.hero-say::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  width: 11px;
+  height: 11px;
+  margin-top: -5px;
+  border-radius: 2px;
+  background: #fff;
+  transform: rotate(45deg);
+}
+body[data-section="waitingSection"] .hero-say { display: block; }
+body[data-section="waitingSection"] .hero .logo-tag,
+body[data-section="waitingSection"] .hero .rate-pill,
+body[data-section="waitingSection"] .hero .lang-btn { display: none; }
+
+.wallet-saved {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 11px 13px;
+  border: 1px solid rgba(140, 134, 236, .4);
+  border-radius: 12px;
+  background: var(--accent-dim);
+  color: var(--text);
+  font: 600 13.5px/1 var(--font-body);
+  cursor: pointer;
+  animation: fade-in .18s var(--ease-out);
+  transition: transform .12s ease;
+}
+.wallet-saved code { color: var(--accent); font-size: 13px; }
+.wallet-saved:active { transform: scale(.98); }
+
 .ex-card { padding: 16px 18px; }
 .ex-card > .card { background: none; border: 0; padding: 0; margin: 0; border-radius: 0; }
 .ex-card > .arrow-divider { margin: 10px 0; }
@@ -790,6 +840,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 .spark { position: absolute; left: 50%; top: 42%; width: 9px; height: 9px; border-radius: 2px; opacity: 0; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) {
+  .wallet-saved,
   .hero-text > *, .topbar .mascot, .mascot-success, .mascot-shades,
   #panel-stars:not([hidden]), #panel-friends:not([hidden]), #panel-reviews:not([hidden]) { animation: none; }
   .tab-ind, .mascot-shades, .step-dot svg path { transition: none; }
@@ -802,6 +853,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     <div class="hero-text">
       <button type="button" id="langBtn" class="lang-btn">🌐 Українська</button>
       <div class="logo-name">TonExpress</div>
+      <div class="hero-say" id="heroSay">Не вопрос, жду перевод</div>
       <div class="logo-tag">Обмен грн ⇄ TON</div>
       <div class="logo-tag">TON за ~1 минуту</div>
       <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
@@ -876,6 +928,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
           </svg>
         </button>
       </div>
+      <button type="button" class="wallet-saved" id="walletSavedBtn" hidden><span>Мой адрес</span> <code id="walletSavedText"></code></button>
       <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
     </div>
 
@@ -1160,6 +1213,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['или переводом на карту monobank', 'або переказом на картку monobank'], ['Скопировать', 'Скопіювати'], ['Скопировано ✓', 'Скопійовано ✓'], ['Выдели номер вручную', 'Виділи номер вручну'], ['Зажми ссылку выше', 'Затисни посилання вище'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
+    ['Мой адрес', 'Моя адреса'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
     ['Ждём оплату…', 'Чекаємо на оплату…'], ['↺ Создать новую заявку', '↺ Створити нову заявку'], ['Отменить заявку', 'Скасувати заявку'], ['Отменяем…', 'Скасовуємо…'], ['Точно отменить заявку?', 'Точно скасувати заявку?'],
     ['Готово!', 'Готово!'], ['Закрыть', 'Закрити'],
     ['Звёзды', 'Зірки'], ['Покупка звёзд за гривны — на свой аккаунт или в подарок другу. Звёзды зачисляются автоматически через Fragment.', 'Купівля зірок за гривні — на свій акаунт або в подарунок другу. Зірки зараховуються автоматично через Fragment.'],
@@ -1371,6 +1425,19 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 
   const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   let lastRateText = '';
+
+  // Реплика Мистера Тона в шапке на экране ожидания оплаты.
+  function mascotSay(text) {
+    const el = document.getElementById('heroSay');
+    if (el.textContent === text) return;
+    el.textContent = text;
+    if (!REDUCED_MOTION && el.animate) {
+      el.animate(
+        [{ opacity: 0, transform: 'scale(.95)' }, { opacity: 1, transform: 'scale(1)' }],
+        { duration: 200, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }
+      );
+    }
+  }
 
   // Разовый «салют» ромбиками, когда TON реально ушёл клиенту. Только живое
   // подтверждение из опроса статуса — при повторном открытии заявки не играет.
@@ -1799,18 +1866,21 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
           celebrate();
         } else if (data.status === 'waiting_reserve' || data.status === 'fulfilling') {
           // Деньги уже пришли — отменять больше нечего, убираем кнопку.
+          mascotSay('Оплату вижу, уже отправляю');
           hint.textContent = data.product === 'stars'
             ? 'Оплата получена! Звёзды оформляются — пара минут.'
             : 'Оплата получена! TON придёт совсем скоро.';
           document.getElementById('cancelOrderBtn').style.display = 'none';
         } else if (data.status === 'needs_review') {
           stopTimers();
+          mascotSay('Проверяю вручную, не переживай');
           hint.textContent = 'Оплата получена — заявку проверяем вручную, всё придёт. Если что, напишем в чате.';
           document.getElementById('cancelOrderBtn').style.display = 'none';
           document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
         } else if (data.status === 'expired') {
           stopTimers();
           clearSavedOrder();
+          mascotSay('Время вышло, создай новую заявку');
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
           document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
           document.getElementById('newOrderBtn').style.display = '';
@@ -1878,6 +1948,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     }
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
+    mascotSay('Не вопрос, жду перевод');
     const cashbackNote = document.getElementById('waitCashbackNote');
     const bonusParts = [];
     if (order.credit_used_uah > 0) bonusParts.push(`${order.credit_used_uah.toFixed(2)} грн с бонусного баланса`);
@@ -2056,6 +2127,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
         init_data: tg.initData, uah_amount: uah, ton_wallet: wallet,
         privat: !!privatComp && uah >= privatComp.min_uah && document.getElementById('privatBox').checked,
       });
+      rememberWallet(wallet);
       enterWaitingScreen(order);
     } catch (e) {
       console.error('exchange create failed', e);
@@ -2094,6 +2166,49 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     tg.setBackgroundColor('#16141c');
     tg.setBottomBarColor && tg.setBottomBarColor('#16141c');
   } catch (e) {}
+
+  // Последний адрес клиента: только подсказка под полем, само поле не заполняем,
+  // чтобы человек сам подтверждал, куда уйдёт TON. localStorage в WebView
+  // Telegram иногда чистится, поэтому копия лежит ещё и в CloudStorage.
+  const WALLET_KEY = 'tonexpress_wallet';
+  const savedWalletBtn = document.getElementById('walletSavedBtn');
+  let savedWallet = '';
+
+  function renderSavedWallet() {
+    const typed = document.getElementById('wallet').value.trim();
+    savedWalletBtn.hidden = !savedWallet || typed !== '';
+    if (savedWallet) {
+      document.getElementById('walletSavedText').textContent = `${savedWallet.slice(0, 6)}…${savedWallet.slice(-4)}`;
+    }
+  }
+
+  function useSavedWallet(value) {
+    if (savedWallet || !value || !isValidTonAddress(value)) return;
+    savedWallet = value;
+    renderSavedWallet();
+  }
+
+  function rememberWallet(value) {
+    savedWallet = value;
+    try { localStorage.setItem(WALLET_KEY, value); } catch (e) {}
+    try {
+      if (tg && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9')) tg.CloudStorage.setItem(WALLET_KEY, value);
+    } catch (e) {}
+  }
+
+  try { useSavedWallet(localStorage.getItem(WALLET_KEY)); } catch (e) {}
+  try {
+    if (tg && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9')) {
+      tg.CloudStorage.getItem(WALLET_KEY, (err, value) => { if (!err) useSavedWallet(value); });
+    }
+  } catch (e) {}
+  document.getElementById('wallet').addEventListener('input', renderSavedWallet);
+  savedWalletBtn.addEventListener('click', () => {
+    haptic();
+    const input = document.getElementById('wallet');
+    input.value = savedWallet;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  });
 
   // Тап по Мистеру Тону: приподнимает очки и подмигивает глазами.
   (function () {
