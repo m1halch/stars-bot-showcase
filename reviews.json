@@ -1,8 +1,32 @@
 {
-  "count": 64,
+  "count": 66,
   "avgRating": 4.8,
-  "clients": 11,
+  "clients": 12,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "05.11",
+      "name": "@ty***om",
+      "bought": {
+        "ton": 4.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "05.11",
+      "name": "@ty***om",
+      "bought": {
+        "ton": 1.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Нормалды",
