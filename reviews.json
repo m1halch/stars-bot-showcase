@@ -1,8 +1,32 @@
 {
-  "count": 68,
-  "avgRating": 4.81,
-  "clients": 13,
+  "count": 70,
+  "avgRating": 4.79,
+  "clients": 14,
   "reviews": [
+    {
+      "rating": 4,
+      "comment": "Думал наебка но все четко",
+      "date": "05.11",
+      "name": "@ke***ss",
+      "bought": {
+        "ton": 4.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": "Чотко",
+      "date": "05.11",
+      "name": "@ke***ss",
+      "bought": {
+        "ton": 4.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
