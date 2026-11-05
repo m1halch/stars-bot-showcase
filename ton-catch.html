@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Мистер Тон ловит TON</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   html, body { margin: 0; height: 100%; background: #16141c; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
   body { display: flex; align-items: center; justify-content: center; }
@@ -14,24 +15,77 @@
 <canvas id="c" width="720" height="720"></canvas>
 <script>
 // Мини-игра TonExpress: ловишь падающие TON головой Мистера Тона.
-// Всё в одном файле < 32 КБ, без сети и картинок — подходит и для HTML-сообщений Telegram.
+// Один файл без картинок и аудиофайлов: звуки синтезирует WebAudio, вибрация — Telegram
+// HapticFeedback (или navigator.vibrate вне Telegram). Ядро < 32 КБ — годится и для HTML-сообщений.
 (() => {
   const UK = /^uk/i.test(navigator.language || '');
   const T = UK ? {
     title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: 'Води пальцем: лови TON, тікай від червоних',
     best: 'Рекорд', score: 'Рахунок', again: 'Тапни — ще раз', newBest: 'Новий рекорд!', bot: '@tonexpressbot · обмін грн ⇄ TON',
+    level: 'Рівень', combo: 'Комбо',
   } : {
     title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: 'Води пальцем: лови TON, беги от красных',
     best: 'Рекорд', score: 'Счёт', again: 'Тапни — ещё раз', newBest: 'Новый рекорд!', bot: '@tonexpressbot · обмен грн ⇄ TON',
+    level: 'Уровень', combo: 'Комбо',
   };
+
+  const tg = window.Telegram && window.Telegram.WebApp;
+  try { tg && tg.ready(); tg && tg.expand(); tg && tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {}
 
   const cv = document.getElementById('c');
   const g = cv.getContext('2d');
   const W = 360, H = 360, K = cv.width / W;
   g.scale(K, K);
 
-  let best = 0;
-  try { best = +localStorage.getItem('tonCatchBest') || 0; } catch (e) {}
+  const store = (k, v) => { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) {} return null; };
+  let best = +store('tonCatchBest') || 0;
+  let muted = store('tonCatchMuted') === '1';
+
+  // --- вибрация ---
+  function buzz(kind) {
+    try {
+      const hf = tg && tg.HapticFeedback;
+      if (hf && tg.isVersionAtLeast && tg.isVersionAtLeast('6.1')) {
+        if (kind === 'ok' || kind === 'error' || kind === 'warning') hf.notificationOccurred(kind === 'ok' ? 'success' : kind);
+        else hf.impactOccurred(kind);
+        return;
+      }
+      if (navigator.vibrate) navigator.vibrate({ light: 10, medium: 25, heavy: 50, rigid: 15, error: [40, 40, 60], ok: [20, 30, 40], warning: 30 }[kind] || 15);
+    } catch (e) {}
+  }
+
+  // --- звук: синтез на WebAudio, контекст создаётся по первому тапу ---
+  let ac = null;
+  function audio() {
+    if (muted) return null;
+    try {
+      if (!ac) ac = new (window.AudioContext || window.webkitAudioContext)();
+      if (ac.state === 'suspended') ac.resume();
+    } catch (e) { ac = null; }
+    return ac;
+  }
+  function tone(freq, dur, type, vol, slide, delay) {
+    const a = audio(); if (!a) return;
+    const t0 = a.currentTime + (delay || 0);
+    const o = a.createOscillator(), v = a.createGain();
+    o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t0);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq * slide), t0 + dur);
+    v.gain.setValueAtTime(0.0001, t0); v.gain.exponentialRampToValueAtTime(vol || .18, t0 + .01);
+    v.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    o.connect(v); v.connect(a.destination); o.start(t0); o.stop(t0 + dur + .02);
+  }
+  const sfx = {
+    catch(combo) { tone(660 + Math.min(combo, 20) * 22, .09, 'triangle', .16, 1.5); },
+    gold() { [784, 988, 1319].forEach((f, i) => tone(f, .16, 'triangle', .14, 1, i * .05)); },
+    bad() { tone(180, .28, 'sawtooth', .12, .45); tone(90, .3, 'square', .06, .6); },
+    miss() { tone(330, .18, 'sine', .1, .6); },
+    level() { [523, 659, 784, 1047].forEach((f, i) => tone(f, .14, 'square', .07, 1, i * .07)); },
+    start() { tone(440, .1, 'triangle', .12, 2); },
+    over(newBest) {
+      if (newBest) [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, .2, 'triangle', .14, 1, i * .09));
+      else [392, 330, 262].forEach((f, i) => tone(f, .22, 'triangle', .13, .9, i * .14));
+    },
+  };
 
   // Голова Мистера Тона (вектор, 100×100), рисуется Path2D — без картинок.
   const HEAD = new Path2D('M22 6 L78 6 L97 30 L91 78 L64 100 L36 100 L9 78 L3 30 Z');
@@ -40,14 +94,20 @@
   const SHADES = new Path2D('M8 36 H92 L89 48 Q87 58 78 58 H62 Q54 58 52 48 H48 Q46 58 38 58 H22 Q13 58 11 48 Z');
   const GRIN = new Path2D('M36 74 Q52 84 68 72');
   const SAD = new Path2D('M38 82 Q51 72 64 82');
+  const WOW = new Path2D('M44 78 A8 9 0 1 0 60 78 A8 9 0 1 0 44 78');
 
-  const state = { mode: 'menu', score: 0, lives: 3, x: W / 2, tx: W / 2, items: [], pops: [], t: 0, spawnIn: 0, mood: 0, shake: 0, newBest: false };
+  const state = {
+    mode: 'menu', score: 0, lives: 3, x: W / 2, tx: W / 2, items: [], pops: [], parts: [], t: 0, spawnIn: 0,
+    mood: 0, shake: 0, flash: 0, flashColor: '#fff', squash: 0, combo: 0, level: 1, banner: 0, newBest: false, overAt: 0,
+  };
   let seed = 1;
   const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 
   function reset() {
-    Object.assign(state, { mode: 'play', score: 0, lives: 3, items: [], pops: [], t: 0, spawnIn: .4, mood: 0, shake: 0, newBest: false });
+    Object.assign(state, { mode: 'play', score: 0, lives: 3, items: [], pops: [], parts: [], t: 0, spawnIn: .4, mood: 0, shake: 0,
+      flash: 0, squash: 0, combo: 0, level: 1, banner: 0, newBest: false });
     seed = (Date.now() % 100000) + 1;
+    sfx.start(); buzz('light');
   }
 
   function spawn() {
@@ -57,19 +117,49 @@
     state.items.push({ kind, x: 22 + rnd() * (W - 44), y: -20, v: 110 + state.score * 3.2 + rnd() * 40, rot: rnd() * 6 });
   }
 
-  function pop(x, y, text, color) { state.pops.push({ x, y, text, color, life: .8 }); }
+  function pop(x, y, text, color, size) { state.pops.push({ x, y, text, color, size: size || 20, life: .9 }); }
+  function burst(x, y, colors, n, power) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, s = (40 + Math.random() * 90) * (power || 1);
+      state.parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 60, life: .5 + Math.random() * .4, max: .9,
+        c: colors[i % colors.length], r: 2 + Math.random() * 3, spin: Math.random() * 6 });
+    }
+  }
+  const flash = (c, v) => { state.flash = v || .35; state.flashColor = c; };
 
-  function hurt() {
-    state.lives -= 1;
-    state.mood = -1;
-    state.shake = .3;
-    try { navigator.vibrate && navigator.vibrate(60); } catch (e) {}
+  function hurt(isMiss) {
+    state.lives -= 1; state.combo = 0; state.mood = -1; state.shake = .35;
+    flash('#ff4d5e', .3);
+    if (isMiss) sfx.miss(); else sfx.bad();
+    buzz('error');
     if (state.lives <= 0) {
-      state.mode = 'over';
-      if (state.score > best) {
-        best = state.score; state.newBest = true;
-        try { localStorage.setItem('tonCatchBest', String(best)); } catch (e) {}
-      }
+      state.mode = 'over'; state.overAt = state.t;
+      if (state.score > best) { best = state.score; state.newBest = true; store('tonCatchBest', String(best)); }
+      sfx.over(state.newBest);
+      buzz(state.newBest ? 'ok' : 'heavy');
+      if (state.newBest) for (let i = 0; i < 4; i++) burst(60 + i * 80, 120, ['#ffd93d', '#fff', '#7dd3ff', '#b9b4ff'], 18, 1.4);
+    }
+  }
+
+  function catchItem(it) {
+    const mult = state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1;
+    const base = it.kind === 'gold' ? 3 : 1;
+    const add = base * mult;
+    const before = state.score;
+    state.score += add; state.combo += 1; state.mood = 1; state.squash = 1;
+    if (it.kind === 'gold') {
+      sfx.gold(); buzz('medium'); flash('#ffd93d', .28);
+      burst(it.x, it.y, ['#ffd93d', '#fff3b0', '#fff'], 16, 1.2);
+    } else {
+      sfx.catch(state.combo); buzz('light');
+      burst(it.x, it.y, ['#7dd3ff', '#0098ea', '#fff'], 9, .9);
+    }
+    pop(it.x, it.y - 6, '+' + add, it.kind === 'gold' ? '#ffd93d' : '#bfe9ff', mult > 1 ? 24 : 20);
+    if (state.combo === 5 || state.combo === 15) { pop(state.x, H - 110, `${T.combo} x${state.combo === 5 ? 2 : 3}!`, '#ffd93d', 22); buzz('rigid'); }
+    const lv = 1 + Math.floor(state.score / 25);
+    if (lv > state.level && Math.floor(before / 25) < Math.floor(state.score / 25)) {
+      state.level = lv; state.banner = 1.4; sfx.level(); buzz('ok'); flash('#ffffff', .25);
+      burst(W / 2, H / 2, ['#fff', '#ffd93d', '#b9b4ff'], 24, 1.3);
     }
   }
 
@@ -77,10 +167,15 @@
     state.x += (state.tx - state.x) * Math.min(1, dt * 14);
     state.mood *= Math.pow(.02, dt);
     state.shake = Math.max(0, state.shake - dt);
+    state.flash = Math.max(0, state.flash - dt * 1.6);
+    state.squash = Math.max(0, state.squash - dt * 6);
+    state.banner = Math.max(0, state.banner - dt);
     for (const p of state.pops) { p.y -= 40 * dt; p.life -= dt; }
     state.pops = state.pops.filter((p) => p.life > 0);
-    if (state.mode !== 'play') return;
+    for (const p of state.parts) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 260 * dt; p.life -= dt; p.spin += dt * 8; }
+    state.parts = state.parts.filter((p) => p.life > 0);
     state.t += dt;
+    if (state.mode !== 'play') return;
     state.spawnIn -= dt;
     if (state.spawnIn <= 0) {
       spawn();
@@ -88,18 +183,15 @@
     }
     const hx = state.x, hy = H - 46;
     for (const it of state.items) {
+      if (state.mode !== 'play') break;
       it.y += it.v * dt; it.rot += dt * 2;
       if (!it.done && it.y > hy - 30 && it.y < hy + 10 && Math.abs(it.x - hx) < 38) {
         it.done = true;
-        if (it.kind === 'bad') { pop(it.x, it.y, '−1', '#ff6b6b'); hurt(); }
-        else {
-          const add = it.kind === 'gold' ? 3 : 1;
-          state.score += add; state.mood = 1;
-          pop(it.x, it.y, '+' + add, it.kind === 'gold' ? '#ffd93d' : '#7dd3ff');
-        }
+        if (it.kind === 'bad') { pop(it.x, it.y, '−1', '#ff6b6b', 24); burst(it.x, it.y, ['#ff5c6c', '#ff9aa5'], 12, 1); hurt(false); }
+        else catchItem(it);
       } else if (!it.done && it.y > H + 20) {
         it.done = true;
-        if (it.kind !== 'bad') hurt();
+        if (it.kind !== 'bad') hurt(true);
       }
     }
     state.items = state.items.filter((it) => !it.done);
@@ -110,7 +202,7 @@
     gr.addColorStop(0, '#4b4cca'); gr.addColorStop(.5, '#5f63d2'); gr.addColorStop(1, '#8474e0');
     g.fillStyle = gr; g.fillRect(0, 0, W, H);
     g.fillStyle = 'rgba(255,255,255,.07)';
-    const off = (state.t * 12) % 64;
+    const off = (state.t * (12 + state.level * 4)) % 64;
     for (let y = -64; y < H + 64; y += 64) for (let x = 0; x < W + 64; x += 64) {
       for (const [ox, oy] of [[16, 8], [48, 38]]) {
         const cx = x + ox, cy = y + oy + off;
@@ -130,6 +222,7 @@
     } else {
       const gold = it.kind === 'gold';
       g.rotate(Math.sin(it.rot) * .25);
+      if (gold) { g.fillStyle = 'rgba(255,217,61,.35)'; g.beginPath(); g.arc(0, 0, 24 + Math.sin(state.t * 10) * 3, 0, 7); g.fill(); }
       g.fillStyle = gold ? '#ffd93d' : '#0098ea'; g.strokeStyle = '#0d0620'; g.lineWidth = 3;
       g.beginPath(); g.arc(0, 0, gold ? 17 : 15, 0, 7); g.fill(); g.stroke();
       g.strokeStyle = gold ? '#0d0620' : '#fff'; g.lineWidth = 2.6; g.lineJoin = 'round';
@@ -138,8 +231,9 @@
     g.restore();
   }
 
-  function mascot(x, y, s, mood) {
-    g.save(); g.translate(x - 50 * s, y - 50 * s); g.scale(s, s);
+  function mascot(x, y, s, mood, squash) {
+    const sx = 1 + squash * .12, sy = 1 - squash * .1;
+    g.save(); g.translate(x, y); g.scale(s * sx, s * sy); g.translate(-50, -50);
     g.fillStyle = '#2e2060'; g.fillRect(36, 96, 28, 30);
     g.fillStyle = '#ffd93d'; g.beginPath(); g.moveTo(47, 98); g.lineTo(53, 98); g.lineTo(55, 120); g.lineTo(50, 126); g.lineTo(45, 120); g.fill();
     g.fillStyle = '#7b5cf0'; g.fill(HEAD);
@@ -152,7 +246,8 @@
     g.fillStyle = 'rgba(255,255,255,.22)'; g.fillRect(20, 40, 14, 5); g.fillRect(60, 40, 14, 5);
     g.restore();
     g.strokeStyle = '#0d0620'; g.lineWidth = 4.5; g.lineCap = 'round';
-    g.stroke(mood < -.3 ? SAD : GRIN);
+    if (state.mode === 'over' && !state.newBest) { g.fillStyle = '#0d0620'; g.fill(WOW); }
+    else g.stroke(mood < -.3 ? SAD : GRIN);
     g.restore();
   }
 
@@ -163,12 +258,6 @@
     g.strokeText(s, x, y); g.fillStyle = color || '#fff'; g.fillText(s, x, y);
   }
 
-  function hud() {
-    coin({ kind: 'ton', x: 30, y: 26, rot: 0 });
-    text(String(state.score), 52, 26, 24, '#fff', 'left');
-    for (let i = 0; i < 3; i++) heart(W - 26 - i * 26, 26, i < state.lives);
-  }
-
   function heart(x, y, on) {
     g.save(); g.translate(x, y);
     g.beginPath(); g.moveTo(0, 8); g.bezierCurveTo(-14, -2, -8, -14, 0, -6); g.bezierCurveTo(8, -14, 14, -2, 0, 8);
@@ -176,51 +265,93 @@
     g.strokeStyle = '#0d0620'; g.lineWidth = 2.5; g.stroke(); g.restore();
   }
 
+  // Кнопка звука в углу (рисованная, без эмодзи).
+  const SND = { x: W / 2, y: 26, r: 15 };
+  function soundBtn() {
+    g.save(); g.translate(SND.x, SND.y);
+    g.fillStyle = 'rgba(13,6,32,.45)'; g.beginPath(); g.arc(0, 0, SND.r, 0, 7); g.fill();
+    g.fillStyle = '#fff'; g.beginPath(); g.moveTo(-8, -3); g.lineTo(-4, -3); g.lineTo(1, -8); g.lineTo(1, 8); g.lineTo(-4, 3); g.lineTo(-8, 3); g.fill();
+    g.strokeStyle = '#fff'; g.lineWidth = 2; g.lineCap = 'round';
+    if (muted) { g.beginPath(); g.moveTo(4, -4); g.lineTo(10, 4); g.moveTo(10, -4); g.lineTo(4, 4); g.stroke(); }
+    else { g.beginPath(); g.arc(2, 0, 5, -.9, .9); g.stroke(); g.beginPath(); g.arc(2, 0, 9, -.9, .9); g.stroke(); }
+    g.restore();
+  }
+
+  function hud() {
+    coin({ kind: 'ton', x: 30, y: 26, rot: 0 });
+    text(String(state.score), 52, 26, 24, '#fff', 'left');
+    for (let i = 0; i < 3; i++) heart(W - 26 - i * 26, 26, i < state.lives);
+    const mult = state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1;
+    if (mult > 1) text('x' + mult, 30, 54, 16, '#ffd93d');
+  }
+
   function overlay(lines) {
     g.fillStyle = 'rgba(22,20,28,.62)'; g.fillRect(0, 0, W, H);
-    for (const [s, y, size, color] of lines) text(s, W / 2, y, size, color);
+    for (const [s, y, size, color] of lines) if (s) text(s, W / 2, y, size, color);
   }
 
   function draw() {
     g.save();
-    if (state.shake > 0) g.translate((Math.random() - .5) * 8 * state.shake, 0);
+    if (state.shake > 0) g.translate((Math.random() - .5) * 10 * state.shake, (Math.random() - .5) * 4 * state.shake);
     bg();
     for (const it of state.items) coin(it);
-    mascot(state.x, H - 40, .62, state.mood);
-    for (const p of state.pops) { g.globalAlpha = Math.min(1, p.life * 2); text(p.text, p.x, p.y, 20, p.color); g.globalAlpha = 1; }
+    mascot(state.x, H - 40, .62, state.mood, state.squash);
+    for (const p of state.parts) {
+      g.save(); g.globalAlpha = Math.min(1, p.life / p.max * 1.5); g.translate(p.x, p.y); g.rotate(p.spin);
+      g.fillStyle = p.c; g.fillRect(-p.r, -p.r, p.r * 2, p.r * 2); g.restore();
+    }
+    for (const p of state.pops) { g.globalAlpha = Math.min(1, p.life * 2); text(p.text, p.x, p.y, p.size, p.color); g.globalAlpha = 1; }
     g.restore();
-    if (state.mode === 'play') hud();
+    if (state.flash > 0) { g.globalAlpha = state.flash * .5; g.fillStyle = state.flashColor; g.fillRect(0, 0, W, H); g.globalAlpha = 1; }
+    if (state.mode === 'play') {
+      hud();
+      if (state.banner > 0) {
+        const k = Math.min(1, (1.4 - state.banner) * 6);
+        g.globalAlpha = Math.min(1, state.banner * 2);
+        text(`${T.level} ${state.level}!`, W / 2, H / 2 - 40, 30 * (0.7 + 0.3 * k), '#ffd93d');
+        g.globalAlpha = 1;
+      }
+    }
     if (state.mode === 'menu') {
-      overlay([[T.title, 96, 26], [T.drag, 136, 14, '#e8e5ff'], [T.tap, 196, 22, '#ffd93d'],
+      overlay([[T.title, 96, 26], [T.drag, 136, 14, '#e8e5ff'], [T.tap, 196 + Math.sin(state.t * 4) * 3, 22, '#ffd93d'],
         [best ? `${T.best}: ${best} TON` : '', 236, 16, '#e8e5ff'], [T.bot, 330, 13, '#cfc9ff']]);
     } else if (state.mode === 'over') {
       overlay([[state.newBest ? T.newBest : `${T.score}: ${state.score} TON`, 92, 20, state.newBest ? '#ffd93d' : '#fff'],
-        [`${T.best}: ${best} TON`, 140, 34, '#fff'], [T.bot, 186, 15, '#cfc9ff'], [T.again, 240, 20, '#ffd93d']]);
+        [`${T.best}: ${best} TON`, 140, 34, '#fff'], [T.bot, 186, 15, '#cfc9ff'], [T.again, 240 + Math.sin(state.t * 4) * 3, 20, '#ffd93d']]);
+      for (const p of state.parts) {
+        g.save(); g.globalAlpha = Math.min(1, p.life / p.max * 1.5); g.translate(p.x, p.y); g.rotate(p.spin);
+        g.fillStyle = p.c; g.fillRect(-p.r, -p.r, p.r * 2, p.r * 2); g.restore();
+      }
     }
+    soundBtn();
   }
 
-  function point(e) {
+  function canvasPoint(e) {
     const r = cv.getBoundingClientRect();
-    const px = ((e.touches ? e.touches[0].clientX : e.clientX) - r.left) / r.width * W;
-    state.tx = Math.max(30, Math.min(W - 30, px));
+    return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
   }
   cv.addEventListener('pointerdown', (e) => {
-    point(e);
-    if (state.mode !== 'play') { if (state.mode === 'over' && state.t < .1 && performance.now() - overAt < 600) return; reset(); }
+    const p = canvasPoint(e);
+    if (Math.hypot(p.x - SND.x, p.y - SND.y) < SND.r + 6) {
+      muted = !muted; store('tonCatchMuted', muted ? '1' : '0'); buzz('light');
+      if (!muted) tone(660, .08, 'triangle', .12);
+      return;
+    }
+    state.tx = Math.max(30, Math.min(W - 30, p.x));
+    if (state.mode === 'menu') reset();
+    else if (state.mode === 'over' && state.t - state.overAt > .7) reset();
   });
-  cv.addEventListener('pointermove', (e) => { if (state.mode === 'play') point(e); });
+  cv.addEventListener('pointermove', (e) => { if (state.mode === 'play') state.tx = Math.max(30, Math.min(W - 30, canvasPoint(e).x)); });
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft') state.tx = Math.max(30, state.tx - 40);
     if (e.key === 'ArrowRight') state.tx = Math.min(W - 30, state.tx + 40);
     if ((e.key === ' ' || e.key === 'Enter') && state.mode !== 'play') reset();
   });
 
-  let last = performance.now(), overAt = 0, prevMode = state.mode;
+  let last = performance.now();
   function frame(now) {
     const dt = Math.min(.05, (now - last) / 1000); last = now;
     update(dt);
-    if (state.mode === 'over' && prevMode !== 'over') overAt = now;
-    prevMode = state.mode;
     draw();
     requestAnimationFrame(frame);
   }
