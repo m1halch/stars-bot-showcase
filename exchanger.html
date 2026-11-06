@@ -859,15 +859,54 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 .success-hero .success-badge svg { width: 19px; height: 19px; }
 .spark { position: absolute; left: 50%; top: 42%; width: 9px; height: 9px; border-radius: 2px; opacity: 0; pointer-events: none; }
 
+/* --- Новогодний снег (сезонно, до января — после убрать #snowfall здесь,
+   div/script у body и блок ниже в prefers-reduced-motion). Чистый CSS, без
+   canvas/JS-цикла — дешевле по батарее, transform-only анимация. */
+#snowfall { position: fixed; inset: 0; z-index: 999; pointer-events: none; overflow: hidden; }
+#snowfall .flake {
+  position: absolute; top: -8%; border-radius: 50%; background: #fff;
+  opacity: var(--flake-op, .5); will-change: transform;
+  animation: snow-fall var(--flake-dur, 14s) linear var(--flake-delay, 0s) infinite;
+}
+@keyframes snow-fall {
+  0%   { transform: translate3d(0, -10vh, 0) translateX(0); }
+  50%  { transform: translate3d(0, 55vh, 0) translateX(var(--flake-drift, 14px)); }
+  100% { transform: translate3d(0, 112vh, 0) translateX(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .wallet-saved,
   .hero-text > *, .topbar .mascot, .mascot-success, .mascot-shades,
   #panel-stars:not([hidden]), #panel-friends:not([hidden]), #panel-reviews:not([hidden]) { animation: none; }
   .tab-ind, .mascot-shades, .step-dot svg path { transition: none; }
+  #snowfall { display: none; }
 }
 </style>
 </head>
 <body data-tab="ton">
+
+  <div id="snowfall" aria-hidden="true"></div>
+  <script>
+    (function () {
+      var host = document.getElementById('snowfall');
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < 28; i++) {
+        var f = document.createElement('div');
+        f.className = 'flake';
+        var size = (Math.random() * 3 + 2).toFixed(1); // 2–5px
+        f.style.left = (Math.random() * 100).toFixed(2) + 'vw';
+        f.style.width = f.style.height = size + 'px';
+        f.style.setProperty('--flake-op', (Math.random() * 0.45 + 0.25).toFixed(2));
+        f.style.setProperty('--flake-dur', (Math.random() * 10 + 10).toFixed(1) + 's');
+        // отрицательная задержка — снежинки сразу в разных фазах полёта,
+        // а не все стартуют кучей от верха края при загрузке
+        f.style.setProperty('--flake-delay', (-Math.random() * 20).toFixed(1) + 's');
+        f.style.setProperty('--flake-drift', (Math.random() * 44 - 22).toFixed(0) + 'px');
+        frag.appendChild(f);
+      }
+      host.appendChild(frag);
+    })();
+  </script>
 
   <header class="topbar hero">
     <div class="hero-text">
