@@ -1,8 +1,32 @@
 {
-  "count": 73,
-  "avgRating": 4.79,
-  "clients": 17,
+  "count": 75,
+  "avgRating": 4.8,
+  "clients": 19,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "просто пушечка, такой низкий курс",
+      "date": "06.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "06.11",
+      "name": "@j***",
+      "bought": {
+        "ton": 1.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Четко и быстро",
