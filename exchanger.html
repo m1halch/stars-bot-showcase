@@ -532,6 +532,22 @@
   .waiting-wallet { word-break: break-all; }
   .waiting-copy { font-size: 14px; color: var(--text); }
 
+  /* --- Новогодняя "загрузка": бегущие олени на экране ожидания оплаты.
+     Эмодзи вместо картинки — дёшево по весу, не тянет ассеты. Сезонно,
+     убрать вместе со снегом после праздников (.reindeer-track в разметке
+     ниже + блок тут). */
+  .reindeer-track { position: relative; height: 34px; overflow: hidden; margin: 14px 0 2px; }
+  .reindeer-track .deer {
+    position: absolute; top: 2px; left: -15%; font-size: 22px;
+    animation: deer-run 5.5s linear infinite, deer-bounce .32s ease-in-out infinite;
+    transform: scaleX(-1); /* 🦌 по умолчанию смотрит влево — разворачиваем по ходу бега */
+  }
+  .reindeer-track .deer:nth-child(2) { animation-delay: -1.3s, -.1s; font-size: 18px; top: 8px; opacity: .8; }
+  .reindeer-track .deer:nth-child(3) { animation-delay: -2.6s, -.2s; font-size: 16px; top: 12px; opacity: .6; }
+  @keyframes deer-run { from { left: -15%; } to { left: 112%; } }
+  @keyframes deer-bounce { 0%, 100% { transform: scaleX(-1) translateY(0); } 50% { transform: scaleX(-1) translateY(-5px); } }
+  @media (prefers-reduced-motion: reduce) { .reindeer-track { display: none; } }
+
   @keyframes pulse {
     0%, 100% { opacity: .4; transform: scale(.8); }
     50% { opacity: 1; transform: scale(1); }
@@ -1040,6 +1056,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
         <div class="hint" style="text-align:center;">Сумма — ровно <b id="cardAmount"></b> грн. Копейки важны: по ним бот узнаёт твой платёж.</div>
       </div>
       <div class="timer-line" id="timerLine">Успей оплатить за <span class="timer-value" id="timerValue">30:00</span></div>
+      <div class="reindeer-track" aria-hidden="true"><span class="deer">🦌</span><span class="deer">🦌</span><span class="deer">🦌</span></div>
 
       <div class="stepper" id="stepper">
         <div class="step done" data-step="created">
