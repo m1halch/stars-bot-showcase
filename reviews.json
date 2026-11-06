@@ -1,8 +1,20 @@
 {
-  "count": 77,
+  "count": 78,
   "avgRating": 4.81,
-  "clients": 20,
+  "clients": 21,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "06.11",
+      "name": "@te***xx",
+      "bought": {
+        "ton": 6.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
