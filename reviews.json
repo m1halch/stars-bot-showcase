@@ -1,8 +1,32 @@
 {
-  "count": 80,
-  "avgRating": 4.81,
-  "clients": 22,
+  "count": 82,
+  "avgRating": 4.82,
+  "clients": 23,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "06.11",
+      "name": "@tr***sa",
+      "bought": {
+        "ton": 8.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "06.11",
+      "name": "@wh***rr",
+      "bought": {
+        "ton": 1.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
