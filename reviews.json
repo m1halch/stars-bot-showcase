@@ -1,8 +1,32 @@
 {
-  "count": 71,
+  "count": 73,
   "avgRating": 4.79,
-  "clients": 15,
+  "clients": 17,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Четко и быстро",
+      "date": "06.11",
+      "name": "@Ro***al",
+      "bought": {
+        "ton": 9.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "все круто красиво,быстро",
+      "date": "06.11",
+      "name": "@wh***rr",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Бот действительно быстро работает, очень помогает когда нету где купить крипту gram, создатель спасибо большое 🫂",
