@@ -1,8 +1,32 @@
 {
-  "count": 88,
+  "count": 90,
   "avgRating": 4.83,
   "clients": 24,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "топ залупа купляйте",
+      "date": "07.11",
+      "name": "@te***xx",
+      "bought": {
+        "ton": 6.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "все как всегда)",
+      "date": "07.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
