@@ -1,8 +1,56 @@
 {
-  "count": 82,
-  "avgRating": 4.82,
+  "count": 86,
+  "avgRating": 4.83,
   "clients": 23,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "07.11",
+      "name": "@tr***sa",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "07.11",
+      "name": "@wh***rr",
+      "bought": {
+        "ton": 4.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "07.11",
+      "name": "@wh***rr",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "+реп норм бот",
+      "date": "07.11",
+      "name": "@te***xx",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
