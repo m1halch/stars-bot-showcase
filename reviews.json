@@ -1,8 +1,32 @@
 {
-  "count": 90,
-  "avgRating": 4.83,
-  "clients": 24,
+  "count": 94,
+  "avgRating": 4.84,
+  "clients": 25,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Лудо приключения продолжаются",
+      "date": "07.11",
+      "name": null,
+      "bought": {
+        "ton": 2.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "как всегда чотинько",
+      "date": "07.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "топ залупа купляйте",
