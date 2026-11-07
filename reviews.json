@@ -1,8 +1,20 @@
 {
-  "count": 86,
+  "count": 87,
   "avgRating": 4.83,
-  "clients": 23,
+  "clients": 24,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "07.11",
+      "name": "@sn***bx",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
