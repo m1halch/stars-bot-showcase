@@ -1,8 +1,56 @@
 {
-  "count": 104,
+  "count": 108,
   "avgRating": 4.85,
   "clients": 30,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "08.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 4.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Все четко, быстро",
+      "date": "08.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 217,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "08.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "08.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Швидко і надійно",
