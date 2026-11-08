@@ -1,8 +1,20 @@
 {
-  "count": 102,
-  "avgRating": 4.84,
-  "clients": 28,
+  "count": 104,
+  "avgRating": 4.85,
+  "clients": 30,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Швидко і надійно",
+      "date": "08.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 21.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
