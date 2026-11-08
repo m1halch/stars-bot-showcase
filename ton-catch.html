@@ -23,10 +23,12 @@
     title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: '30 секунд: лови TON і бонуси, тікай від червоних',
     best: 'Рекорд', score: 'Рахунок', again: 'Тапни — ще раз', newBest: 'Новий рекорд!', bot: '@tonexpressbot · обмін грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магніт!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит врятував!', rain: 'Дощ з TON!',
+    snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Турнір: топ-3 тижня → +3/+2/+1 квитки', tour2: 'рахується після 1-го обміну · /top у боті',
   } : {
     title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: '30 секунд: лови TON и бонусы, беги от красных',
     best: 'Рекорд', score: 'Счёт', again: 'Тапни — ещё раз', newBest: 'Новый рекорд!', bot: '@tonexpressbot · обмен грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магнит!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит спас!', rain: 'Дождь из TON!',
+    snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Турнир: топ-3 недели → +3/+2/+1 билета', tour2: 'в зачёт после 1-го обмена · /top в боте',
   };
 
   const tg = window.Telegram && window.Telegram.WebApp;
@@ -96,6 +98,8 @@
   const SAD = new Path2D('M38 82 Q51 72 64 82');
   const WOW = new Path2D('M44 78 A8 9 0 1 0 60 78 A8 9 0 1 0 44 78');
 
+  // 11-08: приз турнира падает в игре (редко, +25) — та же картинка, что в мини-аппе
+  const SNOOP = new Image(); SNOOP.src = 'https://nft.fragment.com/gift/snoopdogg-386742.webp';
   const ROUND = 30;
   const state = {
     mode: 'menu', score: 0, x: W / 2, tx: W / 2, items: [], pops: [], parts: [], t: 0, spawnIn: 0, left: ROUND,
@@ -119,12 +123,14 @@
     let kind = 'ton';
     if (state.rain > 0) kind = rnd() < .15 ? 'gold' : 'ton';
     else if (r < .025) kind = 'diamond';
-    else if (r < .055) kind = 'magnet';
-    else if (r < .08) kind = 'shield';
-    else if (r < .11) kind = 'x2';
-    else if (r < .2) kind = 'gold';
-    else if (r < .36 + e * .004) kind = 'bad';
-    const zig = (kind === 'ton' || kind === 'gold' || kind === 'bad') && rnd() < .3 ? 20 + rnd() * 25 : 0;
+    else if (r < .037) kind = 'snoop';
+    else if (r < .067) kind = 'magnet';
+    else if (r < .092) kind = 'shield';
+    else if (r < .122) kind = 'x2';
+    else if (r < .21) kind = 'gold';
+    else if (r < .25 + e * .001) kind = 'scam';
+    else if (r < .37 + e * .004) kind = 'bad';
+    const zig = (kind === 'ton' || kind === 'gold' || kind === 'bad' || kind === 'scam') && rnd() < .3 ? 20 + rnd() * 25 : 0;
     const x = 30 + rnd() * (W - 60);
     state.items.push({ kind, x, x0: x, zig, ph: rnd() * 6, y: -20, v: (state.rain > 0 ? 170 : 115) + e * 5 + rnd() * 40, rot: rnd() * 6 });
   }
@@ -168,8 +174,10 @@
       state.shield = false; pop(it.x, it.y, T.shieldUsed, '#7dffa8', 20); sfx.level(); buzz('medium');
       burst(it.x, it.y, ['#7dffa8', '#fff'], 14, 1); return;
     }
-    state.score = Math.max(0, state.score - 5); state.combo = 0; state.mood = -1; state.shake = .35;
-    pop(it.x, it.y, '−5', '#ff6b6b', 24); burst(it.x, it.y, ['#ff5c6c', '#ff9aa5'], 12, 1);
+    const scam = it.kind === 'scam', fine = scam ? 15 : 5;
+    state.score = Math.max(0, state.score - fine); state.combo = 0; state.mood = -1; state.shake = scam ? .6 : .35;
+    if (scam) banner(T.scam);
+    pop(it.x, it.y, '−' + fine, '#ff6b6b', scam ? 30 : 24); burst(it.x, it.y, ['#ff5c6c', '#ff9aa5'], 12, 1);
     flash('#ff4d5e', .3); sfx.bad(); buzz('error');
   }
 
@@ -185,10 +193,14 @@
       return;
     }
     const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1);
-    const base = k === 'diamond' ? 10 : k === 'gold' ? 3 : 1;
+    const base = k === 'snoop' ? 25 : k === 'diamond' ? 10 : k === 'gold' ? 3 : 1;
+    if (k === 'snoop') banner(T.snoop);
     const add = base * mult;
     state.score += add; state.combo += 1;
-    if (k === 'diamond') {
+    if (k === 'snoop') {
+      sfx.level(); sfx.gold(); buzz('heavy'); flash('#ffbe3c', .45);
+      burst(it.x, it.y, ['#ffbe3c', '#ffd93d', '#fff', '#ff9f43'], 34, 1.8);
+    } else if (k === 'diamond') {
       sfx.level(); sfx.gold(); buzz('heavy'); flash('#bff4ff', .35);
       burst(it.x, it.y, ['#bff4ff', '#7dd3ff', '#fff', '#ffd93d'], 26, 1.5);
     } else if (k === 'gold') {
@@ -232,13 +244,13 @@
     for (const it of state.items) {
       it.y += it.v * dt; it.rot += dt * 2; it.ph += dt * 3;
       if (it.zig) it.x = Math.max(18, Math.min(W - 18, it.x0 + Math.sin(it.ph) * it.zig));
-      if (state.magnet > 0 && it.kind !== 'bad' && it.y > 120) { it.x0 += (hx - it.x0) * Math.min(1, dt * 5); if (!it.zig) it.x = it.x0; }
+      if (state.magnet > 0 && it.kind !== 'bad' && it.kind !== 'scam' && it.y > 120) { it.x0 += (hx - it.x0) * Math.min(1, dt * 5); if (!it.zig) it.x = it.x0; }
       if (!it.done && it.y > hy - 30 && it.y < hy + 10 && Math.abs(it.x - hx) < 38) {
         it.done = true;
-        if (it.kind === 'bad') hitBad(it); else catchItem(it);
+        if (it.kind === 'bad' || it.kind === 'scam') hitBad(it); else catchItem(it);
       } else if (!it.done && it.y > H + 20) {
         it.done = true;
-        if (it.kind === 'ton' || it.kind === 'gold' || it.kind === 'diamond') { if (state.combo >= 5) sfx.miss(); state.combo = 0; }
+        if (it.kind === 'ton' || it.kind === 'gold' || it.kind === 'diamond' || it.kind === 'snoop') { if (state.combo >= 5) sfx.miss(); state.combo = 0; }
       }
     }
     state.items = state.items.filter((it) => !it.done);
@@ -260,6 +272,25 @@
 
   function coin(it) {
     g.save(); g.translate(it.x, it.y);
+    if (it.kind === 'snoop') {
+      g.fillStyle = 'rgba(255,190,60,.45)'; g.beginPath(); g.arc(0, 0, 30 + Math.sin(state.t * 12) * 5, 0, 7); g.fill();
+      g.rotate(Math.sin(it.rot) * .2);
+      g.save(); g.beginPath(); g.roundRect ? g.roundRect(-22, -22, 44, 44, 10) : g.rect(-22, -22, 44, 44); g.clip();
+      if (SNOOP.complete && SNOOP.naturalWidth) g.drawImage(SNOOP, -22, -22, 44, 44); else { g.fillStyle = '#ffbe3c'; g.fillRect(-22, -22, 44, 44); }
+      g.restore(); g.strokeStyle = '#0d0620'; g.lineWidth = 3;
+      g.beginPath(); g.roundRect ? g.roundRect(-22, -22, 44, 44, 10) : g.rect(-22, -22, 44, 44); g.stroke();
+      g.restore(); return;
+    }
+    if (it.kind === 'scam') {
+      g.rotate(Math.sin(it.rot) * .15);
+      g.fillStyle = '#ffffff'; g.strokeStyle = '#ff5c6c'; g.lineWidth = 3;
+      g.beginPath(); g.roundRect ? g.roundRect(-30, -15, 60, 30, 9) : g.rect(-30, -15, 60, 30); g.fill(); g.stroke();
+      g.beginPath(); g.moveTo(-18, 15); g.lineTo(-24, 23); g.lineTo(-10, 15); g.fill();
+      g.fillStyle = '#2aa3e6'; g.font = '800 9px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+      g.fillText('Durov ✓', 0, -6);
+      g.fillStyle = '#0d0620'; g.font = '800 10px system-ui, sans-serif'; g.fillText('x2 TON!', 0, 6);
+      g.restore(); return;
+    }
     if (it.kind === 'diamond') {
       g.fillStyle = 'rgba(191,244,255,.35)'; g.beginPath(); g.arc(0, 0, 26 + Math.sin(state.t * 12) * 4, 0, 7); g.fill();
       g.fillStyle = '#bff4ff'; g.strokeStyle = '#0d0620'; g.lineWidth = 3; g.lineJoin = 'round';
@@ -377,10 +408,12 @@
     }
     if (state.mode === 'menu') {
       overlay([[T.title, 96, 26], [T.drag, 136, 14, '#e8e5ff'], [T.tap, 196 + Math.sin(state.t * 4) * 3, 22, '#ffd93d'],
-        [best ? `${T.best}: ${best} TON` : '', 236, 16, '#e8e5ff'], [T.bot, 330, 13, '#cfc9ff']]);
+        [best ? `${T.best}: ${best} TON` : '', 236, 16, '#e8e5ff'], [T.tour, 280, 13, '#ffd93d'], [T.tour2, 300, 11, '#e8e5ff'],
+        [T.bot, 336, 13, '#cfc9ff']]);
     } else if (state.mode === 'over') {
       overlay([[state.newBest ? T.newBest : `${T.score}: ${state.score} TON`, 92, 20, state.newBest ? '#ffd93d' : '#fff'],
-        [`${T.best}: ${best} TON`, 140, 34, '#fff'], [T.bot, 186, 15, '#cfc9ff'], [T.again, 240 + Math.sin(state.t * 4) * 3, 20, '#ffd93d']]);
+        [`${T.best}: ${best} TON`, 140, 34, '#fff'], [T.bot, 186, 15, '#cfc9ff'], [T.again, 240 + Math.sin(state.t * 4) * 3, 20, '#ffd93d'],
+        [T.tour, 290, 13, '#ffd93d'], [T.tour2, 310, 11, '#e8e5ff']]);
       for (const p of state.parts) {
         g.save(); g.globalAlpha = Math.min(1, p.life / p.max * 1.5); g.translate(p.x, p.y); g.rotate(p.spin);
         g.fillStyle = p.c; g.fillRect(-p.r, -p.r, p.r * 2, p.r * 2); g.restore();
