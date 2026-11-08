@@ -265,6 +265,15 @@
   .ref-actions .ref-copy { flex: 1; margin-top: 0; }
   .ref-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; text-align: center; }
   .ref-num { font: 800 24px/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+  .contest-prize { display: flex; gap: 14px; align-items: center; margin-top: 8px; }
+  .contest-prize img { width: 84px; height: 84px; border-radius: 18px; flex: none; box-shadow: 0 6px 18px rgba(255, 190, 60, .35); }
+  .contest-prize-cap { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  .contest-prize-name { font: 800 20px/1.2 var(--font-display); margin: 2px 0 4px; }
+  .contest-stats { grid-template-columns: repeat(2, 1fr); margin-top: 12px; }
+  .contest-top { list-style: none; margin: 12px 0 0; padding: 0; counter-reset: none; }
+  .contest-top li { display: flex; justify-content: space-between; gap: 10px; padding: 7px 2px; border-top: 1px solid var(--line, rgba(127,127,127,.18)); font-size: 14px; }
+  .contest-top li:first-child { border-top: none; }
+  .contest-top li b { font-variant-numeric: tabular-nums; }
   .ref-cap { margin-top: 4px; font-size: 11.5px; line-height: 1.3; color: var(--muted); }
   .ref-balance { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); text-align: center; }
   .ref-balance b { color: var(--ok); }
@@ -1151,16 +1160,21 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     </div>
 
     <div class="card contest-card" id="contestCard" hidden>
-      <label>🎟 Розыгрыш NFT-подарка</label>
-      <div class="contest-dates" id="contestDates"></div>
-      <div class="ref-stats" style="margin-top:10px">
+      <label>🏆 Турнир TonExpress</label>
+      <div class="contest-prize">
+        <img src="https://nft.fragment.com/gift/snoopdogg-386742.webp" alt="" width="84" height="84" loading="lazy">
+        <div><div class="contest-prize-cap">Приз</div><div class="contest-prize-name" id="contestPrize">Snoop Dogg</div><div class="contest-dates" id="contestDates"></div></div>
+      </div>
+      <div class="ref-stats contest-stats">
         <div><div class="ref-num" id="contestMine">0</div><div class="ref-cap">твоих билетов</div></div>
+        <div><div class="ref-num" id="contestRank">—</div><div class="ref-cap">твоё место</div></div>
       </div>
       <ul class="how-list" style="margin-top:10px">
-        <li><span class="how-num">1</span><div><b>Обмен TON от <span class="contestMin">500</span> грн</b><br><span>= 1 билет. Каждый обмен — ещё билет.</span></div></li>
-        <li><span class="how-num">2</span><div><b>Друг по твоей ссылке</b><br><span>сделал первый обмен от <span class="contestMin">500</span> грн = <b>+3 билета</b> тебе.</span></div></li>
+        <li><span class="how-num">1</span><div><b>Каждые <span class="contestMin">100</span> грн обмена</b><br><span>= 1 билет. TON и звёзды, любой обмен.</span></div></li>
+        <li><span class="how-num">2</span><div><b>Друг по твоей ссылке</b><br><span>сделал первый обмен = <b>+<span id="contestRef">5</span> билетов</b> тебе.</span></div></li>
       </ul>
-      <div class="footer-note" style="margin-top:6px">Победителя бот выберет случайно — чем больше билетов, тем выше шанс. Итоги в канале.</div>
+      <ol class="contest-top" id="contestTop"></ol>
+      <div class="footer-note" style="margin-top:6px">Итоги — гонка шариков: 1 билет = 1 шарик, чей первым на финише — тот забирает приз. Видео гонки — в канале.</div>
     </div>
 
     <div class="card">
@@ -1307,9 +1321,10 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['Укажи, кому зачислить', 'Вкажи, кому зарахувати'], ['Проверяем получателя…', 'Перевіряємо отримувача…'], ['Создаём заявку…', 'Створюємо заявку…'],
     ['Приглашай друзей', 'Запрошуй друзів'], ['Получай бонус с каждого обмена друга — навсегда. Бонус копится на балансе и приходит дополнительным TON на твоём следующем обмене.', 'Отримуй бонус з кожного обміну друга — назавжди. Бонус накопичується на балансі та приходить додатковим TON під час твого наступного обміну.'],
     ['Тебя пригласил друг.', 'Тебе запросив друг.'], ['На первый заказ — бонус:', 'На перше замовлення — бонус:'], ['(до 20 грн) или', '(до 20 грн) або'], ['+3% звёзд', '+3% зірок'], ['сверху.', 'зверху.'],
-    ['🎟 Розыгрыш NFT-подарка', '🎟 Розіграш NFT-подарунка'], ['твоих билетов', 'твоїх квитків'], ['Обмен TON от', 'Обмін TON від'], ['= 1 билет. Каждый обмен — ещё билет.', '= 1 квиток. Кожен обмін — ще квиток.'],
-    ['Друг по твоей ссылке', 'Друг за твоїм посиланням'], ['сделал первый обмен от', 'зробив перший обмін від'], ['+3 билета', '+3 квитки'], ['тебе.', 'тобі.'],
-    ['Победителя бот выберет случайно — чем больше билетов, тем выше шанс. Итоги в канале.', 'Переможця бот обере випадково — що більше квитків, то вищий шанс. Підсумки в каналі.'],
+    ['🏆 Турнир TonExpress', '🏆 Турнір TonExpress'], ['Приз', 'Приз'], ['твоих билетов', 'твоїх квитків'], ['твоё место', 'твоє місце'],
+    ['Каждые', 'Кожні'], ['грн обмена', 'грн обміну'], ['= 1 билет. TON и звёзды, любой обмен.', '= 1 квиток. TON і зірки, будь-який обмін.'],
+    ['Друг по твоей ссылке', 'Друг за твоїм посиланням'], ['сделал первый обмен =', 'зробив перший обмін ='], ['билетов', 'квитків'], ['тебе.', 'тобі.'],
+    ['Итоги — гонка шариков: 1 билет = 1 шарик, чей первым на финише — тот забирает приз. Видео гонки — в канале.', 'Підсумки — гонка кульок: 1 квиток = 1 кулька, чия першою на фініші — та забирає приз. Відео гонки — в каналі.'],
     ['Твоя ссылка', 'Твоє посилання'], ['Загружаем…', 'Завантажуємо…'], ['Поделиться', 'Поділитися'], ['пришло по ссылке', 'прийшло за посиланням'], ['уже обменивались', 'вже обмінювалися'], ['заработано, грн', 'зароблено, грн'],
     ['Отправь другу свою ссылку', 'Надішли другу своє посилання'], ['Через «Поделиться» — сразу в нужный чат.', 'Через «Поділитися» — одразу в потрібний чат.'],
     ['Друг получает бонус к первому заказу', 'Друг отримує бонус до першого замовлення'], ['+1% TON (до 20 грн) или +3% звёзд (до 30 ⭐) — приятный повод прийти именно по ссылке.', '+1% TON (до 20 грн) або +3% зірок (до 30 ⭐) — приємний привід прийти саме за посиланням.'],
@@ -2602,7 +2617,17 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       document.getElementById('contestMine').textContent = c.my_tickets;
       document.getElementById('contestDates').textContent = c.active
         ? `Идёт до ${f(c.end)} (Киев)` : `Старт ${f(c.start)} · итоги ${f(c.end)} (Киев)`;
-      document.querySelectorAll('.contestMin').forEach((el) => { el.textContent = Math.round(c.min_uah); });
+      document.querySelectorAll('.contestMin').forEach((el) => { el.textContent = Math.round(c.ticket_uah || c.min_uah); });
+      document.getElementById('contestRank').textContent = c.my_rank ? '#' + c.my_rank : '—';
+      document.getElementById('contestRef').textContent = c.ref_tickets;
+      document.getElementById('contestPrize').textContent = c.prize;
+      const medals = ['🥇', '🥈', '🥉'];
+      const topEl = document.getElementById('contestTop'); topEl.textContent = '';
+      (c.top || []).forEach((r) => {
+        const li = document.createElement('li'), nm = document.createElement('span'), tk = document.createElement('b');
+        nm.textContent = `${medals[r.place - 1] || r.place + '.'} ${r.name}`; tk.textContent = `${r.tickets} 🎟`;
+        li.append(nm, tk); topEl.append(li);
+      });
     }
   }
   document.getElementById('refShareBtn').addEventListener('click', async () => {
