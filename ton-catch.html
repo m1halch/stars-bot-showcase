@@ -23,11 +23,13 @@
     title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: '30 секунд: лови TON і бонуси, тікай від червоних',
     best: 'Рекорд', score: 'Рахунок', again: 'Тапни — ще раз', newBest: 'Новий рекорд!', bot: '@tonexpressbot · обмін грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магніт!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит врятував!', rain: 'Дощ з TON!',
+    bear: 'ВЕДМЕЖИЙ РИНОК! 📉', bottom: 'ДНО! x3 на 5 сек', day: 'Сьогодні', place: 'місце', leader: 'лідер', toBear: 'до ведмедика',
     snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Рекорд дня = ведмедик · топ-3 тижня = квитки', tour2: 'квитки — якщо за тиждень був обмін · /top',
   } : {
     title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: '30 секунд: лови TON и бонусы, беги от красных',
     best: 'Рекорд', score: 'Счёт', again: 'Тапни — ещё раз', newBest: 'Новый рекорд!', bot: '@tonexpressbot · обмен грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магнит!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит спас!', rain: 'Дождь из TON!',
+    bear: 'МЕДВЕЖИЙ РЫНОК! 📉', bottom: 'ДНО! x3 на 5 сек', day: 'Сегодня', place: 'место', leader: 'лидер', toBear: 'до мишки',
     snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Рекорд дня = мишка · топ-3 недели = билеты', tour2: 'билеты — если за неделю был обмен · /top',
   };
 
@@ -104,14 +106,14 @@
   const state = {
     mode: 'menu', score: 0, x: W / 2, tx: W / 2, items: [], pops: [], parts: [], t: 0, spawnIn: 0, left: ROUND,
     mood: 0, shake: 0, flash: 0, flashColor: '#fff', squash: 0, combo: 0, banner: 0, bannerText: '', newBest: false, overAt: 0,
-    magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0,
+    magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0, bear: 0, bearDone: false, bottomDone: false, x3: 0, standing: null,
   };
   let seed = 1;
   const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 
   function reset() {
     Object.assign(state, { mode: 'play', score: 0, items: [], pops: [], parts: [], t: 0, spawnIn: .4, left: ROUND, mood: 0, shake: 0,
-      flash: 0, squash: 0, combo: 0, banner: 0, newBest: false, magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0 });
+      flash: 0, squash: 0, combo: 0, banner: 0, newBest: false, magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0, bear: 0, bearDone: false, bottomDone: false, x3: 0, standing: null });
     seed = (Date.now() % 100000) + 1;
     sfx.start(); buzz('light');
   }
@@ -122,6 +124,8 @@
     const r = rnd(), e = elapsed();
     let kind = 'ton';
     if (state.rain > 0) kind = rnd() < .15 ? 'gold' : 'ton';
+    else if (state.bear > 0 && !state.bottomDone && state.bear < 3.5) { kind = 'bottom'; state.bottomDone = true; }
+    else if (state.bear > 0 && r < .45) kind = 'candle';
     else if (r < .025) kind = 'diamond';
     else if (r < .037) kind = 'snoop';
     else if (r < .067) kind = 'magnet';
@@ -130,7 +134,7 @@
     else if (r < .21) kind = 'gold';
     else if (r < .25 + e * .001) kind = 'scam';
     else if (r < .37 + e * .004) kind = 'bad';
-    const zig = (kind === 'ton' || kind === 'gold' || kind === 'bad' || kind === 'scam') && rnd() < .3 ? 20 + rnd() * 25 : 0;
+    const zig = (kind === 'ton' || kind === 'gold' || kind === 'bad' || kind === 'scam' || kind === 'bottom') && rnd() < .3 ? 20 + rnd() * 25 : 0;
     const x = 30 + rnd() * (W - 60);
     state.items.push({ kind, x, x0: x, zig, ph: rnd() * 6, y: -20, v: (state.rain > 0 ? 170 : 115) + e * 5 + rnd() * 40, rot: rnd() * 6 });
   }
@@ -156,7 +160,7 @@
       fetch('https://depth-platypus-armory.ngrok-free.dev/api/game/score', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ t: GAME_TOKEN, score }),
-      }).catch(() => {});
+      }).then((r) => r.json()).then((j) => { if (j && j.day_rank) state.standing = j; }).catch(() => {});
     } catch (e) {}
   }
 
@@ -184,6 +188,10 @@
   function catchItem(it) {
     const k = it.kind;
     state.mood = 1; state.squash = 1;
+    if (k === 'bottom') {
+      state.x3 = 5; banner(T.bottom); sfx.level(); sfx.gold(); buzz('heavy'); flash('#7dffa8', .4);
+      burst(it.x, it.y, ['#7dffa8', '#ffd93d', '#fff'], 30, 1.6); return;
+    }
     if (k === 'magnet' || k === 'shield' || k === 'x2') {
       if (k === 'magnet') state.magnet = 5;
       if (k === 'x2') state.x2 = 6;
@@ -192,7 +200,7 @@
       burst(it.x, it.y, ['#fff', '#b9b4ff', '#ffd93d'], 16, 1.1);
       return;
     }
-    const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1);
+    const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1) * (state.x3 > 0 ? 3 : 1);
     const base = k === 'snoop' ? 25 : k === 'diamond' ? 10 : k === 'gold' ? 3 : 1;
     if (k === 'snoop') banner(T.snoop);
     const add = base * mult;
@@ -231,6 +239,8 @@
     state.magnet = Math.max(0, state.magnet - dt);
     state.x2 = Math.max(0, state.x2 - dt);
     state.rain = Math.max(0, state.rain - dt);
+    state.bear = Math.max(0, state.bear - dt); state.x3 = Math.max(0, state.x3 - dt);
+    if (!state.bearDone && elapsed() > 5) { state.bearDone = true; state.bear = 5.5; banner(T.bear); sfx.bad(); buzz('heavy'); flash('#ff4d5e', .25); }
     if (!state.rainDone && state.left < 17) { state.rainDone = true; state.rain = 3.5; banner(T.rain); sfx.level(); buzz('ok'); }
     const sec = Math.ceil(state.left);
     if (sec <= 5 && sec > 0 && sec !== state.lastBeep) { state.lastBeep = sec; tone(880, .07, 'square', .06); buzz('light'); }
@@ -244,10 +254,10 @@
     for (const it of state.items) {
       it.y += it.v * dt; it.rot += dt * 2; it.ph += dt * 3;
       if (it.zig) it.x = Math.max(18, Math.min(W - 18, it.x0 + Math.sin(it.ph) * it.zig));
-      if (state.magnet > 0 && it.kind !== 'bad' && it.kind !== 'scam' && it.y > 120) { it.x0 += (hx - it.x0) * Math.min(1, dt * 5); if (!it.zig) it.x = it.x0; }
+      if (state.magnet > 0 && it.kind !== 'bad' && it.kind !== 'scam' && it.kind !== 'candle' && it.y > 120) { it.x0 += (hx - it.x0) * Math.min(1, dt * 5); if (!it.zig) it.x = it.x0; }
       if (!it.done && it.y > hy - 30 && it.y < hy + 10 && Math.abs(it.x - hx) < 38) {
         it.done = true;
-        if (it.kind === 'bad' || it.kind === 'scam') hitBad(it); else catchItem(it);
+        if (it.kind === 'bad' || it.kind === 'scam' || it.kind === 'candle') hitBad(it); else catchItem(it);
       } else if (!it.done && it.y > H + 20) {
         it.done = true;
         if (it.kind === 'ton' || it.kind === 'gold' || it.kind === 'diamond' || it.kind === 'snoop') { if (state.combo >= 5) sfx.miss(); state.combo = 0; }
@@ -260,6 +270,7 @@
     const gr = g.createLinearGradient(0, 0, 0, H);
     gr.addColorStop(0, '#4b4cca'); gr.addColorStop(.5, '#5f63d2'); gr.addColorStop(1, '#8474e0');
     g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    if (state.bear > 0) { g.fillStyle = `rgba(200,30,60,${Math.min(.35, state.bear * .2)})`; g.fillRect(0, 0, W, H); }
     g.fillStyle = 'rgba(255,255,255,.07)';
     const off = (state.t * (12 + (state.mode === 'play' ? elapsed() * .8 : 0))) % 64;
     for (let y = -64; y < H + 64; y += 64) for (let x = 0; x < W + 64; x += 64) {
@@ -279,6 +290,18 @@
       if (SNOOP.complete && SNOOP.naturalWidth) g.drawImage(SNOOP, -22, -22, 44, 44); else { g.fillStyle = '#ffbe3c'; g.fillRect(-22, -22, 44, 44); }
       g.restore(); g.strokeStyle = '#0d0620'; g.lineWidth = 3;
       g.beginPath(); g.roundRect ? g.roundRect(-22, -22, 44, 44, 10) : g.rect(-22, -22, 44, 44); g.stroke();
+      g.restore(); return;
+    }
+    if (it.kind === 'candle') {
+      g.strokeStyle = '#0d0620'; g.lineWidth = 3; g.fillStyle = '#ff4d5e';
+      g.beginPath(); g.moveTo(0, -24); g.lineTo(0, 24); g.stroke();
+      g.fillRect(-9, -14, 18, 30); g.strokeRect(-9, -14, 18, 30);
+      g.restore(); return;
+    }
+    if (it.kind === 'bottom') {
+      g.fillStyle = 'rgba(125,255,168,.35)'; g.beginPath(); g.arc(0, 0, 28 + Math.sin(state.t * 12) * 4, 0, 7); g.fill();
+      g.fillStyle = '#7dffa8'; g.strokeStyle = '#0d0620'; g.lineWidth = 3; g.beginPath(); g.arc(0, 0, 20, 0, 7); g.fill(); g.stroke();
+      g.fillStyle = '#0d0620'; g.font = '900 15px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('$1', 0, 1);
       g.restore(); return;
     }
     if (it.kind === 'scam') {
@@ -371,7 +394,7 @@
     text(String(state.score), 52, 26, 24, '#fff', 'left');
     const sec = Math.ceil(state.left);
     text(`0:${String(sec).padStart(2, '0')}`, W - 16, 26, 22, sec <= 5 ? '#ff6b6b' : '#fff', 'right');
-    const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1);
+    const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1) * (state.x3 > 0 ? 3 : 1);
     const tags = [];
     if (mult > 1) tags.push(['x' + mult, '#ffd93d']);
     if (state.magnet > 0) tags.push([`${T.magnet.replace('!', '')} ${Math.ceil(state.magnet)}`, '#ff9f43']);
@@ -414,6 +437,11 @@
       overlay([[state.newBest ? T.newBest : `${T.score}: ${state.score} TON`, 92, 20, state.newBest ? '#ffd93d' : '#fff'],
         [`${T.best}: ${best} TON`, 140, 34, '#fff'], [T.bot, 186, 15, '#cfc9ff'], [T.again, 240 + Math.sin(state.t * 4) * 3, 20, '#ffd93d'],
         [T.tour, 290, 13, '#ffd93d'], [T.tour2, 310, 11, '#e8e5ff']]);
+      const sd = state.standing;
+      if (sd) {
+        const gap = sd.day_rank > 1 ? ` · ${T.toBear}: ${sd.day_leader - sd.day_mine + 1}` : ' · 🧸!';
+        text(`${T.day}: ${T.place} #${sd.day_rank}/${sd.day_players} · ${T.leader} ${sd.day_leader}${gap}`, W / 2, 266, 12, sd.day_rank === 1 ? '#7dffa8' : '#ffffff');
+      }
       for (const p of state.parts) {
         g.save(); g.globalAlpha = Math.min(1, p.life / p.max * 1.5); g.translate(p.x, p.y); g.rotate(p.spin);
         g.fillStyle = p.c; g.fillRect(-p.r, -p.r, p.r * 2, p.r * 2); g.restore();
