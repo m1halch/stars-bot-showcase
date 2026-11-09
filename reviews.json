@@ -1,8 +1,68 @@
 {
-  "count": 129,
-  "avgRating": 4.88,
-  "clients": 35,
+  "count": 134,
+  "avgRating": 4.87,
+  "clients": 36,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Заебок",
+      "date": "09.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 6.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "все четко",
+      "date": "09.11",
+      "name": "@da***17",
+      "bought": {
+        "ton": 0,
+        "stars": 900,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "09.11",
+      "name": "@da***17",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": null,
+      "date": "09.11",
+      "name": "@ra***ka",
+      "bought": {
+        "ton": 6.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "чотко",
+      "date": "09.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 5.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1138,66 +1198,6 @@
       "name": "@j***",
       "bought": {
         "ton": 20.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Бистро четко супер",
-      "date": "28.09",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 1.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "28.09",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Очень хорошо",
-      "date": "20.09",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Супер",
-      "date": "17.09",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 1.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Бистро пришло",
-      "date": "14.09",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 1.1,
         "stars": 0,
         "premium": 0,
         "gifts": 0
