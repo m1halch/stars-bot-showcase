@@ -1,8 +1,20 @@
 {
-  "count": 119,
+  "count": 120,
   "avgRating": 4.87,
   "clients": 31,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Четко",
+      "date": "09.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 4.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1187,18 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Спасибо",
-      "date": "04.09",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 1.7,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
