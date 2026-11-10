@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Мистер Тон ловит TON</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://telegram.org/js/games.js"></script>
 <style>
   html, body { margin: 0; height: 100%; background: #16141c; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
   body { display: flex; align-items: center; justify-content: center; }
@@ -23,12 +24,14 @@
     title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: '45 секунд: лови TON і подарунки, тікай від червоних',
     best: 'Рекорд', score: 'Рахунок', again: 'Тапни — ще раз', newBest: 'Новий рекорд!', bot: '@tonexpressbot · обмін грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магніт!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит врятував!', rain: 'Дощ з TON!',
+    share: 'Поділитися рекордом', shareText: (n) => `Я набрав ${n} у «Містер Тон ловить TON» 💎 Поб'єш?`,
     bear: 'ВЕДМЕЖИЙ РИНОК! 📉', bottom: 'ДНО! x3 на 5 сек', day: 'Сьогодні', place: 'місце', leader: 'лідер', toBear: 'до ведмедика',
     snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Рекорд дня = ведмедик · топ-3 тижня = квитки', tour2: 'квитки — якщо за тиждень був обмін · /top',
   } : {
     title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: '45 секунд: лови TON и подарки, беги от красных',
     best: 'Рекорд', score: 'Счёт', again: 'Тапни — ещё раз', newBest: 'Новый рекорд!', bot: '@tonexpressbot · обмен грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магнит!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит спас!', rain: 'Дождь из TON!',
+    share: 'Поделиться рекордом', shareText: (n) => `Я набрал ${n} в «Мистер Тон ловит TON» 💎 Побьёшь?`,
     bear: 'МЕДВЕЖИЙ РЫНОК! 📉', bottom: 'ДНО! x3 на 5 сек', day: 'Сегодня', place: 'место', leader: 'лидер', toBear: 'до мишки',
     snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Рекорд дня = мишка · топ-3 недели = билеты', tour2: 'билеты — если за неделю был обмен · /top',
   };
@@ -449,6 +452,9 @@
       overlay([[state.newBest ? T.newBest : `${T.score}: ${state.score} TON`, 92, 20, state.newBest ? '#ffd93d' : '#fff'],
         [`${T.best}: ${best} TON`, 140, 34, '#fff'], [T.bot, 186, 15, '#cfc9ff'], [T.again, 240 + Math.sin(state.t * 4) * 3, 20, '#ffd93d'],
         [T.tour, 290, 13, '#ffd93d'], [T.tour2, 310, 11, '#e8e5ff']]);
+      const SB = shareBtn();
+      g.fillStyle = '#ffd93d'; g.beginPath(); g.roundRect ? g.roundRect(SB.x, SB.y, SB.w, SB.h, 14) : g.rect(SB.x, SB.y, SB.w, SB.h); g.fill();
+      g.fillStyle = '#0d0620'; g.font = '800 14px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('↗ ' + T.share, W / 2, SB.y + SB.h / 2 + 1);
       const sd = state.standing;
       if (sd) {
         const gap = sd.day_rank > 1 ? ` · ${T.toBear}: ${sd.day_leader - sd.day_mine + 1}` : ' · 🧸!';
@@ -462,6 +468,15 @@
     soundBtn();
   }
 
+  // 11-10: «Поделиться рекордом» — в игре Telegram (кнопка «Играть» под карточкой) делимся карточкой игры
+  // со своим счётом (TelegramGameProxy.shareScore); вне неё — обычная ссылка t.me/share на бота.
+  function shareBtn() { return { x: W / 2 - 95, y: 322, w: 190, h: 30 }; }
+  function shareScore() {
+    buzz('medium');
+    try { if (window.TelegramGameProxy && TelegramGameProxy.shareScore) { TelegramGameProxy.shareScore(); return; } } catch (e) {}
+    const u = 'https://t.me/share/url?url=' + encodeURIComponent('https://t.me/tonexpressbot?start=game') + '&text=' + encodeURIComponent(T.shareText(best || state.score));
+    try { tg && tg.openTelegramLink ? tg.openTelegramLink(u) : window.open(u, '_blank'); } catch (e) { window.open(u, '_blank'); }
+  }
   function canvasPoint(e) {
     const r = cv.getBoundingClientRect();
     return { x: (e.clientX - r.left) / r.width * W, y: (e.clientY - r.top) / r.height * H };
@@ -472,6 +487,10 @@
       muted = !muted; store('tonCatchMuted', muted ? '1' : '0'); buzz('light');
       if (!muted) tone(660, .08, 'triangle', .12);
       return;
+    }
+    if (state.mode === 'over') {
+      const SB = shareBtn();
+      if (p.x > SB.x && p.x < SB.x + SB.w && p.y > SB.y && p.y < SB.y + SB.h) { shareScore(); return; }
     }
     state.tx = Math.max(30, Math.min(W - 30, p.x));
     if (state.mode === 'menu') reset();
