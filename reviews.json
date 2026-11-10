@@ -1,8 +1,44 @@
 {
-  "count": 175,
+  "count": 178,
   "avgRating": 4.9,
   "clients": 41,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Создателю благодарен за такого чудного ботика, любимка прям",
+      "date": "10.11",
+      "name": "@Ch***_X",
+      "bought": {
+        "ton": 2.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@TN***PY",
+      "bought": {
+        "ton": 1.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Быстренько",
+      "date": "10.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 10.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "классный бот цены хорошие",
@@ -1162,42 +1198,6 @@
       "name": "@t***",
       "bought": {
         "ton": 5.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@te***xx",
-      "bought": {
-        "ton": 6.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@Ca***33",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@wh***rr",
-      "bought": {
-        "ton": 10.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
