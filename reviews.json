@@ -1,8 +1,56 @@
 {
-  "count": 178,
-  "avgRating": 4.9,
+  "count": 182,
+  "avgRating": 4.91,
   "clients": 41,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@wh***rr",
+      "bought": {
+        "ton": 2.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@Ch***_X",
+      "bought": {
+        "ton": 1.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Создателю благодарен за такого чудного ботика, любимка прям",
@@ -1150,54 +1198,6 @@
       "name": "@te***xx",
       "bought": {
         "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@tr***sa",
-      "bought": {
-        "ton": 8.6,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@wh***rr",
-      "bought": {
-        "ton": 1.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@wh***rr",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "кайф быстро",
-      "date": "06.11",
-      "name": "@t***",
-      "bought": {
-        "ton": 5.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
