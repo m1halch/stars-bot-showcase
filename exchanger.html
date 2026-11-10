@@ -440,11 +440,15 @@
   .paste-btn:hover { color: var(--accent); border-color: var(--accent); }
 
   .hint { font-size: 12px; color: var(--muted); margin-top: 8px; }
-  .card-pay { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border, rgba(255,255,255,.08)); text-align: center; }
-  .card-pay-title { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  /* 11-10: карта — в заметной рамке, как банковская карточка (многие платят переводом, а не через банку) */
+  .card-pay { margin-top: 16px; padding: 14px 14px 12px; text-align: center; border-radius: 18px;
+    border: 2px solid var(--accent, #7b6cff); background: linear-gradient(135deg, rgba(123,108,255,.16), rgba(0,152,234,.10));
+    box-shadow: 0 6px 20px rgba(123,108,255,.18); }
+  .card-pay-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; letter-spacing: .02em; }
   .card-pay-row { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
-  .card-pay-number { font-size: 17px; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
-  .card-pay-copy { width: auto; margin: 0; padding: 8px 14px; }
+  .card-pay-number { font-size: 21px; font-weight: 800; letter-spacing: .08em; font-variant-numeric: tabular-nums;
+    padding: 8px 12px; border-radius: 12px; background: rgba(255,255,255,.08); border: 1px dashed rgba(255,255,255,.25); }
+  .card-pay-copy { width: auto; margin: 0; padding: 8px 16px; background: var(--accent-dim); color: var(--text); border: 1px solid var(--accent); border-radius: 12px; font-weight: 700; }
   .hint.error { color: var(--error); }
 
   .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
@@ -1061,7 +1065,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Оплатить в банке — сумма подставится сама</button>
       <div class="hint" style="text-align:center; margin-top:10px;">Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.</div>
       <div id="cardPayBlock" class="card-pay" hidden>
-        <div class="card-pay-title">или переводом на карту monobank</div>
+        <div class="card-pay-title">💳 или переводом на карту monobank</div>
         <div class="card-pay-row">
           <code id="cardNumber" class="card-pay-number"></code>
           <button type="button" class="ghost-btn card-pay-copy" id="copyCardBtn">Скопировать</button>
@@ -1307,7 +1311,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['TON улетит автоматически', 'TON надійде автоматично'], ['звёзды зачислятся автоматически', 'зірки зарахуються автоматично'], [', ничего дальше нажимать не нужно.', ', більше нічого натискати не потрібно.'],
     ['Оплатить в банке — сумма подставится сама', 'Оплатити в банці — сума підставиться сама'],
     ['Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.', 'Підходить будь-яка картка — Приват, ПУМБ, Ощад та інші, а також Apple Pay / Google Pay. Головне — рівно ця сума, копійка в копійку.'],
-    ['или переводом на карту monobank', 'або переказом на картку monobank'], ['Скопировать', 'Скопіювати'], ['Скопировано ✓', 'Скопійовано ✓'], ['Выдели номер вручную', 'Виділи номер вручну'], ['Зажми ссылку выше', 'Затисни посилання вище'],
+    ['💳 или переводом на карту monobank', '💳 або переказом на картку monobank'], ['Скопировать', 'Скопіювати'], ['Скопировано ✓', 'Скопійовано ✓'], ['Выдели номер вручную', 'Виділи номер вручну'], ['Зажми ссылку выше', 'Затисни посилання вище'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
     ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
