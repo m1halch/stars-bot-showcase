@@ -20,13 +20,13 @@
 (() => {
   const UK = /^uk/i.test(navigator.language || '');
   const T = UK ? {
-    title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: '30 секунд: лови TON і бонуси, тікай від червоних',
+    title: 'Містер Тон ловить TON', tap: 'Тапни, щоб почати', drag: '45 секунд: лови TON і подарунки, тікай від червоних',
     best: 'Рекорд', score: 'Рахунок', again: 'Тапни — ще раз', newBest: 'Новий рекорд!', bot: '@tonexpressbot · обмін грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магніт!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит врятував!', rain: 'Дощ з TON!',
     bear: 'ВЕДМЕЖИЙ РИНОК! 📉', bottom: 'ДНО! x3 на 5 сек', day: 'Сьогодні', place: 'місце', leader: 'лідер', toBear: 'до ведмедика',
     snoop: 'SNOOP DOGG! +25', scam: 'СКАМ! −15', tour: 'Рекорд дня = ведмедик · топ-3 тижня = квитки', tour2: 'квитки — якщо за тиждень був обмін · /top',
   } : {
-    title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: '30 секунд: лови TON и бонусы, беги от красных',
+    title: 'Мистер Тон ловит TON', tap: 'Тапни, чтобы начать', drag: '45 секунд: лови TON и подарки, беги от красных',
     best: 'Рекорд', score: 'Счёт', again: 'Тапни — ещё раз', newBest: 'Новый рекорд!', bot: '@tonexpressbot · обмен грн ⇄ TON',
     combo: 'Комбо', magnet: 'Магнит!', x2: 'x2 на 6 сек!', shield: 'Щит!', shieldUsed: 'Щит спас!', rain: 'Дождь из TON!',
     bear: 'МЕДВЕЖИЙ РЫНОК! 📉', bottom: 'ДНО! x3 на 5 сек', day: 'Сегодня', place: 'место', leader: 'лидер', toBear: 'до мишки',
@@ -101,19 +101,26 @@
   const WOW = new Path2D('M44 78 A8 9 0 1 0 60 78 A8 9 0 1 0 44 78');
 
   // 11-08: приз турнира падает в игре (редко, +25) — та же картинка, что в мини-аппе
-  const SNOOP = new Image(); SNOOP.src = 'https://nft.fragment.com/gift/snoopdogg-386742.webp';
-  const ROUND = 30;
+  // 11-10: редкие NFT-подарки падают как бонусы (идея из чата) — картинки с Fragment
+  const GIFT = {
+    snoop: { src: 'https://nft.fragment.com/gift/snoopdogg-386742.webp', val: 25, label: 'SNOOP DOGG! +25', glow: '#ffbe3c' },
+    locket: { src: 'https://nft.fragment.com/gift/heartlocket-1.webp', val: 35, label: 'HEART LOCKET! +35', glow: '#ff6b9a' },
+    cap: { src: 'https://nft.fragment.com/gift/durovscap-1.webp', val: 40, label: "DUROV'S CAP! +40", glow: '#9ad0ff' },
+    pepe: { src: 'https://nft.fragment.com/gift/plushpepe-1.webp', val: 50, label: 'PLUSH PEPE!!! +50', glow: '#7dffa8' },
+  };
+  for (const k in GIFT) { const im = new Image(); im.src = GIFT[k].src; GIFT[k].img = im; }
+  const ROUND = 45;
   const state = {
     mode: 'menu', score: 0, x: W / 2, tx: W / 2, items: [], pops: [], parts: [], t: 0, spawnIn: 0, left: ROUND,
     mood: 0, shake: 0, flash: 0, flashColor: '#fff', squash: 0, combo: 0, banner: 0, bannerText: '', newBest: false, overAt: 0,
-    magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0, bear: 0, bearDone: false, bottomDone: false, x3: 0, standing: null,
+    magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0, bear: 0, bearDone: false, bear2: false, bottomDone: false, x3: 0, standing: null,
   };
   let seed = 1;
   const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
 
   function reset() {
     Object.assign(state, { mode: 'play', score: 0, items: [], pops: [], parts: [], t: 0, spawnIn: .4, left: ROUND, mood: 0, shake: 0,
-      flash: 0, squash: 0, combo: 0, banner: 0, newBest: false, magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0, bear: 0, bearDone: false, bottomDone: false, x3: 0, standing: null });
+      flash: 0, squash: 0, combo: 0, banner: 0, newBest: false, magnet: 0, x2: 0, shield: false, rain: 0, rainDone: false, lastBeep: 0, bear: 0, bearDone: false, bear2: false, bottomDone: false, x3: 0, standing: null });
     seed = (Date.now() % 100000) + 1;
     sfx.start(); buzz('light');
   }
@@ -127,7 +134,10 @@
     else if (state.bear > 0 && !state.bottomDone && state.bear < 3.5) { kind = 'bottom'; state.bottomDone = true; }
     else if (state.bear > 0 && r < .45) kind = 'candle';
     else if (r < .025) kind = 'diamond';
-    else if (r < .037) kind = 'snoop';
+    else if (r < .031) kind = 'snoop';
+    else if (r < .034) kind = 'cap';
+    else if (r < .0365) kind = 'locket';
+    else if (r < .038) kind = 'pepe';
     else if (r < .067) kind = 'magnet';
     else if (r < .092) kind = 'shield';
     else if (r < .122) kind = 'x2';
@@ -201,13 +211,13 @@
       return;
     }
     const mult = (state.combo >= 15 ? 3 : state.combo >= 5 ? 2 : 1) * (state.x2 > 0 ? 2 : 1) * (state.x3 > 0 ? 3 : 1);
-    const base = k === 'snoop' ? 25 : k === 'diamond' ? 10 : k === 'gold' ? 3 : 1;
-    if (k === 'snoop') banner(T.snoop);
+    const base = GIFT[k] ? GIFT[k].val : k === 'diamond' ? 10 : k === 'gold' ? 3 : 1;
+    if (GIFT[k]) banner(GIFT[k].label);
     const add = base * mult;
     state.score += add; state.combo += 1;
-    if (k === 'snoop') {
-      sfx.level(); sfx.gold(); buzz('heavy'); flash('#ffbe3c', .45);
-      burst(it.x, it.y, ['#ffbe3c', '#ffd93d', '#fff', '#ff9f43'], 34, 1.8);
+    if (GIFT[k]) {
+      sfx.level(); sfx.gold(); buzz('heavy'); flash(GIFT[k].glow, .45);
+      burst(it.x, it.y, [GIFT[k].glow, '#ffd93d', '#fff', '#ff9f43'], 34, 1.8);
     } else if (k === 'diamond') {
       sfx.level(); sfx.gold(); buzz('heavy'); flash('#bff4ff', .35);
       burst(it.x, it.y, ['#bff4ff', '#7dd3ff', '#fff', '#ffd93d'], 26, 1.5);
@@ -240,8 +250,9 @@
     state.x2 = Math.max(0, state.x2 - dt);
     state.rain = Math.max(0, state.rain - dt);
     state.bear = Math.max(0, state.bear - dt); state.x3 = Math.max(0, state.x3 - dt);
+    if (!state.bear2 && state.bearDone && state.bear <= 0 && elapsed() > 30) { state.bear2 = true; state.bottomDone = false; state.bear = 5.5; banner(T.bear); sfx.bad(); buzz('heavy'); flash('#ff4d5e', .25); }
     if (!state.bearDone && elapsed() > 5) { state.bearDone = true; state.bear = 5.5; banner(T.bear); sfx.bad(); buzz('heavy'); flash('#ff4d5e', .25); }
-    if (!state.rainDone && state.left < 17) { state.rainDone = true; state.rain = 3.5; banner(T.rain); sfx.level(); buzz('ok'); }
+    if (!state.rainDone && elapsed() > ROUND * .45) { state.rainDone = true; state.rain = 3.5; banner(T.rain); sfx.level(); buzz('ok'); }
     const sec = Math.ceil(state.left);
     if (sec <= 5 && sec > 0 && sec !== state.lastBeep) { state.lastBeep = sec; tone(880, .07, 'square', .06); buzz('light'); }
     if (state.left <= 0) { state.left = 0; endRound(); return; }
@@ -260,7 +271,7 @@
         if (it.kind === 'bad' || it.kind === 'scam' || it.kind === 'candle') hitBad(it); else catchItem(it);
       } else if (!it.done && it.y > H + 20) {
         it.done = true;
-        if (it.kind === 'ton' || it.kind === 'gold' || it.kind === 'diamond' || it.kind === 'snoop') { if (state.combo >= 5) sfx.miss(); state.combo = 0; }
+        if (it.kind === 'ton' || it.kind === 'gold' || it.kind === 'diamond' || GIFT[it.kind]) { if (state.combo >= 5) sfx.miss(); state.combo = 0; }
       }
     }
     state.items = state.items.filter((it) => !it.done);
@@ -283,11 +294,12 @@
 
   function coin(it) {
     g.save(); g.translate(it.x, it.y);
-    if (it.kind === 'snoop') {
-      g.fillStyle = 'rgba(255,190,60,.45)'; g.beginPath(); g.arc(0, 0, 30 + Math.sin(state.t * 12) * 5, 0, 7); g.fill();
+    if (GIFT[it.kind]) {
+      const G = GIFT[it.kind];
+      g.globalAlpha = .45; g.fillStyle = G.glow; g.beginPath(); g.arc(0, 0, 30 + Math.sin(state.t * 12) * 5, 0, 7); g.fill(); g.globalAlpha = 1;
       g.rotate(Math.sin(it.rot) * .2);
       g.save(); g.beginPath(); g.roundRect ? g.roundRect(-22, -22, 44, 44, 10) : g.rect(-22, -22, 44, 44); g.clip();
-      if (SNOOP.complete && SNOOP.naturalWidth) g.drawImage(SNOOP, -22, -22, 44, 44); else { g.fillStyle = '#ffbe3c'; g.fillRect(-22, -22, 44, 44); }
+      if (G.img.complete && G.img.naturalWidth) g.drawImage(G.img, -22, -22, 44, 44); else { g.fillStyle = G.glow; g.fillRect(-22, -22, 44, 44); }
       g.restore(); g.strokeStyle = '#0d0620'; g.lineWidth = 3;
       g.beginPath(); g.roundRect ? g.roundRect(-22, -22, 44, 44, 10) : g.rect(-22, -22, 44, 44); g.stroke();
       g.restore(); return;
