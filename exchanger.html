@@ -1058,7 +1058,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       <div class="waiting-copy">
         Оплати ровно <b id="waitUahAmount"></b> грн, <b>с копейками</b> (копейки — номер твоей заявки) — в банку или на карту ниже, <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
       </div>
-      <button class="primary" id="openJarBtn" style="margin-top:14px;">Открыть банку для оплаты</button>
+      <button class="primary" id="openJarBtn" style="margin-top:14px;">Оплатить в банке — сумма подставится сама</button>
       <div class="hint" style="text-align:center; margin-top:10px;">Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.</div>
       <div id="cardPayBlock" class="card-pay" hidden>
         <div class="card-pay-title">или переводом на карту monobank</div>
@@ -1305,7 +1305,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['Заявка №', 'Заявка №'], ['на адрес', 'на адресу'], ['Оплати ровно', 'Сплати рівно'], ['с копейками', 'з копійками'],
     ['(копейки — номер твоей заявки) — в банку или на карту ниже,', '(копійки — номер твоєї заявки) — у банку або на картку нижче,'],
     ['TON улетит автоматически', 'TON надійде автоматично'], ['звёзды зачислятся автоматически', 'зірки зарахуються автоматично'], [', ничего дальше нажимать не нужно.', ', більше нічого натискати не потрібно.'],
-    ['Открыть банку для оплаты', 'Відкрити банку для оплати'],
+    ['Оплатить в банке — сумма подставится сама', 'Оплатити в банці — сума підставиться сама'],
     ['Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.', 'Підходить будь-яка картка — Приват, ПУМБ, Ощад та інші, а також Apple Pay / Google Pay. Головне — рівно ця сума, копійка в копійку.'],
     ['или переводом на карту monobank', 'або переказом на картку monobank'], ['Скопировать', 'Скопіювати'], ['Скопировано ✓', 'Скопійовано ✓'], ['Выдели номер вручную', 'Виділи номер вручну'], ['Зажми ссылку выше', 'Затисни посилання вище'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
@@ -1479,7 +1479,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   // история цифр). costUahPerTon (см. fetchCostRate ниже) — прямой
   // рыночный курс CoinGecko (get_ton_uah_rate), не себестоимость через
   // EUR_UAH_RATE.
-  const MARGIN = 0.055;
+  let MARGIN = 0.055;   // 11-10: сервер может прислать свою (оптовый курс) — см. /api/exchange/rate
   // 10-30: нижняя граница цены (bot/exchanger/inventory.py), приходит из /api/exchange/rate.
   let minPriceUah = 56.5;
   let privatComp = null;
@@ -1501,6 +1501,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       try {
         const data = await apiCall('/api/exchange/rate', { init_data: tg.initData });
         costUahPerTon = data.cost_uah_per_ton;
+        if (typeof data.margin === 'number') MARGIN = data.margin;
         if (typeof data.min_price_uah === 'number') minPriceUah = data.min_price_uah;
         privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
@@ -2096,10 +2097,13 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     document.getElementById('cancelOrderBtn').style.display = '';
     updateStepper('pending_payment');
     document.getElementById('openJarBtn').onclick = () => {
+      // 11-10: сумма с копейками подставляется в банку сама (?a=) — меньше ошибок «100 вместо 100.01»
+      let url = order.jar_link;
+      try { const u = new URL(order.jar_link); u.searchParams.set('a', order.uah_amount.toFixed(2)); url = u.toString(); } catch (e) {}
       if (tg && typeof tg.openLink === 'function') {
-        tg.openLink(order.jar_link);
+        tg.openLink(url);
       } else {
-        window.open(order.jar_link, '_blank');
+        window.open(url, '_blank');
       }
     };
     saveOrder(order.order_id);
