@@ -1,8 +1,80 @@
 {
-  "count": 169,
+  "count": 175,
   "avgRating": 4.9,
-  "clients": 39,
+  "clients": 41,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "классный бот цены хорошие",
+      "date": "10.11",
+      "name": "@i1***11",
+      "bought": {
+        "ton": 3.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@ra***93",
+      "bought": {
+        "ton": 1.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 200,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "10.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 72,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1126,78 +1198,6 @@
       "name": "@wh***rr",
       "bought": {
         "ton": 10.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "просто пушечка, такой низкий курс",
-      "date": "06.11",
-      "name": "@wr***ie",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "06.11",
-      "name": "@j***",
-      "bought": {
-        "ton": 1.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Четко и быстро",
-      "date": "06.11",
-      "name": "@Ro***al",
-      "bought": {
-        "ton": 9.8,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "все круто красиво,быстро",
-      "date": "06.11",
-      "name": "@wh***rr",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Бот действительно быстро работает, очень помогает когда нету где купить крипту gram, создатель спасибо большое 🫂",
-      "date": "06.11",
-      "name": "@Ch***_X",
-      "bought": {
-        "ton": 11.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 4,
-      "comment": "Думал наебка но все четко",
-      "date": "05.11",
-      "name": "@ke***ss",
-      "bought": {
-        "ton": 4.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
