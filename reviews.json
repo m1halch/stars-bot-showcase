@@ -1,8 +1,20 @@
 {
-  "count": 192,
+  "count": 193,
   "avgRating": 4.91,
   "clients": 44,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "11.11",
+      "name": "@Xu***aH",
+      "bought": {
+        "ton": 4.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1182,18 +1194,6 @@
     {
       "rating": 5,
       "comment": null,
-      "date": "07.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Лудо приключения продолжаются",
       "date": "07.11",
       "name": "@k***",
       "bought": {
