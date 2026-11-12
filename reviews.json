@@ -1,8 +1,32 @@
 {
-  "count": 220,
+  "count": 222,
   "avgRating": 4.92,
-  "clients": 46,
+  "clients": 47,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "12.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 5.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Сразу видно что бот сделан хорошо, и владелец классный пацан сразу видно что двигается на акуратном",
+      "date": "12.11",
+      "name": "@mr***22",
+      "bought": {
+        "ton": 2.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1175,30 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Чотко",
-      "date": "09.11",
-      "name": "@La***ni",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Четко",
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 4.8,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
