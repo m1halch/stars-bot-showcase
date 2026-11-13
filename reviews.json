@@ -1,8 +1,188 @@
 {
-  "count": 256,
+  "count": 272,
   "avgRating": 4.91,
-  "clients": 45,
+  "clients": 42,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@On***mi",
+      "bought": {
+        "ton": 11.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@On***mi",
+      "bought": {
+        "ton": 9.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 150,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": null,
+      "date": "13.11",
+      "name": "@sn***bx",
+      "bought": {
+        "ton": 0,
+        "stars": 212,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 170,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 170,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 314,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 300,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 400,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 160,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 124,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 75,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 188,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 67,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Вот бы нфт",
@@ -1018,186 +1198,6 @@
       "name": "@Xu***aH",
       "bought": {
         "ton": 5.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@ys***sa",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@Ta***iz",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@ys***sa",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@ys***sa",
-      "bought": {
-        "ton": 4.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Швидко і без зайвих заморочок",
-      "date": "09.11",
-      "name": "@Xu***aH",
-      "bought": {
-        "ton": 5.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 6.2,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@sn***bx",
-      "bought": {
-        "ton": 0,
-        "stars": 150,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 3.7,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 6.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 5.7,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@fi***ps",
-      "bought": {
-        "ton": 8.2,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Быстро четко",
-      "date": "09.11",
-      "name": "@iq***ik",
-      "bought": {
-        "ton": 4.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 5.7,
         "stars": 0,
         "premium": 0,
         "gifts": 0
