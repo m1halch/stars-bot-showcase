@@ -1,8 +1,44 @@
 {
-  "count": 252,
-  "avgRating": 4.9,
+  "count": 256,
+  "avgRating": 4.91,
   "clients": 45,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Вот бы нфт",
+      "date": "13.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 8.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 2.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@mi***iy",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1162,42 +1198,6 @@
       "name": "@k***",
       "bought": {
         "ton": 5.7,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@Vi***ka",
-      "bought": {
-        "ton": 0,
-        "stars": 133,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@sp***dt",
-      "bought": {
-        "ton": 1.2,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 9.8,
         "stars": 0,
         "premium": 0,
         "gifts": 0
