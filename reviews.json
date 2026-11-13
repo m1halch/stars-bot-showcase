@@ -1,8 +1,68 @@
 {
-  "count": 238,
+  "count": 244,
   "avgRating": 4.91,
-  "clients": 47,
+  "clients": 46,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 4.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Потом",
+      "date": "13.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 5.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@m1***vi",
+      "bought": {
+        "ton": 3.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "13.11",
+      "name": "@m1***vi",
+      "bought": {
+        "ton": 3.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Вот бы нфт",
+      "date": "12.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 4.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1138,66 +1198,6 @@
       "name": "@sp***dt",
       "bought": {
         "ton": 5.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@sp***dt",
-      "bought": {
-        "ton": 2.8,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@ss***12",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 8.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 1.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Заебок",
-      "date": "09.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 6.6,
         "stars": 0,
         "premium": 0,
         "gifts": 0
