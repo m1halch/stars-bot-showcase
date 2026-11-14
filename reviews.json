@@ -1,8 +1,56 @@
 {
-  "count": 277,
+  "count": 281,
   "avgRating": 4.91,
-  "clients": 43,
+  "clients": 42,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "14.11",
+      "name": "@tw***re",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "14.11",
+      "name": "@La***ni",
+      "bought": {
+        "ton": 1.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "14.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "14.11",
+      "name": "@Vi***ka",
+      "bought": {
+        "ton": 0,
+        "stars": 118,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1151,54 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "10.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 72,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@sp***11",
-      "bought": {
-        "ton": 4.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "09.11",
-      "name": "@mi***iy",
-      "bought": {
-        "ton": 4.8,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
