@@ -1,8 +1,32 @@
 {
-  "count": 288,
-  "avgRating": 4.91,
-  "clients": 42,
+  "count": 291,
+  "avgRating": 4.89,
+  "clients": 43,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "15.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": null,
+      "date": "15.11",
+      "name": "@ga***ve",
+      "bought": {
+        "ton": 0,
+        "stars": 103,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1175,30 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "10.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Создателю благодарен за такого чудного ботика, любимка прям",
-      "date": "10.11",
-      "name": "@Ch***_X",
-      "bought": {
-        "ton": 2.9,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
