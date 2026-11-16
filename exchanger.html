@@ -1358,7 +1358,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     <div class="card card-hero">
       <label>К оплате</label>
       <div class="result-value" id="starsTotal">0.00 грн</div>
-      <div class="rate-line" id="starsRateLine">1 <svg class="unit-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.24l-5.66 2.97 1.08-6.3L2.85 9.45l6.32-.92L12 2.8z"/></svg> = 0.72 грн</div>
+      <div class="rate-line" id="starsRateLine">1 <svg class="unit-star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.24l-5.66 2.97 1.08-6.3L2.85 9.45l6.32-.92L12 2.8z"/></svg> = 0.74 грн</div>
     </div>
 
     <div class="card card-input">
@@ -2661,7 +2661,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   // чате nftplatform_ukraine). Себестоимость ~0.71 (Fragment $0.015/⭐ +
   // P2P/своп); когда подключим оплату, сервер будет держать нижнюю
   // границу «себестоимость +1%», а это число — только витрина.
-  const STAR_PRICE_UAH = 0.72;
+  const STAR_PRICE_UAH = 0.74;   // 11-16: живая цена приходит с /api/stars/info
   const STARS_MIN = 50;
   const STARS_MAX = 20000;
   let starPrice = STAR_PRICE_UAH;
