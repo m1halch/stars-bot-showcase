@@ -453,6 +453,15 @@
 
   .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
 
+  /* 11-16: TON разобрали — вместо формы карточка со спящим Мистером Тоном и кнопкой 🔔 */
+  .soldout-card { display: none; text-align: center; padding: 24px 20px 20px; }
+  #formSection.soldout .soldout-card { display: block; }
+  #formSection.soldout > :not(.soldout-card) { display: none; }
+  .soldout-img { display: block; width: 128px; height: auto; margin: 0 auto 8px; }
+  .soldout-title { font: 700 22px/1.2 var(--font-display); letter-spacing: -.01em; color: var(--text); }
+  .soldout-text { margin: 10px auto 18px; max-width: 34ch; font-size: 14px; line-height: 1.5; color: var(--muted); }
+  .soldout-card button.primary.done { background: var(--accent-dim); color: var(--accent); cursor: default; }
+
   .agree-row {
     display: flex;
     align-items: flex-start;
@@ -973,6 +982,13 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   </div>
 
   <div id="formSection" class="section">
+    <div class="card soldout-card" id="soldoutCard">
+      <img class="soldout-img" src="mister-ton-sleep.png" width="360" height="468" alt="">
+      <div class="soldout-title">TON разобрали 🔥</div>
+      <div class="soldout-text">Новая партия скоро. Нажми кнопку — и я напишу тебе первым, как только TON появятся.</div>
+      <button type="button" class="primary" id="soldoutNotifyBtn">🔔 Сообщить, когда появятся</button>
+      <button type="button" class="ghost-btn" id="soldoutGameBtn">🎮 А пока — сыграть в игру</button>
+    </div>
     <div class="card ex-card">
     <div class="card card-input">
       <label for="uah" id="inputLabel">Отдаёте</label>
@@ -1340,7 +1356,10 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['Не получилось вставить автоматически — зажми поле пальцем и выбери «Вставить».', 'Не вдалося вставити автоматично — затисни поле пальцем і вибери «Вставити».'],
     ['Курс недоступен — попробуй позже', 'Курс недоступний — спробуй пізніше'], ['Открой через бота в Telegram', 'Відкрий через бота в Telegram'], ['Загружаем курс…', 'Завантажуємо курс…'], ['Курс загружается…', 'Курс завантажується…'],
     ['грн за раз', 'грн за раз'], ['точная сумма с копейками — после «Оплатить»', 'точна сума з копійками — після «Сплатити»'], ['Оплатить', 'Сплатити'],
-    ['TON временно закончились — пополняем, загляни чуть позже.', 'TON тимчасово закінчилися — поповнюємо, зазирни трохи пізніше.'], ['TON временно закончились — пополняем, загляни чуть позже', 'TON тимчасово закінчилися — поповнюємо, зазирни трохи пізніше'],
+    ['TON временно закончились — пополняем, загляни чуть позже.', 'TON тимчасово закінчилися — поповнюємо, зазирни трохи пізніше.'],
+    ['TON разобрали', 'TON розібрали'], ['Новая партия скоро. Нажми кнопку — и я напишу тебе первым, как только TON появятся.', "Нова партія скоро. Натисни кнопку — і я напишу тобі першим, щойно TON з'являться."],
+    ['Сообщить, когда появятся', "Повідомити, коли з'являться"], ['Напишу, как только появятся', "Напишу, щойно з'являться"], ['А пока — сыграть в игру', 'А поки — зіграти в гру'],
+    ['TON временно закончились — пополняем, загляни чуть позже', 'TON тимчасово закінчилися — поповнюємо, зазирни трохи пізніше'],
     ['Временно нет TON в наличии', 'Тимчасово немає TON у наявності'], ['сейчас доступно до', 'зараз доступно до'], ['Сейчас доступно до', 'Зараз доступно до'],
     ['Сейчас можем отдать до', 'Зараз можемо віддати до'], ['TON за раз — уменьши сумму или загляни чуть позже.', 'TON за раз — зменш суму або зазирни трохи пізніше.'],
     ['Условия использования', 'Умови використання'], ['Политика конфиденциальности', 'Політика конфіденційності'],
@@ -1493,6 +1512,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   // Сколько TON сейчас реально можно купить (свободный остаток горячего
   // кошелька, считает сервер); null — неизвестно, не ограничиваем.
   let maxTonAvailable = null;
+  let stockSub = false;   // 11-16: уже нажал «🔔 Сообщить, когда появятся»
   // 'loading' — ещё не знаем курс; 'ok' — курс есть; 'closed' — обменник
   // выключен рубильником (webapi.py::_EXCHANGER_ENABLED → 503
   // exchanger_disabled); 'error' — сеть/сервер; 'outside' — открыто не из
@@ -1509,6 +1529,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
         if (typeof data.min_price_uah === 'number') minPriceUah = data.min_price_uah;
         privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
+        if (typeof data.stock_sub === 'boolean') stockSub = data.stock_sub;
         rateState = 'ok';
       } catch (e) {
         console.error('rate fetch failed', e);
@@ -1658,6 +1679,12 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   let finalUahToSubmit = 0;
 
   function recompute() {
+    // 11-16: TON разобрали — прячем форму, показываем карточку с кнопкой 🔔
+    const soldOut = rateState === 'ok' && maxTonAvailable != null && maxTonAvailable < MIN_TON;
+    document.getElementById('formSection').classList.toggle('soldout', soldOut);
+    const notifyBtn = document.getElementById('soldoutNotifyBtn');
+    notifyBtn.classList.toggle('done', stockSub);
+    notifyBtn.textContent = stockSub ? '✅ Напишу, как только появятся' : '🔔 Сообщить, когда появятся';
     const uahInput = document.getElementById('uah');
     const walletInput = document.getElementById('wallet');
     const resultEl = document.getElementById('result');
@@ -2640,9 +2667,25 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     }
   }
   // 11-09: игра из мини-аппа — бот пришлёт карточку игры по ?start=game
-  document.getElementById('contestPlay').addEventListener('click', () => {
+  const openGame = () => {
     const u = 'https://t.me/tonexpressbot?start=game';
     try { tg && tg.openTelegramLink ? tg.openTelegramLink(u) : window.open(u, '_blank'); } catch (e) { window.open(u, '_blank'); }
+  };
+  document.getElementById('contestPlay').addEventListener('click', openGame);
+  document.getElementById('soldoutGameBtn').addEventListener('click', openGame);
+  // 11-16: «🔔 Сообщить, когда появятся» — бот один раз напишет при пополнении (webapi /api/exchange/notify)
+  document.getElementById('soldoutNotifyBtn').addEventListener('click', async (ev) => {
+    if (stockSub || !(tg && tg.initData)) return;
+    ev.currentTarget.disabled = true;
+    try {
+      await apiCall('/api/exchange/notify', { init_data: tg.initData });
+      stockSub = true;
+      try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+    } catch (e) {
+      console.error('notify failed', e);
+    }
+    document.getElementById('soldoutNotifyBtn').disabled = false;
+    recompute();
   });
   document.getElementById('refShareBtn').addEventListener('click', async () => {
     if (!refInfo) return;
