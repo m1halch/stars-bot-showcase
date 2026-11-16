@@ -1133,6 +1133,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       <div class="limits" id="sellLimits">От 10 TON за раз</div>
 
       <button class="primary" id="sellSubmitBtn" disabled>Введите сумму и карту</button>
+      <button type="button" class="ghost-btn" id="sellWalletUnlink" hidden>Отвязать кошелёк</button>
 
       <div class="footer-note">
         Курс фиксируется на 30 минут — за это время отправь TON.<br>
@@ -1154,7 +1155,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
           </div>
           <button class="primary" id="sellOpenWalletBtn" style="margin-top:14px;">Подключить кошелёк</button>
           <div class="hint" id="sellWalletHint" style="text-align:center; margin-top:10px;">Шаг 1 — подключи кошелёк. Шаг 2 — нажми кнопку ещё раз: адрес, сумма и комментарий подставятся сами.</div>
-          <button type="button" class="ghost-btn" id="sellWalletChange" hidden>Сменить кошелёк</button>
+          <button type="button" class="ghost-btn" id="sellWalletChange" hidden>Отвязать кошелёк</button>
           <div class="card-pay">
             <div class="card-pay-title">или переводом вручную — например, с биржи</div>
             <div class="sell-kv">
@@ -1447,7 +1448,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['Отправить из кошелька', 'Надіслати з гаманця'], ['или переводом вручную — например, с биржи', 'або переказом вручну — наприклад, з біржі'],
     ['Шаг 1 — подключи кошелёк. Шаг 2 — нажми кнопку ещё раз: адрес, сумма и комментарий подставятся сами.', 'Крок 1 — підключи гаманець. Крок 2 — натисни кнопку ще раз: адреса, сума і коментар підставляться самі.'],
     ['Подключить кошелёк', 'Підключити гаманець'],
-    ['Кошелёк подключён — нажми кнопку и подтверди перевод в нём.', 'Гаманець підключено — натисни кнопку і підтвердь переказ у ньому.'], ['Сменить кошелёк', 'Змінити гаманець'],
+    ['Кошелёк подключён — нажми кнопку и подтверди перевод в нём.', 'Гаманець підключено — натисни кнопку і підтвердь переказ у ньому.'], ['Отвязать кошелёк', "Відв'язати гаманець"], ['Кошелёк привязан', "Гаманець прив'язано"], ['— нажми кнопку и подтверди перевод в нём.', '— натисни кнопку і підтвердь переказ у ньому.'],
     ['Перевод отправлен ✅ Жду зачисление — обычно 2–3 минуты.', 'Переказ надіслано ✅ Чекаю на зарахування — зазвичай 2–3 хвилини.'],
     ['Не получилось отправить из кошелька. Попробуй ещё раз или переведи вручную — адрес и комментарий ниже.', 'Не вдалося надіслати з гаманця. Спробуй ще раз або переведи вручну — адреса і коментар нижче.'],
     ['Адрес', 'Адреса'], ['Комментарий (обязательно)', "Коментар (обов'язково)"], ['Курс держим ещё', 'Курс тримаємо ще'],
@@ -2957,6 +2958,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     markSide('buy');
   }
   function showSellForm() {
+    renderSellWallet();
     stopSellTimers();
     sellOrder = null;
     sellEl('sellOrder').hidden = true;
@@ -3005,13 +3007,44 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   const TC_MANIFEST = 'https://m1halch.github.io/stars-bot-showcase/tonconnect-manifest.json';
   let tcUI = null, tcLoading = null, tcBusyUntil = 0;
 
+  // Привязан ли кошелёк — видно и без тяжёлой библиотеки: она хранит подключение в localStorage.
+  function tcHasSavedWallet() {
+    try { return !!localStorage.getItem('ton-connect-storage_bridge-connection'); } catch (e) { return false; }
+  }
+  function tcWalletLabel() {
+    try {
+      const name = (tcUI.walletInfo && tcUI.walletInfo.name) || '';
+      const a = TON_CONNECT_UI.toUserFriendlyAddress(tcUI.account.address);
+      return `${name} ${a.slice(0, 4)}…${a.slice(-4)}`.trim();
+    } catch (e) { return ''; }
+  }
   function renderSellWallet() {
     const on = !!(tcUI && tcUI.connected);
+    const label = on ? tcWalletLabel() : '';
     sellEl('sellWalletHint').textContent = on
-      ? 'Кошелёк подключён — нажми кнопку и подтверди перевод в нём.'
+      ? `Кошелёк привязан${label ? ` (${label})` : ''} — нажми кнопку и подтверди перевод в нём.`
       : 'Шаг 1 — подключи кошелёк. Шаг 2 — нажми кнопку ещё раз: адрес, сумма и комментарий подставятся сами.';
     sellEl('sellOpenWalletBtn').textContent = on ? 'Отправить из кошелька' : 'Подключить кошелёк';
     sellEl('sellWalletChange').hidden = !on;
+    sellEl('sellWalletUnlink').hidden = !(on || (!tcUI && tcHasSavedWallet()));
+  }
+  // Отвязать: кошелёк забывает TonExpress, в следующий раз можно выбрать другой. Деньги это не трогает.
+  async function unlinkSellWallet(btn) {
+    haptic();
+    btn.disabled = true;
+    try {
+      const ui = await loadTonConnect();
+      await ui.connectionRestored;
+      if (ui.connected) await ui.disconnect();
+    } catch (e) {
+      console.error('tonconnect disconnect failed', e);
+    }
+    // Библиотека не загрузилась или кошелёк не ответил — забываем привязку хотя бы у себя.
+    if (!(tcUI && tcUI.connected)) {
+      try { Object.keys(localStorage).filter((k) => k.startsWith('ton-connect-')).forEach((k) => localStorage.removeItem(k)); } catch (e) {}
+    }
+    btn.disabled = false;
+    renderSellWallet();
   }
 
   function loadTonConnect() {
@@ -3237,10 +3270,8 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     }
   });
 
-  sellEl('sellWalletChange').addEventListener('click', async () => {
-    haptic();
-    try { await tcUI.disconnect(); } catch (e) { console.error('tonconnect disconnect failed', e); }
-    renderSellWallet();
+  ['sellWalletChange', 'sellWalletUnlink'].forEach((id) => {
+    sellEl(id).addEventListener('click', () => unlinkSellWallet(sellEl(id)));
   });
 
   sellEl('sellNewBtn').addEventListener('click', () => {
