@@ -1152,8 +1152,8 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
           <div class="waiting-copy">
             Отправь ровно <b id="sellSendTon"></b> на кошелёк TonExpress и <b>обязательно укажи комментарий</b> — по нему бот узнаёт твой перевод.
           </div>
-          <button class="primary" id="sellOpenWalletBtn" style="margin-top:14px;">Отправить из кошелька</button>
-          <div class="hint" id="sellWalletHint" style="text-align:center; margin-top:10px;">Подключишь кошелёк — адрес, сумма и комментарий подставятся сами, останется подтвердить.</div>
+          <button class="primary" id="sellOpenWalletBtn" style="margin-top:14px;">Подключить кошелёк</button>
+          <div class="hint" id="sellWalletHint" style="text-align:center; margin-top:10px;">Шаг 1 — подключи кошелёк. Шаг 2 — нажми кнопку ещё раз: адрес, сумма и комментарий подставятся сами.</div>
           <button type="button" class="ghost-btn" id="sellWalletChange" hidden>Сменить кошелёк</button>
           <div class="card-pay">
             <div class="card-pay-title">или переводом вручную — например, с биржи</div>
@@ -1445,7 +1445,8 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     ['Отправь ровно', 'Надішли рівно'], ['на кошелёк TonExpress и', 'на гаманець TonExpress і'], ['обязательно укажи комментарий', "обов'язково вкажи коментар"],
     ['— по нему бот узнаёт твой перевод.', '— за ним бот упізнає твій переказ.'],
     ['Отправить из кошелька', 'Надіслати з гаманця'], ['или переводом вручную — например, с биржи', 'або переказом вручну — наприклад, з біржі'],
-    ['Подключишь кошелёк — адрес, сумма и комментарий подставятся сами, останется подтвердить.', 'Підключиш гаманець — адреса, сума і коментар підставляться самі, залишиться підтвердити.'],
+    ['Шаг 1 — подключи кошелёк. Шаг 2 — нажми кнопку ещё раз: адрес, сумма и комментарий подставятся сами.', 'Крок 1 — підключи гаманець. Крок 2 — натисни кнопку ще раз: адреса, сума і коментар підставляться самі.'],
+    ['Подключить кошелёк', 'Підключити гаманець'],
     ['Кошелёк подключён — нажми кнопку и подтверди перевод в нём.', 'Гаманець підключено — натисни кнопку і підтвердь переказ у ньому.'], ['Сменить кошелёк', 'Змінити гаманець'],
     ['Перевод отправлен ✅ Жду зачисление — обычно 2–3 минуты.', 'Переказ надіслано ✅ Чекаю на зарахування — зазвичай 2–3 хвилини.'],
     ['Не получилось отправить из кошелька. Попробуй ещё раз или переведи вручную — адрес и комментарий ниже.', 'Не вдалося надіслати з гаманця. Спробуй ще раз або переведи вручну — адреса і коментар нижче.'],
@@ -2103,7 +2104,9 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 
   // Выкуп TON (11-16): состояние экрана «Продать» — объявлено здесь, потому что showSection его сбрасывает.
   let sellInfo = null, sellOrder = null, sellPoll = null, sellTick = null, sellSkipOrder = false;
-  let wantSell = new URLSearchParams(location.search).get('tab') === 'sell';
+  // ?tab=sell — кнопка бота; startapp=sell — возврат из кошелька после TON Connect.
+  let wantSell = new URLSearchParams(location.search).get('tab') === 'sell'
+    || !!(window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param === 'sell');
 
   function showSection(id) {
     document.body.dataset.section = id;
@@ -3000,13 +3003,14 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   // Библиотека тяжёлая (~0.5 МБ), поэтому грузим её только на экране заявки на продажу.
   const TC_SRC = 'https://unpkg.com/@tonconnect/ui@5.0.2/dist/tonconnect-ui.min.js';
   const TC_MANIFEST = 'https://m1halch.github.io/stars-bot-showcase/tonconnect-manifest.json';
-  let tcUI = null, tcLoading = null, tcPendingOrder = null;
+  let tcUI = null, tcLoading = null, tcBusyUntil = 0;
 
   function renderSellWallet() {
     const on = !!(tcUI && tcUI.connected);
     sellEl('sellWalletHint').textContent = on
       ? 'Кошелёк подключён — нажми кнопку и подтверди перевод в нём.'
-      : 'Подключишь кошелёк — адрес, сумма и комментарий подставятся сами, останется подтвердить.';
+      : 'Шаг 1 — подключи кошелёк. Шаг 2 — нажми кнопку ещё раз: адрес, сумма и комментарий подставятся сами.';
+    sellEl('sellOpenWalletBtn').textContent = on ? 'Отправить из кошелька' : 'Подключить кошелёк';
     sellEl('sellWalletChange').hidden = !on;
   }
 
@@ -3020,13 +3024,13 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       sc.onload = () => {
         try {
           const ui = new TON_CONNECT_UI.TonConnectUI({ manifestUrl: TC_MANIFEST, language: 'ru' });
-          // Кошелёк-мини-апп не умеет сам вернуть человека назад — даём ссылку на бота.
-          ui.uiOptions = { actionsConfiguration: { twaReturnUrl: 'https://t.me/tonexpressbot' } };
-          ui.onStatusChange((wallet) => {
-            renderSellWallet();
-            if (wallet && tcPendingOrder) { const o = tcPendingOrder; tcPendingOrder = null; sendSellTx(o); }
-          });
-          try { ui.onModalStateChange((st) => { if (st.status === 'closed' && !ui.connected) tcPendingOrder = null; }); } catch (e) {}
+          // Кошелёк-мини-апп не умеет сам вернуть человека назад — даём ссылку прямо в наш мини-апп
+          // (startapp=sell: откроется экран продажи, а ждущая заявка покажется сама).
+          ui.uiOptions = { actionsConfiguration: { twaReturnUrl: 'https://t.me/tonexpressbot?startapp=sell' } };
+          // Перевод после подключения сам НЕ отправляем: при возврате из кошелька Telegram открывает
+          // мини-апп заново, и запрос от старой страницы остаётся висеть («request is no longer
+          // available» у владельца на тесте 11-16). Подключил → вернулся → нажал кнопку.
+          ui.onStatusChange(() => renderSellWallet());
           tcUI = ui;
           renderSellWallet();
           resolve(ui);
@@ -3041,6 +3045,8 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 
   async function sendSellTx(order) {
     if (!sellOrder || sellOrder.id !== order.id || sellOrder.status !== 'awaiting_ton') return;
+    if (Date.now() < tcBusyUntil) return;   // двойной тап = второй запрос, а первый в кошельке «протухает»
+    tcBusyUntil = Date.now() + 8000;
     try {
       await tcUI.sendTransaction({
         validUntil: Math.floor(Date.now() / 1000) + 600,
@@ -3063,7 +3069,6 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     try {
       const ui = await loadTonConnect();
       if (ui.connected) { sendSellTx(order); return; }
-      tcPendingOrder = order;   // подключится — перевод откроется сам (см. onStatusChange)
       await ui.openModal();
     } catch (e) {
       console.error('tonconnect unavailable', e);
