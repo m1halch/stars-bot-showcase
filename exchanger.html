@@ -605,6 +605,16 @@
 
   .waiting-wallet { word-break: break-all; }
   .waiting-copy { font-size: 14px; color: var(--text); }
+  /* 11-16: сумма к оплате — главное на экране, раньше терялась в тексте */
+  .pay-amount { text-align: center; padding: 16px 12px 14px; margin-bottom: 14px; border-radius: 18px;
+    background: var(--accent-dim); border: 2px solid var(--accent); }
+  .pay-amount-label { font-size: 13px; color: var(--muted); }
+  .pay-amount-value { margin-top: 2px; font: 800 40px/1.1 var(--font-display); color: var(--text);
+    font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+  .pay-amount-value small { font-size: 22px; font-weight: 700; color: var(--muted); margin-left: 4px; }
+  .pay-amount-note { margin-top: 6px; font-size: 13px; color: var(--text); }
+  .pay-amount-note b { color: var(--accent); }
+  .pay-amount .card-pay-copy { margin: 10px auto 0; }
 
   /* --- Новогодняя "загрузка": бегущие олени на экране ожидания оплаты.
      Эмодзи вместо картинки — дёшево по весу, не тянет ассеты. Сезонно,
@@ -1263,8 +1273,14 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       <div class="rate-line" id="waitCashbackNote" style="display:none;"></div>
     </div>
     <div class="card">
+      <div class="pay-amount" id="payAmountBox">
+        <div class="pay-amount-label">Сумма к оплате</div>
+        <div class="pay-amount-value"><span id="payAmountBig"></span><small>грн</small></div>
+        <div class="pay-amount-note"><b>Ровно эта сумма, с копейками</b> — по копейкам бот узнаёт твой платёж</div>
+        <button type="button" class="ghost-btn card-pay-copy" id="copyAmountBtn">Скопировать сумму</button>
+      </div>
       <div class="waiting-copy">
-        Оплати ровно <b id="waitUahAmount"></b> грн, <b>с копейками</b> (копейки — номер твоей заявки) — в банку или на карту ниже, <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.
+        Оплати в банку или на карту ниже — <span id="waitAutoText">TON улетит автоматически</span>, ничего дальше нажимать не нужно.<span id="waitUahAmount" hidden></span>
       </div>
       <button class="primary" id="openJarBtn" style="margin-top:14px;">Оплатить в банке — сумма подставится сама</button>
       <div class="hint" style="text-align:center; margin-top:10px;">Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.</div>
@@ -1492,6 +1508,9 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   if (lang !== 'uk') return;
   document.documentElement.lang = 'uk';
   const PAIRS = [
+    ['Сумма к оплате', 'Сума до сплати'], ['Ровно эта сумма, с копейками', 'Рівно ця сума, з копійками'],
+    ['— по копейкам бот узнаёт твой платёж', '— за копійками бот упізнає твій платіж'], ['Скопировать сумму', 'Скопіювати суму'],
+    ['Выдели сумму вручную', 'Виділи суму вручну'], ['Оплати в банку или на карту ниже —', 'Оплати в банку або на картку нижче —'],
     // 11-16: выкуп TON («Продать»)
     ['Купить или продать TON', 'Купити або продати TON'], ['Купить TON', 'Купити TON'], ['Продать TON', 'Продати TON'], ['Продать', 'Продати'],
     ['На сегодня выкуп TON закрыт.', 'На сьогодні викуп TON закрито.'], ['Дневной лимит выбран — приходи завтра.', 'Денний ліміт вичерпано — приходь завтра.'],
@@ -2253,14 +2272,14 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
           mascotSay('Проверяю вручную, не переживай');
           hint.textContent = 'Оплата получена — заявку проверяем вручную, всё придёт. Если что, напишем в чате.';
           document.getElementById('cancelOrderBtn').style.display = 'none';
-          document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
+          document.getElementById('payAmountBox').hidden = true; document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
         } else if (data.status === 'expired') {
           stopTimers();
           clearSavedOrder();
           mascotSay('Время вышло, создай новую заявку');
           document.body.dataset.expired = '1';
           hint.textContent = 'Заявка истекла — курс TON мог измениться.';
-          document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
+          document.getElementById('payAmountBox').hidden = true; document.getElementById('openJarBtn').style.display = 'none'; document.getElementById('cardPayBlock').hidden = true;
           document.getElementById('newOrderBtn').style.display = '';
           document.getElementById('cancelOrderBtn').style.display = 'none';
         }
@@ -2325,6 +2344,18 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       document.getElementById('waitWallet').textContent = order.ton_wallet;
     }
     document.getElementById('waitUahAmount').textContent = `${order.uah_amount.toFixed(2)}`;
+    document.getElementById('payAmountBig').textContent = order.uah_amount.toFixed(2);
+    document.getElementById('payAmountBox').hidden = false;
+    document.getElementById('copyAmountBtn').onclick = async () => {
+      const btn = document.getElementById('copyAmountBtn');
+      try {
+        await navigator.clipboard.writeText(order.uah_amount.toFixed(2));
+        btn.textContent = 'Скопировано ✓';
+      } catch (e) {
+        btn.textContent = 'Выдели сумму вручную';
+      }
+      setTimeout(() => { btn.textContent = 'Скопировать сумму'; }, 2000);
+    };
     document.getElementById('waitStatusHint').textContent = 'Ждём оплату…';
     mascotSay('Не вопрос, жду перевод');
     delete document.body.dataset.expired;
