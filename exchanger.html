@@ -451,6 +451,17 @@
   .card-pay-copy { width: auto; margin: 0; padding: 8px 16px; background: var(--accent-dim); color: var(--text); border: 1px solid var(--accent); border-radius: 12px; font-weight: 700; }
   .hint.error { color: var(--error); }
 
+  /* 11-16: «Купить / Продать» — выкуп TON у клиентов (bot/exchanger/buyback.py) */
+  .side-switch { display: flex; gap: 4px; padding: 4px; margin: 0 0 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--border); }
+  .side-btn { flex: 1; width: auto; margin: 0; padding: 10px 8px; border: 0; border-radius: 12px; background: transparent; color: var(--muted); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .side-btn[aria-selected="true"] { background: var(--accent-dim); color: var(--text); }
+  body[data-section="waitingSection"] .side-switch, body[data-section="successSection"] .side-switch { display: none; }
+  .sell-kv { margin-top: 14px; text-align: left; }
+  .sell-kv-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+  .sell-kv-row { display: flex; align-items: center; gap: 10px; }
+  .sell-kv-row code { flex: 1 1 0; min-width: 0; word-break: break-all; font-size: 13px; font-weight: 700; color: var(--text); }
+  .sell-kv-row .ghost-btn.card-pay-copy { flex: 0 0 auto; width: auto; margin: 0; }
+  .sell-kv-row code.big { font-size: 20px; letter-spacing: .06em; }
   .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
 
   /* 11-16: TON разобрали — вместо формы карточка со спящим Мистером Тоном и кнопкой 🔔 */
@@ -981,6 +992,11 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     <span id="closedNoticeText"><b>Обмен временно на паузе.</b> Новые заявки сейчас не принимаем — загляни чуть позже.</span>
   </div>
 
+  <div class="side-switch" id="sideSwitch" role="tablist" aria-label="Купить или продать TON" hidden>
+    <button type="button" class="side-btn" data-side="buy" role="tab" aria-selected="true">Купить TON</button>
+    <button type="button" class="side-btn" data-side="sell" role="tab" aria-selected="false">Продать TON</button>
+  </div>
+
   <div id="formSection" class="section">
     <div class="card soldout-card" id="soldoutCard">
       <img class="soldout-img" src="mister-ton-sleep.png" width="360" height="468" alt="">
@@ -1064,6 +1080,115 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       После оплаты TON отправляется автоматически, обычно в течение минуты —<br>
       ничего дополнительно подтверждать не нужно.<br>
       Оплата с любой карты (Приват, моно и др.) или Apple Pay / Google Pay.
+    </div>
+  </div>
+
+  <div id="sellSection" class="section" style="display:none;">
+    <div id="sellForm">
+      <div class="notice" id="sellClosedNotice" hidden>
+        <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v5.5M12 16.5v.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <span><b>На сегодня выкуп TON закрыт.</b> Дневной лимит выбран — приходи завтра.</span>
+      </div>
+      <div class="card ex-card">
+      <div class="card card-input">
+        <label for="sellTon">Отдаёте</label>
+        <div class="amount-row">
+          <input type="number" id="sellTon" inputmode="decimal" placeholder="0" min="0" step="1">
+          <span class="unit">TON</span>
+        </div>
+        <div class="chips" id="sellChips">
+          <button type="button" class="chip" data-amount="10">10</button>
+          <button type="button" class="chip" data-amount="20">20</button>
+          <button type="button" class="chip" data-amount="30">30</button>
+          <button type="button" class="chip" data-amount="50">50</button>
+        </div>
+      </div>
+
+      <div class="arrow-divider">
+        <span class="arrow-badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 4V20M12 20L6 14M12 20L18 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </div>
+
+      <div class="card card-hero">
+        <label>Получаете на карту</label>
+        <div class="result-value" id="sellResult">0.00 грн</div>
+        <div class="rate-line" id="sellRateLine">Курс…</div>
+      </div>
+      </div>
+
+      <div class="card card-input">
+        <label for="sellCard">Карта для выплаты</label>
+        <div class="wallet-field">
+          <input type="text" id="sellCard" class="wallet-input" inputmode="numeric" placeholder="0000 0000 0000 0000" autocomplete="off" maxlength="19">
+          <svg id="sellCardCheck" class="wallet-check" viewBox="0 0 24 24" fill="none" style="display:none;">
+            <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="hint">Гривны придут на эту карту — подходит любой украинский банк.</div>
+      </div>
+
+      <div class="limits" id="sellLimits">От 10 TON за раз</div>
+
+      <button class="primary" id="sellSubmitBtn" disabled>Введите сумму и карту</button>
+
+      <div class="footer-note">
+        Курс фиксируется на 30 минут — за это время отправь TON.<br>
+        Выплату на карту делаем в тот же день до 22:00 по Киеву;<br>
+        если TON пришли после 21:00 — на следующий день.
+      </div>
+    </div>
+
+    <div id="sellOrder" hidden>
+      <div class="card">
+        <label>Заявка <span id="sellOrderCode"></span></label>
+        <div class="result-value" id="sellOrderTon"></div>
+        <div class="rate-line">→ <span id="sellOrderUah"></span></div>
+      </div>
+      <div class="card">
+        <div id="sellPayBlock">
+          <div class="waiting-copy">
+            Отправь ровно <b id="sellSendTon"></b> на кошелёк TonExpress и <b>обязательно укажи комментарий</b> — по нему бот узнаёт твой перевод.
+          </div>
+          <button class="primary" id="sellOpenWalletBtn" style="margin-top:14px;">Открыть в Tonkeeper — всё подставится само</button>
+          <div class="card-pay">
+            <div class="card-pay-title">или переводом из любого кошелька</div>
+            <div class="sell-kv">
+              <div class="sell-kv-label">Адрес</div>
+              <div class="sell-kv-row"><code id="sellAddress"></code><button type="button" class="ghost-btn card-pay-copy" id="sellCopyAddrBtn">Скопировать</button></div>
+            </div>
+            <div class="sell-kv">
+              <div class="sell-kv-label">Комментарий (обязательно)</div>
+              <div class="sell-kv-row"><code id="sellComment" class="big"></code><button type="button" class="ghost-btn card-pay-copy" id="sellCopyMemoBtn">Скопировать</button></div>
+            </div>
+          </div>
+          <div class="timer-line" id="sellTimerLine">Курс держим ещё <span class="timer-value" id="sellTimer">30:00</span></div>
+        </div>
+
+        <div class="stepper">
+          <div class="step done" data-step="s-created">
+            <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="step-label">Заявка создана</span>
+          </div>
+          <div class="step" data-step="s-recv">
+            <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="step-label">TON получены</span>
+          </div>
+          <div class="step" data-step="s-paid">
+            <span class="step-dot"><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <span class="step-label">Выплата отправлена</span>
+          </div>
+        </div>
+        <div class="hint" id="sellStatusHint" style="text-align:center; margin-top:10px;"></div>
+
+        <button class="primary" id="sellNewBtn" style="margin-top:14px; display:none;">↺ Новая заявка на продажу</button>
+        <button type="button" class="ghost-btn danger" id="sellCancelBtn">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <span>Отменить заявку</span>
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1304,6 +1429,35 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   if (lang !== 'uk') return;
   document.documentElement.lang = 'uk';
   const PAIRS = [
+    // 11-16: выкуп TON («Продать»)
+    ['Купить или продать TON', 'Купити або продати TON'], ['Купить TON', 'Купити TON'], ['Продать TON', 'Продати TON'], ['Продать', 'Продати'],
+    ['На сегодня выкуп TON закрыт.', 'На сьогодні викуп TON закрито.'], ['Дневной лимит выбран — приходи завтра.', 'Денний ліміт вичерпано — приходь завтра.'],
+    ['Получаете на карту', 'Отримуєте на картку'], ['Карта для выплаты', 'Картка для виплати'],
+    ['Гривны придут на эту карту — подходит любой украинский банк.', 'Гривні надійдуть на цю картку — підходить будь-який український банк.'],
+    ['От 10 TON за раз', 'Від 10 TON за раз'], ['TON за раз · выплата до', 'TON за раз · виплата до'], ['по Киеву', 'за Києвом'],
+    ['Введите сумму и карту', 'Введіть суму і картку'], ['Выкуп на сегодня закрыт', 'Викуп на сьогодні закрито'], ['Загружаю курс…', 'Завантажую курс…'],
+    ['Минимум', 'Мінімум'], ['Сейчас можем взять до', 'Зараз можемо взяти до'], ['Введите номер карты', 'Введіть номер картки'], ['Проверь номер карты', 'Перевір номер картки'],
+    ['Курс фиксируется на 30 минут — за это время отправь TON.', 'Курс фіксується на 30 хвилин — за цей час надішли TON.'],
+    ['Выплату на карту делаем в тот же день до 22:00 по Киеву;', 'Виплату на картку робимо того ж дня до 22:00 за Києвом;'],
+    ['если TON пришли после 21:00 — на следующий день.', 'якщо TON надійшли після 21:00 — наступного дня.'],
+    ['Отправь ровно', 'Надішли рівно'], ['на кошелёк TonExpress и', 'на гаманець TonExpress і'], ['обязательно укажи комментарий', "обов'язково вкажи коментар"],
+    ['— по нему бот узнаёт твой перевод.', '— за ним бот упізнає твій переказ.'],
+    ['Открыть в Tonkeeper — всё подставится само', 'Відкрити в Tonkeeper — усе підставиться саме'], ['или переводом из любого кошелька', 'або переказом з будь-якого гаманця'],
+    ['Адрес', 'Адреса'], ['Комментарий (обязательно)', "Коментар (обов'язково)"], ['Курс держим ещё', 'Курс тримаємо ще'],
+    ['TON получены', 'TON отримано'], ['Выплата отправлена', 'Виплату надіслано'], ['Новая заявка на продажу', 'Нова заявка на продаж'],
+    ['Жду перевод… Обычно вижу его за 2–3 минуты после отправки.', 'Чекаю на переказ… Зазвичай бачу його за 2–3 хвилини після відправлення.'],
+    ['Выплата', 'Виплата'], ['грн на карту', 'грн на картку'], ['сегодня до', 'сьогодні до'],
+    ['Экран можно закрыть: напишу в чате, когда отправлю.', 'Екран можна закрити: напишу в чаті, коли надішлю.'],
+    ['Заявка отменена.', 'Заявку скасовано.'], ['Если ты уже отправил TON, напиши в поддержку.', 'Якщо ти вже надіслав TON, напиши в підтримку.'],
+    ['Выплатил', 'Виплатив'], ['Выдели вручную', 'Виділи вручну'],
+    ['Точно отменить заявку? Если TON уже отправлены — не отменяй.', 'Точно скасувати заявку? Якщо TON уже надіслано — не скасовуй.'],
+    ['Не получилось отменить — похоже, TON уже пришли. Статус обновится сам.', 'Не вдалося скасувати — схоже, TON уже надійшли. Статус оновиться сам.'],
+    ['Проверь номер карты — он не проходит проверку.', 'Перевір номер картки — він не проходить перевірку.'],
+    ['Сумма не подходит — проверь, сколько TON сейчас можем взять.', 'Сума не підходить — перевір, скільки TON зараз можемо взяти.'],
+    ['На сегодня выкуп TON закрыт — дневной лимит выбран. Приходи завтра.', 'На сьогодні викуп TON закрито — денний ліміт вичерпано. Приходь завтра.'],
+    ['Слишком много заявок за сегодня. Попробуй завтра.', 'Забагато заявок за сьогодні. Спробуй завтра.'], ['Выкуп TON сейчас не работает.', 'Викуп TON зараз не працює.'],
+    ['Не получилось узнать курс — попробуй через пару минут.', 'Не вдалося дізнатися курс — спробуй за кілька хвилин.'],
+    ['Не получилось создать заявку — проверь интернет и попробуй ещё раз.', 'Не вдалося створити заявку — перевір інтернет і спробуй ще раз.'],
     ['Обмен грн ⇄ TON', 'Обмін грн ⇄ TON'], ['TonExpress — обмен грн ⇄ TON', 'TonExpress — обмін грн ⇄ TON'],
     ['Открыть отзывы', 'Відкрити відгуки'], ['Курс…', 'Курс…'], ['TON за ~1 минуту', 'TON за ~1 хвилину'],
     ['Обмен временно на паузе.', 'Обмін тимчасово на паузі.'], ['Обмен временно на паузе', 'Обмін тимчасово на паузі'],
@@ -1531,6 +1685,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         if (typeof data.stock_sub === 'boolean') stockSub = data.stock_sub;
         rateState = 'ok';
+        onBuybackFlag(!!data.buyback);
       } catch (e) {
         console.error('rate fetch failed', e);
         if (e.message === 'exchanger_disabled' || e.message === 'maintenance') {
@@ -1940,11 +2095,16 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     if (countdownTimer) { clearInterval(countdownTimer); countdownTimer = null; }
   }
 
+  // Выкуп TON (11-16): состояние экрана «Продать» — объявлено здесь, потому что showSection его сбрасывает.
+  let sellInfo = null, sellOrder = null, sellPoll = null, sellTick = null, sellSkipOrder = false;
+  let wantSell = new URLSearchParams(location.search).get('tab') === 'sell';
+
   function showSection(id) {
     document.body.dataset.section = id;
-    ['formSection', 'waitingSection', 'successSection'].forEach((sec) => {
+    ['formSection', 'waitingSection', 'successSection', 'sellSection'].forEach((sec) => {
       document.getElementById(sec).style.display = sec === id ? '' : 'none';
     });
+    if (id !== 'sellSection') leaveSell();
   }
 
   async function apiCall(path, body) {
@@ -2720,6 +2880,302 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
       btn.textContent = 'Зажми ссылку выше';
     }
     setTimeout(() => { btn.textContent = 'Скопировать'; }, 2000);
+  });
+
+  // ---------- Продать TON (выкуп у клиентов, 11-16) ----------
+  // Клиент переводит TON на кошелёк TonExpress с комментарием заявки (S17), гривны на карту
+  // владелец отправляет вручную в вечернее окно. Сервер: /api/buyback/*, bot/exchanger/buyback.py.
+  const sellEl = (id) => document.getElementById(id);
+
+  function luhnOk(d) {
+    let t = 0;
+    for (let i = 0; i < d.length; i++) {
+      let n = +d[d.length - 1 - i];
+      if (i % 2) { n *= 2; if (n > 9) n -= 9; }
+      t += n;
+    }
+    return t % 10 === 0;
+  }
+  function sellCardDigits() { return sellEl('sellCard').value.replace(/\D/g, ''); }
+  function sellTonValue() {
+    const v = parseFloat(String(sellEl('sellTon').value).replace(',', '.'));
+    return isFinite(v) ? Math.floor(v * 100 + 1e-6) / 100 : 0;
+  }
+
+  function recomputeSell() {
+    const info = sellInfo;
+    const rate = info && info.rate;
+    const ton = sellTonValue();
+    const closed = !info || !rate || info.max_ton < info.min_ton;
+    sellEl('sellClosedNotice').hidden = !(info && closed);
+    sellEl('sellResult').textContent = rate && ton > 0 ? `${(Math.floor(ton * rate * 100 + 1e-6) / 100).toFixed(2)} грн` : '0.00 грн';
+    sellEl('sellRateLine').textContent = rate ? `1 TON = ${rate.toFixed(2)} грн` : 'Курс…';
+    if (info && !closed) {
+      sellEl('sellLimits').textContent = `От ${info.min_ton} до ${info.max_ton} TON за раз · выплата до ${info.payout_by} по Киеву`;
+    }
+    document.querySelectorAll('#sellChips .chip').forEach((chip) => {
+      chip.classList.toggle('active', Number(chip.dataset.amount) === ton);
+      chip.disabled = !!info && !closed && Number(chip.dataset.amount) > info.max_ton;
+    });
+    const digits = sellCardDigits();
+    const cardOk = digits.length === 16 && luhnOk(digits);
+    sellEl('sellCardCheck').style.display = cardOk ? '' : 'none';
+    let label = 'Введите сумму и карту', ok = false;
+    if (closed) label = info ? 'Выкуп на сегодня закрыт' : 'Загружаю курс…';
+    else if (!(ton > 0)) label = 'Введите сумму и карту';
+    else if (ton < info.min_ton) label = `Минимум ${info.min_ton} TON`;
+    else if (ton > info.max_ton) label = `Сейчас можем взять до ${info.max_ton} TON`;
+    else if (digits.length < 16) label = 'Введите номер карты';
+    else if (!cardOk) label = 'Проверь номер карты';
+    else { ok = true; label = `Продать ${ton} TON`; }
+    const btn = sellEl('sellSubmitBtn');
+    btn.textContent = label;
+    btn.disabled = !ok;
+  }
+
+  function stopSellTimers() {
+    if (sellPoll) { clearInterval(sellPoll); sellPoll = null; }
+    if (sellTick) { clearInterval(sellTick); sellTick = null; }
+  }
+  function markSide(side) {
+    document.querySelectorAll('.side-btn').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.side === side)));
+  }
+  // Ушли с экрана «Продать» (покупка, заявка на покупку, «Готово») — опрос заявки на продажу больше не нужен.
+  function leaveSell() {
+    stopSellTimers();
+    sellOrder = null;
+    sellSkipOrder = false;
+    markSide('buy');
+  }
+  function showSellForm() {
+    stopSellTimers();
+    sellOrder = null;
+    sellEl('sellOrder').hidden = true;
+    sellEl('sellForm').hidden = false;
+    recomputeSell();
+  }
+  function setSide(side) {
+    if (side === 'sell') {
+      showSection('sellSection');
+      markSide('sell');
+      showSellForm();
+      loadSellInfo();
+    } else {
+      showSection('formSection');
+      recompute();
+    }
+    window.scrollTo({ top: 0 });
+  }
+
+  function setSellStep(key, state) {
+    const el = document.querySelector(`.step[data-step="${key}"]`);
+    el.classList.remove('done', 'current', 'error');
+    if (state) el.classList.add(state);
+  }
+  function renderSellStatus(order) {
+    const st = order.status;
+    const waiting = st === 'awaiting_ton';
+    sellEl('sellOrderTon').textContent = `${order.ton_amount} TON`;
+    sellEl('sellOrderUah').textContent = `${order.uah_amount.toFixed(2)} грн на карту ${order.card_mask}`;
+    sellEl('sellPayBlock').hidden = !waiting;
+    sellEl('sellCancelBtn').style.display = waiting ? '' : 'none';
+    sellEl('sellNewBtn').style.display = waiting ? 'none' : '';
+    setSellStep('s-recv', waiting ? 'current' : (st === 'received' || st === 'paid') ? 'done' : 'error');
+    setSellStep('s-paid', st === 'received' ? 'current' : st === 'paid' ? 'done' : '');
+    const hint = sellEl('sellStatusHint');
+    if (waiting) hint.textContent = 'Жду перевод… Обычно вижу его за 2–3 минуты после отправки.';
+    else if (st === 'received') hint.textContent = `TON получены ✅ Выплата ${order.uah_amount.toFixed(2)} грн на карту ${order.card_mask} — ${order.promise}. Экран можно закрыть: напишу в чате, когда отправлю.`;
+    else if (st === 'cancelled') hint.textContent = 'Заявка отменена.';
+    else hint.textContent = 'Заявка истекла — курс TON мог измениться. Если ты уже отправил TON, напиши в поддержку.';
+  }
+
+  function enterSellOrder(order) {
+    if (document.body.dataset.section !== 'sellSection') showSection('sellSection');
+    markSide('sell');
+    stopSellTimers();
+    sellOrder = order;
+    sellEl('sellForm').hidden = true;
+    sellEl('sellOrder').hidden = false;
+    sellEl('sellOrderCode').textContent = order.code;
+    sellEl('sellSendTon').textContent = `${order.ton_amount} TON`;
+    sellEl('sellAddress').textContent = order.address;
+    sellEl('sellComment').textContent = order.comment;
+    sellEl('sellOpenWalletBtn').onclick = () => {
+      haptic();
+      if (tg && typeof tg.openLink === 'function') tg.openLink(order.wallet_link);
+      else window.open(order.wallet_link, '_blank');
+    };
+    renderSellStatus(order);
+    if (order.status === 'awaiting_ton') {
+      const deadline = Date.now() + order.expires_in_seconds * 1000;
+      const tick = () => {
+        const left = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+        sellEl('sellTimer').textContent = `${String(Math.floor(left / 60)).padStart(2, '0')}:${String(left % 60).padStart(2, '0')}`;
+        sellEl('sellTimerLine').classList.toggle('warn', left < 300);
+      };
+      tick();
+      sellTick = setInterval(tick, 1000);
+    }
+    if (order.status === 'awaiting_ton' || order.status === 'received') {
+      // Выплата идёт вручную и может прийти через часы — после получения TON спрашиваем реже.
+      sellPoll = setInterval(pollSell, order.status === 'received' ? 20000 : STATUS_POLL_MS);
+    }
+    window.scrollTo({ top: 0 });
+  }
+
+  async function pollSell() {
+    if (!sellOrder) return;
+    try {
+      const data = await apiCall('/api/buyback/status', { init_data: tg.initData, order_id: sellOrder.id });
+      if (!sellOrder || data.order.id !== sellOrder.id || data.order.status === sellOrder.status) return;
+      if (data.order.status === 'paid') {
+        const o = data.order;
+        document.getElementById('successText').textContent =
+          `Выплатил ${o.uah_amount.toFixed(2)} грн на карту ${o.card_mask} за ${o.ton_amount} TON. Спасибо, что пользуешься TonExpress!`;
+        try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+        showSection('successSection');
+        celebrate();
+        return;
+      }
+      try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred(data.order.status === 'received' ? 'success' : 'warning'); } catch (e) {}
+      enterSellOrder(data.order);
+    } catch (e) {
+      console.error('buyback status poll failed', e);
+    }
+  }
+
+  async function loadSellInfo() {
+    if (!tg || !tg.initData) return;
+    try {
+      sellInfo = await apiCall('/api/buyback/info', { init_data: tg.initData });
+    } catch (e) {
+      console.error('buyback info failed', e);
+      return;
+    }
+    sellEl('sideSwitch').hidden = !sellInfo.enabled;
+    const section = document.body.dataset.section || 'formSection';
+    if (!sellInfo.enabled) {
+      if (section === 'sellSection') setSide('buy');
+      return;
+    }
+    const onBuyForm = section === 'formSection' && document.body.dataset.tab === 'ton';
+    if (wantSell && onBuyForm) {
+      wantSell = false;
+      setSide('sell');   // сам ещё раз вызовет loadSellInfo и покажет заявку, если она есть
+      return;
+    }
+    const o = sellInfo.order;
+    // Заявка, которая ждёт перевод, открывается сама; та, что ждёт выплату, — только на экране «Продать».
+    if (o && !sellOrder && !sellSkipOrder && (section === 'sellSection' || (onBuyForm && o.status === 'awaiting_ton'))) {
+      enterSellOrder(o);
+      return;
+    }
+    recomputeSell();
+  }
+
+  // /api/exchange/rate раз в минуту говорит, включён ли выкуп: первый раз грузим всё,
+  // дальше обновляем курс выкупа, только пока человек смотрит на форму продажи.
+  function onBuybackFlag(on) {
+    if (!on) {
+      sellEl('sideSwitch').hidden = true;
+      if (document.body.dataset.section === 'sellSection') setSide('buy');
+      return;
+    }
+    if (!sellInfo || (document.body.dataset.section === 'sellSection' && !sellOrder)) loadSellInfo();
+  }
+
+  document.querySelectorAll('.side-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn.getAttribute('aria-selected') === 'true') return;
+      haptic();
+      setSide(btn.dataset.side);
+    });
+  });
+  sellEl('sellTon').addEventListener('input', recomputeSell);
+  sellEl('sellCard').addEventListener('input', (e) => {
+    e.target.value = sellCardDigits().slice(0, 16).replace(/(\d{4})(?=\d)/g, '$1 ');
+    recomputeSell();
+  });
+  document.querySelectorAll('#sellChips .chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      haptic();
+      sellEl('sellTon').value = chip.dataset.amount;
+      recomputeSell();
+    });
+  });
+  function sellCopy(btnId, getText) {
+    const btn = sellEl(btnId);
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(getText());
+        btn.textContent = 'Скопировано ✓';
+      } catch (e) {
+        btn.textContent = 'Выдели вручную';
+      }
+      setTimeout(() => { btn.textContent = 'Скопировать'; }, 2000);
+    });
+  }
+  sellCopy('sellCopyAddrBtn', () => sellEl('sellAddress').textContent);
+  sellCopy('sellCopyMemoBtn', () => sellEl('sellComment').textContent);
+
+  sellEl('sellSubmitBtn').addEventListener('click', async () => {
+    const btn = sellEl('sellSubmitBtn');
+    if (!tg || !tg.initData) {
+      alert('Открой это через кнопку бота в Telegram, не в браузере.');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Создаём заявку…';
+    try {
+      const data = await apiCall('/api/buyback/create', { init_data: tg.initData, ton: sellTonValue(), card: sellCardDigits() });
+      try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
+      sellSkipOrder = false;
+      enterSellOrder(data.order);
+    } catch (e) {
+      console.error('buyback create failed', e);
+      if (e.message === 'has_active' && e.data && e.data.order) {
+        enterSellOrder(e.data.order);
+        return;
+      }
+      const texts = {
+        bad_card: 'Проверь номер карты — он не проходит проверку.',
+        bad_amount: 'Сумма не подходит — проверь, сколько TON сейчас можем взять.',
+        no_room: 'На сегодня выкуп TON закрыт — дневной лимит выбран. Приходи завтра.',
+        too_many: 'Слишком много заявок за сегодня. Попробуй завтра.',
+        disabled: 'Выкуп TON сейчас не работает.',
+        rate_unavailable: 'Не получилось узнать курс — попробуй через пару минут.',
+      };
+      alert(texts[e.message] || 'Не получилось создать заявку — проверь интернет и попробуй ещё раз.');
+      await loadSellInfo();
+      recomputeSell();
+    }
+  });
+
+  sellEl('sellNewBtn').addEventListener('click', () => {
+    sellSkipOrder = true;   // заявка, что ждёт выплату, никуда не делась — просто не закрываем ею форму
+    showSellForm();
+    loadSellInfo();
+  });
+
+  async function doCancelSell() {
+    const btn = sellEl('sellCancelBtn');
+    btn.disabled = true;
+    try {
+      await apiCall('/api/buyback/cancel', { init_data: tg.initData, order_id: sellOrder.id });
+      showSellForm();
+      loadSellInfo();
+    } catch (e) {
+      console.error('buyback cancel failed', e);
+      alert('Не получилось отменить — похоже, TON уже пришли. Статус обновится сам.');
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  sellEl('sellCancelBtn').addEventListener('click', () => {
+    if (!sellOrder) return;
+    const ask = 'Точно отменить заявку? Если TON уже отправлены — не отменяй.';
+    if (tg && typeof tg.showConfirm === 'function') tg.showConfirm(ask, (yes) => { if (yes) doCancelSell(); });
+    else if (confirm(ask)) doCancelSell();
   });
 
   // ?tab=stars|reviews|friends — бот открывает мини-апп сразу на нужной вкладке.
