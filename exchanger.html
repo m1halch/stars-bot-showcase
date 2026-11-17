@@ -1575,6 +1575,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     <div class="card" style="padding: 4px 14px;">
       <div class="adm-row"><div>Дневной потолок<br><span id="admCapText"></span></div>
         <div class="adm-cap"><input type="number" id="admCapInput" inputmode="numeric" min="0" step="500"><button type="button" id="admCapSave">ОК</button></div></div>
+      <div class="adm-row"><div>Умный потолок<br><span>остаток лимитов ÷ дни до конца месяца</span></div><button type="button" class="adm-switch" id="admCapAuto"></button></div>
       <div class="adm-row"><div>Оплата идёт Артёму<br><span id="admPartnerText"></span></div><button type="button" class="adm-switch" data-act="partner"></button></div>
       <div class="adm-row"><div>Сообщения о каждой продаже<br><span>итог дня приходит в любом случае</span></div><button type="button" class="adm-switch" data-act="quiet_inv"></button></div>
       <div class="adm-row"><div>Выкуп TON у клиентов<br><span id="admBuybackText"></span></div><button type="button" class="adm-switch" data-act="buyback"></button></div>
@@ -3700,7 +3701,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     now += `<div class="adm-tile wide"><small>Звёзды (StarsExpress)</small><b>${pr.stars_open ? 'продаются' : 'закрыты'}</b><em>${admFmt(pr.stars, 2)} ₴ за звезду</em></div>`;
     document.getElementById('admNow').innerHTML = now;
     document.getElementById('admUpdated').textContent = 'обновлено ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('admCapText').textContent = d.cap.cap ? `сейчас ${admFmt(d.cap.cap)} ₴, 0 — выключить` : 'выключен, 0 — без потолка';
+    document.getElementById('admCapText').textContent = d.cap.auto ? `умный: сегодня ${admFmt(d.cap.cap)} ₴` : (d.cap.cap ? `сейчас ${admFmt(d.cap.cap)} ₴, 0 — выключить` : 'выключен, 0 — без потолка');
+    document.getElementById('admCapAuto').classList.toggle('on', !!d.cap.auto);
     const capIn = document.getElementById('admCapInput'); if (document.activeElement !== capIn) capIn.value = d.cap.cap || 0;
     document.getElementById('admPartnerText').textContent = pa ? (pa.active ? 'клиенты платят на его банку и карту' : 'клиенты платят тебе') : 'партнёр не настроен';
     document.getElementById('admBuybackText').textContent = `рынок −${admFmt(d.buyback.margin * 100, 1)}%, до ${admFmt(d.buyback.cap)} ₴ в день`;
@@ -3727,6 +3729,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   document.getElementById('admBtn').addEventListener('click', admOpen);
   document.getElementById('admBack').addEventListener('click', () => { haptic(); selectTab('ton'); });
   document.getElementById('admCapSave').addEventListener('click', () => admAct('cap', Number(document.getElementById('admCapInput').value) || 0));
+  document.getElementById('admCapAuto').addEventListener('click', (e) => admAct('cap', e.currentTarget.classList.contains('on') ? (admData ? Math.round(admData.cap.cap) : 6500) : 'auto'));
   document.querySelectorAll('.adm-switch').forEach((b) => b.addEventListener('click', () => {
     const want = !b.classList.contains('on');
     if (b.dataset.act === 'quiet_inv') admAct('quiet', !want); else admAct(b.dataset.act, want);
