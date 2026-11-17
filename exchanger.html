@@ -947,39 +947,50 @@ body[data-tab="friends"] .tab-ind { transform: translateX(200%); }
 body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 /* 11-17: страница розыгрыша — без своей вкладки, золотой акцент как у звёзд */
 body[data-tab="giveaway"] .tab-ind { opacity: 0; }
-/* 11-17: админ-панель владельца */
+/* 11-17: админ-панель владельца (компактная) */
 body[data-tab="admin"] .tab-ind { opacity: 0; }
 .adm-btn { position: absolute; top: 0; left: 160px; padding: 5px 10px; border-radius: 999px; border: 1.5px solid rgba(255,255,255,.35);
   background: rgba(0,0,0,.18); color: #fff; font: 600 12px/1.2 var(--font-body); cursor: pointer; z-index: 3; }
-.adm-h { display: flex; align-items: baseline; justify-content: space-between; margin: 18px 2px 8px; }
-.adm-h h3 { margin: 0; font: 700 16px/1.2 var(--font-display); }
-.adm-h span { font-size: 12px; color: var(--muted); }
-.adm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-.adm-tile { padding: 12px 14px; border-radius: 16px; background: var(--card); border: 1px solid var(--border); }
-.adm-tile small { display: block; font-size: 12px; color: var(--muted); }
-.adm-tile b { display: block; margin-top: 2px; font: 800 20px/1.2 var(--font-display); font-variant-numeric: tabular-nums; }
-.adm-tile em { display: block; margin-top: 2px; font-style: normal; font-size: 12px; color: var(--muted); }
-.adm-tile.wide { grid-column: span 2; }
-.adm-pos { color: var(--ok); }
-.adm-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 2px; border-bottom: 1px solid var(--border); font-size: 14px; }
-.adm-row span { color: var(--muted); font-size: 12.5px; }
+.adm-top { display: flex; align-items: center; justify-content: space-between; margin: 0 2px 10px; }
+.adm-top h1 { margin: 0; font: 700 20px/1.2 var(--font-display); }
+.adm-top button { width: auto; margin: 0; padding: 6px 10px; border: 0; background: none; color: var(--muted); font: 500 13px/1 var(--font-body); cursor: pointer; }
+.adm-hero { padding: 14px 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--border); }
+.adm-hero small { font-size: 12px; color: var(--muted); }
+.adm-hero .big { font: 800 30px/1.1 var(--font-display); color: var(--ok); font-variant-numeric: tabular-nums; }
+.adm-hero .sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.adm-bar { height: 6px; border-radius: 999px; background: var(--border); margin-top: 10px; overflow: hidden; }
+.adm-bar i { display: block; height: 100%; background: var(--accent); border-radius: 999px; }
+.adm-bar-l { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-top: 5px; }
+.adm-kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.adm-kpi { padding: 10px 10px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); min-width: 0; }
+.adm-kpi small { display: block; font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.adm-kpi b { display: block; font: 800 17px/1.25 var(--font-display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.adm-kpi b.warn { color: var(--error); }
+.adm-seg { display: flex; gap: 4px; padding: 4px; margin: 14px 0 10px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); }
+.adm-seg button { flex: 1; width: auto; margin: 0; padding: 8px 4px; border: 0; border-radius: 10px; background: none; color: var(--muted); font: 600 13px/1 var(--font-body); cursor: pointer; }
+.adm-seg button[aria-selected="true"] { background: var(--accent-dim); color: var(--text); }
+.adm-list { border-radius: 16px; background: var(--card); border: 1px solid var(--border); overflow: hidden; }
+.adm-li { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 11px 14px; border-bottom: 1px solid var(--border); font-size: 14px; }
+.adm-li:last-child { border-bottom: 0; }
+.adm-li span { color: var(--muted); font-size: 13px; }
+.adm-li b { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.adm-li .pos { color: var(--ok); }
+.adm-o { display: flex; align-items: center; gap: 10px; padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.adm-o:last-child { border-bottom: 0; }
+.adm-o .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: 0 0 auto; }
+.adm-o .dot.good { background: var(--ok); } .adm-o .dot.bad { background: var(--error); } .adm-o .dot.wait { background: #f2b83b; }
+.adm-o .who { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-o .who em { font-style: normal; color: var(--muted); }
+.adm-o .sum { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.adm-o .t { color: var(--muted); font-size: 12px; width: 38px; text-align: right; }
 .adm-switch { width: 46px; height: 28px; border-radius: 999px; border: 0; background: var(--border); position: relative; cursor: pointer; flex: 0 0 auto; }
 .adm-switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%; background: #fff; transition: transform .2s ease; }
 .adm-switch.on { background: var(--ok); }
 .adm-switch.on::after { transform: translateX(18px); }
-.adm-cap { display: flex; gap: 8px; align-items: center; }
-.adm-cap input { width: 92px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font: 600 14px/1 var(--font-body); }
-.adm-cap button { width: auto; margin: 0; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--accent); background: var(--accent-dim); color: var(--text); font: 600 13px/1 var(--font-body); cursor: pointer; }
-.adm-orders { border-radius: 16px; background: var(--card); border: 1px solid var(--border); overflow: hidden; }
-.adm-order { display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
-.adm-order:last-child { border-bottom: 0; }
-.adm-order .n { color: var(--muted); }
-.adm-order .who { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.adm-order .sum { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
-.adm-order .meta { grid-column: 2 / 4; color: var(--muted); font-size: 12px; }
-.adm-order .meta i { font-style: normal; }
-.adm-order .meta i.bad { color: var(--error); }
-.adm-order .meta i.good { color: var(--ok); }
+.adm-cap { display: flex; gap: 6px; align-items: center; }
+.adm-cap input { width: 84px; padding: 7px 9px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font: 600 14px/1 var(--font-body); }
+.adm-cap button { width: auto; margin: 0; padding: 7px 10px; border-radius: 10px; border: 1px solid var(--accent); background: var(--accent-dim); color: var(--text); font: 600 13px/1 var(--font-body); cursor: pointer; }
+.adm-note { text-align: center; margin: 12px 0 0; font-size: 12px; color: var(--muted); }
 .adm-toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 10px 16px;
   border-radius: 12px; background: rgba(20,20,30,.92); color: #fff; font-size: 13px; z-index: 50; }
 /* 11-17: StarsExpress — тот же мини-апп, только звёзды (?app=stars) */
@@ -1564,28 +1575,39 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   </section>
 
   <section class="tab-panel" id="panel-admin" role="tabpanel" hidden>
-    <button type="button" class="gw-back" id="admBack">← к обмену</button>
-    <h1 class="panel-title">Админ-панель</h1>
-    <div class="adm-grid" id="admPeriods"></div>
-
-    <div class="adm-h"><h3>Сейчас</h3><span id="admUpdated"></span></div>
-    <div class="adm-grid" id="admNow"></div>
-
-    <div class="adm-h"><h3>Управление</h3></div>
-    <div class="card" style="padding: 4px 14px;">
-      <div class="adm-row"><div>Дневной потолок<br><span id="admCapText"></span></div>
-        <div class="adm-cap"><input type="number" id="admCapInput" inputmode="numeric" min="0" step="500"><button type="button" id="admCapSave">ОК</button></div></div>
-      <div class="adm-row"><div>Умный потолок<br><span>остаток лимитов ÷ дни до конца месяца</span></div><button type="button" class="adm-switch" id="admCapAuto"></button></div>
-      <div class="adm-row"><div>Оплата идёт Артёму<br><span id="admPartnerText"></span></div><button type="button" class="adm-switch" data-act="partner"></button></div>
-      <div class="adm-row"><div>Сообщения о каждой продаже<br><span>итог дня приходит в любом случае</span></div><button type="button" class="adm-switch" data-act="quiet_inv"></button></div>
-      <div class="adm-row"><div>Выкуп TON у клиентов<br><span id="admBuybackText"></span></div><button type="button" class="adm-switch" data-act="buyback"></button></div>
+    <div class="adm-top"><h1>Админка</h1><button type="button" id="admBack">← к обмену</button></div>
+    <div class="adm-hero">
+      <small>Прибыль сегодня</small>
+      <div class="big" id="admProfit">—</div>
+      <div class="sub" id="admProfitSub"></div>
+      <div class="adm-bar"><i id="admCapBar" style="width:0%"></i></div>
+      <div class="adm-bar-l"><span id="admCapL"></span><span id="admCapR"></span></div>
+    </div>
+    <div class="adm-kpis">
+      <div class="adm-kpi"><small>TON на обмен</small><b id="admK1">—</b></div>
+      <div class="adm-kpi"><small id="admK2l">У Артёма</small><b id="admK2">—</b></div>
+      <div class="adm-kpi"><small>Курс</small><b id="admK3">—</b></div>
     </div>
 
-    <div class="adm-h"><h3>Активные заявки</h3><span id="admActiveCount"></span></div>
-    <div class="adm-orders" id="admActive"></div>
-    <div class="adm-h"><h3>Последние заявки</h3><span>25 шт.</span></div>
-    <div class="adm-orders" id="admOrders"></div>
-    <div class="gw-foot">Рассылки и деньги — командами в чате бота, там есть превью и подтверждение.</div>
+    <div class="adm-seg" role="tablist">
+      <button type="button" data-seg="orders" aria-selected="true">Заявки</button>
+      <button type="button" data-seg="money" aria-selected="false">Деньги</button>
+      <button type="button" data-seg="ctrl" aria-selected="false">Управление</button>
+    </div>
+    <div data-pane="orders"><div class="adm-list" id="admOrders"></div></div>
+    <div data-pane="money" hidden><div class="adm-list" id="admMoney"></div></div>
+    <div data-pane="ctrl" hidden>
+      <div class="adm-list">
+        <div class="adm-li"><div>Умный потолок<br><span id="admCapText"></span></div><button type="button" class="adm-switch" id="admCapAuto"></button></div>
+        <div class="adm-li"><div>Потолок вручную<br><span>0 — без потолка</span></div>
+          <div class="adm-cap"><input type="number" id="admCapInput" inputmode="numeric" min="0" step="500"><button type="button" id="admCapSave">ОК</button></div></div>
+        <div class="adm-li"><div>Платят Артёму<br><span id="admPartnerText"></span></div><button type="button" class="adm-switch" data-act="partner"></button></div>
+        <div class="adm-li"><div>Пуш о каждой продаже</div><button type="button" class="adm-switch" data-act="quiet_inv"></button></div>
+        <div class="adm-li"><div>Выкуп TON<br><span id="admBuybackText"></span></div><button type="button" class="adm-switch" data-act="buyback"></button></div>
+      </div>
+      <div class="adm-note">Рассылки и деньги — командами в чате (там превью и подтверждение).</div>
+    </div>
+    <div class="adm-note" id="admUpdated"></div>
   </section>
 
   <section class="tab-panel" id="panel-giveaway" role="tabpanel" hidden>
@@ -3680,38 +3702,56 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const t = document.createElement('div'); t.className = 'adm-toast'; t.textContent = text; document.body.appendChild(t);
     setTimeout(() => t.remove(), 2200);
   }
+  const admEsc = (x) => String(x == null ? '' : x).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
   function admOrderHtml(o) {
-    const cls = o.status === 'fulfilled' ? 'good' : (['needs_review', 'waiting_reserve'].includes(o.status) ? 'bad' : '');
-    const esc = (x) => String(x).replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
-    return `<div class="adm-order"><span class="n">#${o.id}</span><span class="who">${esc(o.who)} · ${esc(o.what)}</span>`
-      + `<span class="sum">${admFmt(o.uah, 2)} ₴</span><span class="meta"><i class="${cls}">${esc(o.status_ru)}</i> · ${admTime(o.at)} · платил ${esc(o.to)}${o.via === 'stars' ? ' · StarsExpress' : ''}</span></div>`;
+    const dot = o.status === 'fulfilled' ? 'good' : (['cancelled', 'expired'].includes(o.status) ? '' : (o.status === 'pending_payment' ? 'wait' : 'bad'));
+    const t = (() => { try { return new Date(o.at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } })();
+    return `<div class="adm-o" title="${admEsc(o.status_ru)}"><span class="dot ${dot}"></span>`
+      + `<span class="who">${admEsc(o.who)} <em>· ${admEsc(o.what)}${o.via === 'stars' ? ' · SE' : ''}${dot === 'wait' || dot === 'bad' ? ' · ' + admEsc(o.status_ru) : ''}</em></span>`
+      + `<span class="sum">${admFmt(o.uah)} ₴</span><span class="t">${t}</span></div>`;
   }
   function admRender(d) {
     admData = d;
-    const P = d.periods, tile = (label, p) => `<div class="adm-tile"><small>${label}</small><b class="adm-pos">${p.profit == null ? '—' : (p.profit >= 0 ? '+' : '') + admFmt(p.profit)} ₴</b><em>${p.orders} заявок · ${admFmt(p.turnover)} ₴</em></div>`;
-    document.getElementById('admPeriods').innerHTML = tile('Сегодня', P.today) + tile('7 дней', P.week) + tile('30 дней', P.month) + tile('Всё время', P.all);
-    const pr = d.price || {}, st = d.stock || {}, pa = d.partner, ol = d.own_limit || {};
-    let now = `<div class="adm-tile"><small>Курс продажи</small><b>${admFmt(pr.sell, 2)} ₴</b><em>рынок ${admFmt(pr.market, 2)} · +${admFmt((pr.margin || 0) * 100, 1)}%</em></div>`
-      + `<div class="adm-tile"><small>Запас TON</small><b>${admFmt(st.wallet, 1)}</b><em>на обмен ${admFmt(st.for_ton, 1)} · USDT ${admFmt(st.usdt, 1)}</em></div>`
-      + `<div class="adm-tile"><small>Потолок дня</small><b>${admFmt(d.cap.used)} / ${d.cap.cap ? admFmt(d.cap.cap) : '∞'}</b><em>грн продано сегодня</em></div>`
-      + `<div class="adm-tile"><small>Себестоимость</small><b>${admFmt(pr.avg_cost, 2)} ₴</b><em>граница цены ${admFmt(pr.floor, 2)}</em></div>`;
-    if (pa) now += `<div class="adm-tile wide"><small>${pa.name}</small><b>${admFmt(pa.on_hand)} ₴ на руках</b><em>купить USDT на эту сумму · его доля ${admFmt(pa.share)} ₴ · лимит осталось ${admFmt(pa.limit_left)} ₴ (~${admFmt(pa.room_per_day)} в день)</em></div>`;
-    now += `<div class="adm-tile wide"><small>Твой лимит переводов</small><b>~${admFmt(ol.left)} ₴ осталось</b><em>ушло ~${admFmt(ol.used)} из 100 000 · обновится 1-го числа</em></div>`;
-    if (d.giveaway) now += `<div class="adm-tile wide"><small>Розыгрыш ${d.giveaway.prize}</small><b>${d.giveaway.sent > 0 ? d.giveaway.participants + ' участников' : 'не запущен'}</b><em>${d.giveaway.sent > 0 ? 'жетонов ' + d.giveaway.tokens : 'запуск — /giveaway send в чате'}</em></div>`;
-    now += `<div class="adm-tile wide"><small>Звёзды (StarsExpress)</small><b>${pr.stars_open ? 'продаются' : 'закрыты'}</b><em>${admFmt(pr.stars, 2)} ₴ за звезду</em></div>`;
-    document.getElementById('admNow').innerHTML = now;
-    document.getElementById('admUpdated').textContent = 'обновлено ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-    document.getElementById('admCapText').textContent = d.cap.auto ? `умный: сегодня ${admFmt(d.cap.cap)} ₴` : (d.cap.cap ? `сейчас ${admFmt(d.cap.cap)} ₴, 0 — выключить` : 'выключен, 0 — без потолка');
+    const P = d.periods, pr = d.price || {}, st = d.stock || {}, pa = d.partner, ol = d.own_limit || {};
+    const t = P.today;
+    document.getElementById('admProfit').textContent = t.profit == null ? '—' : (t.profit >= 0 ? '+' : '') + admFmt(t.profit) + ' ₴';
+    document.getElementById('admProfitSub').textContent = `${t.orders} заявок · оборот ${admFmt(t.turnover)} ₴`;
+    const cap = d.cap.cap || 0, used = d.cap.used || 0;
+    document.getElementById('admCapBar').style.width = cap ? Math.min(100, used / cap * 100).toFixed(0) + '%' : '0%';
+    document.getElementById('admCapL').textContent = cap ? `потолок${d.cap.auto ? ' (умный)' : ''}: ${admFmt(used)} из ${admFmt(cap)}` : 'потолок выключен';
+    document.getElementById('admCapR').textContent = cap ? `осталось ${admFmt(Math.max(0, cap - used))} ₴` : '';
+    const k1 = document.getElementById('admK1'); k1.textContent = admFmt(st.for_ton, 1); k1.classList.toggle('warn', (st.for_ton || 0) < 5);
+    document.getElementById('admK2l').textContent = pa ? `У ${pa.name === 'Артём' ? 'Артёма' : pa.name}` : 'Твой лимит';
+    document.getElementById('admK2').textContent = pa ? admFmt(pa.on_hand) + ' ₴' : admFmt(ol.left) + ' ₴';
+    document.getElementById('admK3').textContent = admFmt(pr.sell, 2);
+    const row = (l, v, cls = '') => `<div class="adm-li"><span>${l}</span><b class="${cls}">${v}</b></div>`;
+    const prof = (p) => (p.profit == null ? '—' : (p.profit >= 0 ? '+' : '') + admFmt(p.profit) + ' ₴') + ` <span>· ${admFmt(p.turnover)} ₴</span>`;
+    document.getElementById('admMoney').innerHTML =
+      row('7 дней', prof(P.week), 'pos') + row('30 дней', prof(P.month), 'pos') + row('Всё время', prof(P.all), 'pos')
+      + row('Курс продажи', `${admFmt(pr.sell, 2)} ₴ <span>· рынок ${admFmt(pr.market, 2)} · +${admFmt((pr.margin || 0) * 100, 1)}%</span>`)
+      + row('Себестоимость', `${admFmt(pr.avg_cost, 2)} ₴ <span>· граница ${admFmt(pr.floor, 2)}</span>`)
+      + row('Запас', `${admFmt(st.wallet, 1)} TON <span>· USDT ${admFmt(st.usdt, 1)}</span>`)
+      + (pa ? row(pa.name, `${admFmt(pa.on_hand)} ₴ на руках <span>· лимит ${admFmt(pa.limit_left)}</span>`) : '')
+      + row('Твой лимит', `~${admFmt(ol.left)} ₴`)
+      + row('Звёзды', `${pr.stars_open ? 'продаются' : 'закрыты'} <span>· ${admFmt(pr.stars, 2)} ₴</span>`)
+      + (d.giveaway ? row('Розыгрыш', d.giveaway.sent > 0 ? `${d.giveaway.participants} участн.` : 'не запущен') : '');
+    const act = d.active.length ? d.active : [];
+    document.getElementById('admOrders').innerHTML = d.orders.slice(0, 15).map(admOrderHtml).join('') || '<div class="adm-li"><span>Заявок нет</span></div>';
+    document.querySelector('.adm-seg [data-seg="orders"]').textContent = act.length ? `Заявки · ${act.length} акт.` : 'Заявки';
+    document.getElementById('admCapText').textContent = d.cap.auto ? `сегодня ${admFmt(cap)} ₴ — остаток лимитов ÷ дни` : 'выключен';
     document.getElementById('admCapAuto').classList.toggle('on', !!d.cap.auto);
-    const capIn = document.getElementById('admCapInput'); if (document.activeElement !== capIn) capIn.value = d.cap.cap || 0;
-    document.getElementById('admPartnerText').textContent = pa ? (pa.active ? 'клиенты платят на его банку и карту' : 'клиенты платят тебе') : 'партнёр не настроен';
-    document.getElementById('admBuybackText').textContent = `рынок −${admFmt(d.buyback.margin * 100, 1)}%, до ${admFmt(d.buyback.cap)} ₴ в день`;
+    const capIn = document.getElementById('admCapInput'); if (document.activeElement !== capIn) capIn.value = d.cap.auto ? '' : (cap || 0);
+    document.getElementById('admPartnerText').textContent = pa ? (pa.active ? 'на его банку и карту' : 'сейчас платят тебе') : 'не настроен';
+    document.getElementById('admBuybackText').textContent = `рынок −${admFmt(d.buyback.margin * 100, 1)}%`;
     const on = { partner: pa && pa.active, quiet_inv: !d.quiet, buyback: d.buyback.enabled };
-    document.querySelectorAll('.adm-switch').forEach((b) => b.classList.toggle('on', !!on[b.dataset.act]));
-    document.getElementById('admActiveCount').textContent = d.active.length ? d.active.length + ' шт.' : 'нет';
-    document.getElementById('admActive').innerHTML = d.active.length ? d.active.map(admOrderHtml).join('') : '<div class="adm-order"><span class="meta">Активных заявок нет</span></div>';
-    document.getElementById('admOrders').innerHTML = d.orders.map(admOrderHtml).join('');
+    document.querySelectorAll('.adm-switch[data-act]').forEach((b) => b.classList.toggle('on', !!on[b.dataset.act]));
+    document.getElementById('admUpdated').textContent = 'обновлено ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + ' · само каждые 30 с';
   }
+  document.querySelectorAll('.adm-seg button').forEach((b) => b.addEventListener('click', () => {
+    haptic();
+    document.querySelectorAll('.adm-seg button').forEach((x) => x.setAttribute('aria-selected', String(x === b)));
+    document.querySelectorAll('#panel-admin [data-pane]').forEach((p) => { p.hidden = p.dataset.pane !== b.dataset.seg; });
+  }));
   async function admLoad(silent) {
     if (!tg || !tg.initData) return;
     try { admRender(await apiCall('/api/admin/overview', { init_data: tg.initData })); }
@@ -3730,7 +3770,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   document.getElementById('admBack').addEventListener('click', () => { haptic(); selectTab('ton'); });
   document.getElementById('admCapSave').addEventListener('click', () => admAct('cap', Number(document.getElementById('admCapInput').value) || 0));
   document.getElementById('admCapAuto').addEventListener('click', (e) => admAct('cap', e.currentTarget.classList.contains('on') ? (admData ? Math.round(admData.cap.cap) : 6500) : 'auto'));
-  document.querySelectorAll('.adm-switch').forEach((b) => b.addEventListener('click', () => {
+  document.querySelectorAll('.adm-switch[data-act]').forEach((b) => b.addEventListener('click', () => {
     const want = !b.classList.contains('on');
     if (b.dataset.act === 'quiet_inv') admAct('quiet', !want); else admAct(b.dataset.act, want);
   }));
