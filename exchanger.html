@@ -945,6 +945,61 @@ body[data-section="waitingSection"] .hero .lang-btn { display: none; }
 body[data-tab="stars"] .tab-ind { transform: translateX(100%); }
 body[data-tab="friends"] .tab-ind { transform: translateX(200%); }
 body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
+/* 11-17: страница розыгрыша — без своей вкладки, золотой акцент как у звёзд */
+body[data-tab="giveaway"] .tab-ind { opacity: 0; }
+body[data-tab="giveaway"] { --accent: #f2b83b; --accent-dim: rgba(242, 184, 59, .13); --btn: #f2b83b; }
+body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
+.gw-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 0 0 12px; padding: 10px 12px; border-radius: 16px;
+  border: 1px solid rgba(242, 184, 59, .45); background: linear-gradient(120deg, rgba(242, 184, 59, .16), rgba(242, 184, 59, .04));
+  color: var(--text); font: inherit; text-align: left; cursor: pointer; }
+.gw-banner img { width: 44px; height: 44px; border-radius: 12px; flex: 0 0 auto; }
+.gw-banner b { display: block; font-size: 14px; }
+.gw-banner span { font-size: 12.5px; color: var(--muted); }
+.gw-banner i { margin-left: auto; font-style: normal; color: #f2b83b; font-size: 20px; }
+.gw-back { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 6px 2px; border: 0; background: none; color: var(--muted); font: 500 13px/1 var(--font-body); cursor: pointer; }
+.gw-hero { text-align: center; padding: 6px 0 2px; }
+.gw-gift { width: 168px; height: 168px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(242, 184, 59, .7);
+  box-shadow: 0 0 0 8px rgba(242, 184, 59, .08), 0 12px 40px rgba(242, 184, 59, .18); }
+.gw-title { margin-top: 14px; font: 800 22px/1.2 var(--font-brand); }
+.gw-title a { color: #f2b83b; text-decoration: none; }
+.gw-sub { margin-top: 4px; font-size: 13px; color: var(--muted); }
+.gw-timer { display: flex; justify-content: center; align-items: flex-end; gap: 6px; margin: 18px 0 4px; }
+.gw-timer .cell { min-width: 44px; padding: 8px 6px; border-radius: 10px; background: var(--card); border: 1px solid var(--border);
+  font: 800 24px/1 var(--font-brand); color: #f2b83b; font-variant-numeric: tabular-nums; text-align: center; }
+.gw-timer .unit { font-size: 12px; color: var(--muted); padding-bottom: 6px; }
+.gw-ends { text-align: center; font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+.gw-stats { display: grid; grid-template-columns: 1fr 1px 1fr; align-items: center; gap: 14px; }
+.gw-stats .sep { align-self: stretch; background: var(--border); }
+.gw-stat b { display: block; font: 800 34px/1.05 var(--font-brand); color: #f2b83b; font-variant-numeric: tabular-nums; }
+.gw-stat span { font-size: 12.5px; color: var(--muted); }
+.gw-friends-head { font-size: 14px; margin: 16px 0 10px; }
+.gw-dots { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.gw-dot { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); background: var(--card); color: var(--muted); font: 700 13px/1 var(--font-body); }
+.gw-dot.on { background: #f2b83b; border-color: #f2b83b; color: #2a1d02; }
+.gw-five { margin-left: 6px; font-size: 12.5px; color: var(--muted); line-height: 1.25; }
+.gw-five b { color: #f2b83b; }
+.gw-invite { margin-top: 16px; }
+.gw-invite small { display: block; margin-top: 2px; font-size: 12px; font-weight: 600; opacity: .8; }
+.gw-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 2px; border-bottom: 1px solid var(--border); }
+.gw-row b { font-size: 14px; }
+.gw-row span { font-size: 12.5px; color: var(--muted); }
+.gw-claim { width: auto; margin: 0; padding: 9px 16px; border-radius: 12px; border: 1px solid #f2b83b; background: rgba(242, 184, 59, .14);
+  color: #f2b83b; font: 700 13px/1 var(--font-body); cursor: pointer; }
+.gw-claim:disabled { border-color: var(--border); background: none; color: var(--muted); cursor: default; }
+.gw-rules details { border-bottom: 1px solid var(--border); padding: 12px 2px; }
+.gw-rules summary { cursor: pointer; font-size: 14px; list-style: none; display: flex; justify-content: space-between; }
+.gw-rules summary::after { content: "⌄"; color: var(--muted); }
+.gw-rules details[open] summary::after { content: "⌃"; }
+.gw-rules p { margin: 8px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.gw-foot { text-align: center; margin-top: 16px; font-size: 12.5px; color: var(--muted); }
+.gw-captcha { text-align: center; }
+.gw-captcha-q { font-size: 15px; font-weight: 700; margin: 4px 0 12px; }
+.gw-captcha-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.gw-captcha-grid button { aspect-ratio: 1; border-radius: 16px; border: 1px solid var(--border); background: var(--card);
+  font-size: 30px; cursor: pointer; }
+.gw-captcha-grid button:active { transform: scale(.95); }
+.gw-closed { text-align: center; padding: 18px 8px; color: var(--muted); }
 #panel-stars:not([hidden]), #panel-friends:not([hidden]), #panel-reviews:not([hidden]) { animation: fade-in .18s var(--ease-out); }
 
 .step-dot svg path { stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .28s var(--ease-out); }
@@ -1033,6 +1088,10 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   </header>
 
   <section class="tab-panel" id="panel-ton" role="tabpanel" aria-labelledby="tab-ton">
+  <button type="button" class="gw-banner" id="gwBanner" hidden>
+    <img src="gift-chillflame.jpg" width="44" height="44" alt="">
+    <div><b>Розыгрыш Chill Flame</b><span>Бесплатно — забирай жетоны</span></div><i>›</i>
+  </button>
   <button type="button" class="trust" id="trustRow" aria-label="Открыть отзывы">
     <span class="trust-item" id="trustReviews" hidden><svg class="star-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.24l-5.66 2.97 1.08-6.3L2.85 9.45l6.32-.92L12 2.8z"/></svg><b id="trustScore">5.0</b><span id="trustCount"></span></span>
     <span class="trust-item"><svg viewBox="0 0 24 24" fill="none"><path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>TON за ~1 минуту</span>
@@ -1452,6 +1511,49 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     <div class="footer-note">Отзывы оставляют клиенты после обмена — бот сам просит оценку в чате.</div>
   </section>
 
+  <section class="tab-panel" id="panel-giveaway" role="tabpanel" hidden>
+    <button type="button" class="gw-back" id="gwBack">← к обмену</button>
+    <div class="gw-hero">
+      <img class="gw-gift" src="gift-chillflame.jpg" width="168" height="168" alt="Chill Flame">
+      <div class="gw-title">Розыгрыш <a id="gwPrizeLink" href="#">Chill Flame</a></div>
+      <div class="gw-sub">Бесплатно · участвовать может каждый</div>
+    </div>
+    <div class="gw-timer" id="gwTimer" aria-live="off"></div>
+    <div class="gw-ends" id="gwEnds"></div>
+
+    <div id="gwJoinBlock">
+      <div class="card gw-captcha" id="gwCaptcha" hidden>
+        <div class="gw-captcha-q" id="gwCaptchaQ"></div>
+        <div class="gw-captcha-grid" id="gwCaptchaGrid"></div>
+        <div class="hint" id="gwCaptchaHint">Проверка, что ты не бот</div>
+      </div>
+      <button class="primary" id="gwJoinBtn">Участвовать бесплатно</button>
+    </div>
+
+    <div id="gwMine" hidden>
+      <div class="card gw-stats">
+        <div class="gw-stat"><b id="gwTokens">1</b><span>Жетонов у тебя</span></div>
+        <div class="sep"></div>
+        <div class="gw-stat"><b id="gwChance">0%</b><span>Шанс выиграть</span></div>
+      </div>
+      <div class="gw-friends-head" id="gwFriendsHead"></div>
+      <div class="gw-dots" id="gwDots"></div>
+      <button class="primary gw-invite" id="gwInviteBtn">Позвать друга<small id="gwInviteSub"></small></button>
+      <div class="gw-row">
+        <div><b>Жетон дня</b><br><span id="gwDailyText">Заходи каждый день — +1 жетон</span></div>
+        <button type="button" class="gw-claim" id="gwDailyBtn">Забрать</button>
+      </div>
+    </div>
+    <div class="gw-closed" id="gwClosed" hidden>Розыгрыш завершён — спасибо всем, кто участвовал!</div>
+
+    <div class="gw-rules">
+      <details><summary>Как считается шанс</summary><p>У каждого участника есть жетоны: 1 за участие, +1 за каждый день, когда забрал жетон дня, +1 за каждого друга и ещё +2 за пятого. Шанс — твои жетоны, делённые на все жетоны. Победителя выбирает бот случайно.</p></details>
+      <details><summary>Как позвать друга</summary><p>Нажми «Позвать друга» и отправь ссылку. Друг засчитывается, когда сам откроет её и нажмёт «Участвовать».</p></details>
+      <details><summary>Честная игра</summary><p>Новые аккаунты Telegram, твинки с одной картой или кошельком и боты, не прошедшие проверку, не дают жетонов — бот отсекает их сам.</p></details>
+    </div>
+    <div class="gw-foot" id="gwFoot"></div>
+  </section>
+
   <nav class="tabbar" role="tablist" aria-label="Разделы">
     <div class="tabbar-inner">
       <span class="tab-ind" aria-hidden="true"></span>
@@ -1508,6 +1610,21 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   if (lang !== 'uk') return;
   document.documentElement.lang = 'uk';
   const PAIRS = [
+    // 11-17: розыгрыш
+    ['Розыгрыш Chill Flame', 'Розіграш Chill Flame'], ['Бесплатно — забирай жетоны', 'Безкоштовно — забирай жетони'], ['← к обмену', '← до обміну'],
+    ['Розыгрыш', 'Розіграш'], ['Бесплатно · участвовать может каждый', 'Безкоштовно · брати участь може кожен'], ['Итоги', 'Підсумки'],
+    ['по Киеву', 'за Києвом'], ['Проверка, что ты не бот', 'Перевірка, що ти не бот'], ['Не то — попробуй ещё раз', 'Не те — спробуй ще раз'],
+    ['Участвовать бесплатно', 'Брати участь безкоштовно'], ['Жетонов у тебя', 'Жетонів у тебе'], ['Шанс выиграть', 'Шанс виграти'],
+    ['Друзей:', 'Друзів:'], ['каждый даёт +1 жетон', 'кожен дає +1 жетон'], ['сверху', 'зверху'], ['за 5-го', 'за 5-го'],
+    ['Позвать друга', 'Покликати друга'], ['шанс станет', 'шанс стане'], ['Жетон дня', 'Жетон дня'], ['Заходи каждый день — +1 жетон', 'Заходь щодня — +1 жетон'],
+    ['Забрать', 'Забрати'], ['Забран ✓', 'Забрано ✓'], ['Следующий — завтра', 'Наступний — завтра'],
+    ['Розыгрыш завершён — спасибо всем, кто участвовал!', 'Розіграш завершено — дякуємо всім, хто брав участь!'],
+    ['Как считается шанс', 'Як рахується шанс'], ['Как позвать друга', 'Як покликати друга'], ['Честная игра', 'Чесна гра'],
+    ['У каждого участника есть жетоны: 1 за участие, +1 за каждый день, когда забрал жетон дня, +1 за каждого друга и ещё +2 за пятого. Шанс — твои жетоны, делённые на все жетоны. Победителя выбирает бот случайно.', 'У кожного учасника є жетони: 1 за участь, +1 за кожен день, коли забрав жетон дня, +1 за кожного друга і ще +2 за п\'ятого. Шанс — твої жетони, поділені на всі жетони. Переможця обирає бот випадково.'],
+    ['Нажми «Позвать друга» и отправь ссылку. Друг засчитывается, когда сам откроет её и нажмёт «Участвовать».', 'Натисни «Покликати друга» і надішли посилання. Друг зараховується, коли сам відкриє його і натисне «Брати участь».'],
+    ['Новые аккаунты Telegram, твинки с одной картой или кошельком и боты, не прошедшие проверку, не дают жетонов — бот отсекает их сам.', 'Нові акаунти Telegram, твінки з однією карткою чи гаманцем і боти, що не пройшли перевірку, не дають жетонів — бот відсікає їх сам.'],
+    ['Участников:', 'Учасників:'], ['отбито накрутки:', 'відбито накрутки:'], ['Нажми на', 'Натисни на'], ['алмаз', 'алмаз'], ['звезду', 'зірку'], ['подарок', 'подарунок'], ['огонь', 'вогонь'], ['клевер', 'конюшину'], ['ракету', 'ракету'],
+    ['Бесплатный розыгрыш подарка', 'Безкоштовний розіграш подарунка'], ['в TonExpress — заходи по моей ссылке и участвуй 🎁', 'у TonExpress — заходь за моїм посиланням і бери участь 🎁'],
     ['Сумма к оплате', 'Сума до сплати'], ['Ровно эта сумма, с копейками', 'Рівно ця сума, з копійками'],
     ['— по копейкам бот узнаёт твой платёж', '— за копійками бот упізнає твій платіж'], ['Скопировать сумму', 'Скопіювати суму'],
     ['Выдели сумму вручную', 'Виділи суму вручну'], ['Оплати в банку или на карту ниже —', 'Оплати в банку або на картку нижче —'],
@@ -3450,9 +3567,110 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     else if (confirm(ask)) doCancelSell();
   });
 
+  // ---------- Розыгрыш (11-17, bot/exchanger/giveaway.py) ----------
+  let gwInfo = null, gwTick = null;
+  const gwEl = (id) => document.getElementById(id);
+  const gwStart = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.start_param) || '';
+
+  function gwRenderTimer() {
+    if (!gwInfo) return;
+    let left = Math.max(0, Math.floor((new Date(gwInfo.ends_at) - Date.now()) / 1000));
+    const d = Math.floor(left / 86400); left %= 86400;
+    const parts = [[d, 'д'], [Math.floor(left / 3600), ':'], [Math.floor(left % 3600 / 60), ':'], [left % 60, '']];
+    gwEl('gwTimer').innerHTML = parts.map(([v, u], k) =>
+      `<span class="cell">${k ? String(v).padStart(2, '0') : v}</span>${u ? `<span class="unit">${u}</span>` : ''}`).join('');
+  }
+  function gwRender(info) {
+    gwInfo = info;
+    gwEl('gwBanner').hidden = !info.open;
+    gwEl('gwPrizeLink').textContent = info.prize;
+    gwEl('gwPrizeLink').onclick = (e) => { e.preventDefault(); try { tg.openTelegramLink(info.prize_url); } catch (_) { window.open(info.prize_url, '_blank'); } };
+    const e = new Date(info.ends_at);
+    gwEl('gwEnds').textContent = `Итоги ${e.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', timeZone: 'Europe/Kyiv' })} в ${e.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Kyiv' })} по Киеву`;
+    gwRenderTimer();
+    if (!gwTick) gwTick = setInterval(gwRenderTimer, 1000);
+    const mine = info.joined && !info.staff;
+    gwEl('gwClosed').hidden = info.open;
+    gwEl('gwJoinBlock').hidden = !info.open || info.joined || info.staff;
+    gwEl('gwMine').hidden = !info.open || !mine;
+    if (mine) {
+      gwEl('gwTokens').textContent = info.tokens;
+      gwEl('gwChance').textContent = `${String(info.chance).replace('.', ',')}%`;
+      gwEl('gwFriendsHead').textContent = `Друзей: ${info.friends} · каждый даёт +1 жетон`;
+      gwEl('gwDots').innerHTML = [1, 2, 3, 4, 5].map((k) => `<span class="gw-dot${info.friends >= k ? ' on' : ''}">+1</span>`).join('')
+        + `<span class="gw-five"><b>+${info.fifth_bonus}</b> сверху<br>за 5-го</span>`;
+      gwEl('gwInviteSub').textContent = info.chance_plus_one ? `шанс станет ${String(info.chance_plus_one).replace('.', ',')}%` : '';
+      gwEl('gwDailyBtn').disabled = !info.daily_available;
+      gwEl('gwDailyBtn').textContent = info.daily_available ? 'Забрать' : 'Забран ✓';
+      gwEl('gwDailyText').textContent = info.daily_available ? 'Заходи каждый день — +1 жетон' : 'Следующий — завтра';
+    }
+    gwEl('gwFoot').textContent = `Участников: ${info.participants} · отбито накрутки: ${info.blocked}`;
+  }
+  async function gwLoad() {
+    if (!tg || !tg.initData) return;
+    try { gwRender(await apiCall('/api/giveaway/info', { init_data: tg.initData })); } catch (e) { console.error('giveaway info failed', e); }
+  }
+  function gwShowCaptcha(c) {
+    gwEl('gwCaptchaQ').textContent = c.question;
+    gwEl('gwCaptchaGrid').innerHTML = '';
+    c.options.forEach((emoji, k) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = emoji;
+      b.onclick = () => gwAnswer(k);
+      gwEl('gwCaptchaGrid').appendChild(b);
+    });
+    gwEl('gwCaptcha').hidden = false;
+    gwEl('gwJoinBtn').hidden = true;
+  }
+  async function gwAnswer(k) {
+    haptic();
+    try {
+      const r = await apiCall('/api/giveaway/join', { init_data: tg.initData, answer: k });
+      if (r.code === 'captcha' && r.captcha) {
+        gwEl('gwCaptchaHint').textContent = 'Не то — попробуй ещё раз';
+        try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('error'); } catch (e) {}
+        gwShowCaptcha(r.captcha);
+        return;
+      }
+      gwEl('gwCaptcha').hidden = true;
+      gwEl('gwJoinBtn').hidden = false;
+      if (r.ok) { try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} celebrate(); }
+      gwRender(r.info);
+    } catch (e) {
+      console.error('giveaway join failed', e);
+      alert('Не получилось — проверь интернет и попробуй ещё раз.');
+    }
+  }
+  gwEl('gwJoinBtn').addEventListener('click', async () => {
+    haptic();
+    if (!tg || !tg.initData) { alert('Открой это через кнопку бота в Telegram.'); return; }
+    try { gwShowCaptcha(await apiCall('/api/giveaway/captcha', { init_data: tg.initData })); } catch (e) { console.error(e); }
+  });
+  gwEl('gwDailyBtn').addEventListener('click', async () => {
+    haptic();
+    gwEl('gwDailyBtn').disabled = true;
+    try {
+      const r = await apiCall('/api/giveaway/daily', { init_data: tg.initData });
+      if (r.ok) { try { tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {} }
+      gwRender(r.info);
+    } catch (e) { console.error(e); gwEl('gwDailyBtn').disabled = false; }
+  });
+  gwEl('gwInviteBtn').addEventListener('click', () => {
+    haptic();
+    if (!gwInfo) return;
+    const text = window.__t(`Бесплатный розыгрыш подарка ${gwInfo.prize} в TonExpress — заходи по моей ссылке и участвуй 🎁`);
+    const url = `https://t.me/share/url?url=${encodeURIComponent(gwInfo.invite_link)}&text=${encodeURIComponent(text)}`;
+    try { tg.openTelegramLink(url); } catch (e) { window.open(url, '_blank'); }
+  });
+  gwEl('gwBanner').addEventListener('click', () => { haptic(); selectTab('giveaway'); gwLoad(); });
+  gwEl('gwBack').addEventListener('click', () => { haptic(); selectTab('ton'); });
+
   // ?tab=stars|reviews|friends — бот открывает мини-апп сразу на нужной вкладке.
   const startTab = new URLSearchParams(location.search).get('tab');
   if (['stars', 'friends', 'reviews'].includes(startTab)) selectTab(startTab);
+  if (startTab === 'giveaway' || gwStart.startsWith('gw')) selectTab('giveaway');   // 11-17: ссылка друга t.me/…?startapp=gw_<id>
+  gwLoad();
 
   fetchStarsInfo();
   loadReviews(); // ради строки доверия «★ 5.0 · N отзывов» на главной
