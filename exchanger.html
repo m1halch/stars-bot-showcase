@@ -947,6 +947,9 @@ body[data-tab="friends"] .tab-ind { transform: translateX(200%); }
 body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 /* 11-17: страница розыгрыша — без своей вкладки, золотой акцент как у звёзд */
 body[data-tab="giveaway"] .tab-ind { opacity: 0; }
+/* 11-17: StarsExpress — тот же мини-апп, только звёзды (?app=stars) */
+body[data-app="stars"] .gw-banner { display: none; }
+body[data-app="stars"] .tabbar { display: none !important; }
 body[data-tab="giveaway"] { --accent: #f2b83b; --accent-dim: rgba(242, 184, 59, .13); --btn: #f2b83b; }
 body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
 .gw-banner { display: flex; align-items: center; gap: 12px; width: 100%; margin: 0 0 12px; padding: 10px 12px; border-radius: 16px;
@@ -1072,7 +1075,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       <button type="button" id="langBtn" class="lang-btn">🌐 Українська</button>
       <div class="logo-name">TonExpress</div>
       <div class="hero-say" id="heroSay">Не вопрос, жду перевод</div>
-      <div class="logo-tag">Обмен грн ⇄ TON</div>
+      <div class="logo-tag" id="heroSubTag">Обмен грн ⇄ TON</div>
       <div class="logo-tag" id="heroTag">TON за ~1 минуту</div>
       <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
         <span class="live-dot"></span><span id="ratePillText">Курс…</span>
@@ -1610,6 +1613,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   if (lang !== 'uk') return;
   document.documentElement.lang = 'uk';
   const PAIRS = [
+    // 11-17: StarsExpress
+    ['Звёзды Telegram за гривны', 'Зірки Telegram за гривні'], ['Звёзды за пару минут', 'Зірки за кілька хвилин'],
     // 11-17: розыгрыш
     ['Розыгрыш Chill Flame', 'Розіграш Chill Flame'], ['Бесплатно — забирай жетоны', 'Безкоштовно — забирай жетони'], ['← к обмену', '← до обміну'],
     ['Розыгрыш', 'Розіграш'], ['Бесплатно · участвовать может каждый', 'Безкоштовно · брати участь може кожен'], ['Итоги', 'Підсумки'],
@@ -1800,6 +1805,15 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
 </script>
 <script>
   const tg = window.Telegram && window.Telegram.WebApp;
+  // 11-17: StarsExpress открывает этот же мини-апп с ?app=stars — только вкладка звёзд, своё название
+  const STARS_APP = new URLSearchParams(location.search).get('app') === 'stars';
+  if (STARS_APP) {
+    document.body.dataset.app = 'stars';
+    document.title = 'StarsExpress — звёзды Telegram';
+    document.querySelector('.logo-name').textContent = 'StarsExpress';
+    document.getElementById('heroSubTag').textContent = 'Звёзды Telegram за гривны';
+    document.getElementById('heroTag').textContent = 'Звёзды за пару минут';
+  }
   if (tg) { tg.ready(); tg.expand(); }
 
   // Вставка адреса из буфера — надёжнее, чем печатать вручную. Основной
@@ -1888,6 +1902,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   const RATE_REFRESH_MS = 60_000; // сервер сам кэширует курс на TON_RATE_CACHE_TTL (по умолчанию 5 мин) — чаще спрашивать смысла нет
 
   async function fetchCostRate() {
+    if (STARS_APP) return;   // курс TON в StarsExpress не нужен (и подпись там другого бота)
     if (tg && tg.initData) {
       try {
         const data = await apiCall('/api/exchange/rate', { init_data: tg.initData });
@@ -1957,6 +1972,11 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   }
 
   function renderRatePill() {
+    if (STARS_APP) {
+      document.getElementById('ratePill').dataset.state = 'ok';
+      document.getElementById('ratePillText').textContent = `100 ⭐ = ${(starPrice * 100).toFixed(0)} грн`;
+      return;
+    }
     const pill = document.getElementById('ratePill');
     const text = document.getElementById('ratePillText');
     pill.dataset.state = rateState;
@@ -2792,6 +2812,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       // POST, как и остальные вызовы WebAPI (через тот же туннель ngrok).
       const d = await apiCall('/api/stars/info', {});
       if (d && d.price_uah) starPrice = d.price_uah;
+      if (STARS_APP) renderRatePill();
       if (d && d.max) starsMax = d.max;
       starsEnabled = !!(d && d.enabled);
     } catch (e) {
@@ -3135,6 +3156,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
 
   // На экране «Продать» шапка говорит про выкуп: свой курс и свой срок, а не «TON за ~1 минуту».
   function renderSellHeader() {
+    if (STARS_APP) { const t = document.getElementById('heroTag'); if (t) t.textContent = 'Звёзды за пару минут'; return; }
     const sell = document.body.dataset.side === 'sell';
     const tag = document.getElementById('heroTag');
     // 11-17: пока TON разобрали, «TON за ~1 минуту» в шапке звучит как обман
@@ -3607,6 +3629,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     gwEl('gwFoot').textContent = `Участников: ${info.participants} · отбито накрутки: ${info.blocked}`;
   }
   async function gwLoad() {
+    if (STARS_APP) return;
     if (!tg || !tg.initData) return;
     try { gwRender(await apiCall('/api/giveaway/info', { init_data: tg.initData })); } catch (e) { console.error('giveaway info failed', e); }
   }
@@ -3669,7 +3692,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   // ?tab=stars|reviews|friends — бот открывает мини-апп сразу на нужной вкладке.
   const startTab = new URLSearchParams(location.search).get('tab');
   if (['stars', 'friends', 'reviews'].includes(startTab)) selectTab(startTab);
-  if (startTab === 'giveaway' || gwStart.startsWith('gw')) selectTab('giveaway');   // 11-17: ссылка друга t.me/…?startapp=gw_<id>
+  if (startTab === 'giveaway' || gwStart.startsWith('gw')) selectTab('giveaway');
+  if (STARS_APP) selectTab('stars');   // 11-17: ссылка друга t.me/…?startapp=gw_<id>
   gwLoad();
 
   fetchStarsInfo();
