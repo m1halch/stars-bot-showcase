@@ -1,8 +1,20 @@
 {
-  "count": 307,
+  "count": 310,
   "avgRating": 4.89,
-  "clients": 45,
+  "clients": 47,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "17.11",
+      "name": "@d***",
+      "bought": {
+        "ton": 1.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1187,18 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@TN***PY",
-      "bought": {
-        "ton": 3.5,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
