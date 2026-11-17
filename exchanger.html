@@ -1627,6 +1627,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   document.documentElement.lang = 'uk';
   const PAIRS = [
     // 11-17: StarsExpress
+    ['Fragment временно не продаёт звёзды', 'Fragment тимчасово не продає зірки'],
+    ['Сбой у самого Fragment (через него звёзды получают все продавцы). Откроем сами, как только починят, — обычно это недолго.', 'Збій у самого Fragment (через нього зірки отримують усі продавці). Відкриємо самі, щойно полагодять, — зазвичай це недовго.'],
     ['Звёзды переехали в StarsExpress', 'Зірки переїхали в StarsExpress'], ['Купить звёзды в StarsExpress', 'Купити зірки в StarsExpress'],
     ['Telegram ужесточил правила для ботов, поэтому звёзды мы вынесли в отдельный бот, а TonExpress остался для TON. Цена та же, оплата так же картой.', 'Telegram посилив правила для ботів, тому зірки ми винесли в окремий бот, а TonExpress залишився для TON. Ціна та сама, оплата так само карткою.'],
     ['Звёзды Telegram за гривны', 'Зірки Telegram за гривні'], ['Звёзды за пару минут', 'Зірки за кілька хвилин'],
@@ -2820,6 +2822,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   const STARS_MIN = 50;
   const STARS_MAX = 20000;
   let starPrice = STAR_PRICE_UAH;
+  let starsPausedFragment = false;
   let starsEnabled = false;
   let starsMax = STARS_MAX;
   async function fetchStarsInfo() {
@@ -2830,6 +2833,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       if (STARS_APP) renderRatePill();
       if (d && d.max) starsMax = d.max;
       starsEnabled = !!(d && d.enabled);
+      starsPausedFragment = !!(d && d.reason === 'fragment');
     } catch (e) {
       console.error('stars info failed', e);
       starsEnabled = false;
@@ -2862,8 +2866,11 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const note = document.getElementById('starsFooterNote');
     if (!starsEnabled) {
       btn.disabled = true;
-      btn.textContent = 'Скоро — запускаем на днях';
-      note.textContent = 'Цену можно посчитать уже сейчас. Оплата звёзд откроется здесь же, в этой вкладке.';
+      // 11-17: звёзды закрыты, потому что Fragment не продаёт (у всех) — говорим как есть
+      btn.textContent = starsPausedFragment ? 'Fragment временно не продаёт звёзды' : 'Скоро — запускаем на днях';
+      note.textContent = starsPausedFragment
+        ? 'Сбой у самого Fragment (через него звёзды получают все продавцы). Откроем сами, как только починят, — обычно это недолго.'
+        : 'Цену можно посчитать уже сейчас. Оплата звёзд откроется здесь же, в этой вкладке.';
       return;
     }
     note.textContent = 'Оплата в банку monobank с любой карты или Apple Pay — звёзды зачисляются автоматически через Fragment, обычно за пару минут.';
