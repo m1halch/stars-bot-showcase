@@ -1,8 +1,56 @@
 {
-  "count": 302,
-  "avgRating": 4.9,
-  "clients": 43,
+  "count": 307,
+  "avgRating": 4.89,
+  "clients": 45,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "17.11",
+      "name": "@ge***ed",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "топ, все швидко і якіс",
+      "date": "17.11",
+      "name": "@h2***22",
+      "bought": {
+        "ton": 4.6,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "17.11",
+      "name": "@ge***ed",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "17.11",
+      "name": "@h***",
+      "bought": {
+        "ton": 5.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Все дуже швидко",
@@ -1151,54 +1199,6 @@
       "bought": {
         "ton": 3.5,
         "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@Xu***aH",
-      "bought": {
-        "ton": 4.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "10.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "10.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "10.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 116,
         "premium": 0,
         "gifts": 0
       }
