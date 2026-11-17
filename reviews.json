@@ -1,8 +1,32 @@
 {
-  "count": 313,
+  "count": 315,
   "avgRating": 4.89,
   "clients": 47,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Долго",
+      "date": "17.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 12.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Ставлю позитивный видгук",
+      "date": "17.11",
+      "name": "@v***",
+      "bought": {
+        "ton": 5.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Завоз тон",
@@ -1175,30 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 2500,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 3000,
         "premium": 0,
         "gifts": 0
       }
