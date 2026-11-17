@@ -949,6 +949,13 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
 body[data-tab="giveaway"] .tab-ind { opacity: 0; }
 /* 11-17: StarsExpress — тот же мини-апп, только звёзды (?app=stars) */
 body[data-app="stars"] .gw-banner { display: none; }
+/* в TonExpress вкладка «Звёзды» — только карточка «переехали в StarsExpress» */
+body:not([data-app="stars"]) #panel-stars > :not(.stars-moved) { display: none !important; }
+body[data-app="stars"] .stars-moved { display: none; }
+.stars-moved { text-align: center; padding: 26px 20px 22px; }
+.stars-moved img { width: 120px; height: auto; }
+.stars-moved h2 { margin: 12px 0 6px; font: 800 20px/1.25 var(--font-brand); }
+.stars-moved p { margin: 0 0 16px; font-size: 14px; line-height: 1.5; color: var(--muted); }
 body[data-app="stars"] .tabbar { display: none !important; }
 body[data-tab="giveaway"] { --accent: #f2b83b; --accent-dim: rgba(242, 184, 59, .13); --btn: #f2b83b; }
 body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
@@ -1400,6 +1407,12 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   </section>
 
   <section class="tab-panel" id="panel-stars" role="tabpanel" aria-labelledby="tab-stars" hidden>
+    <div class="card stars-moved">
+      <img src="mister-ton-gold.png" width="360" height="468" alt="">
+      <h2>Звёзды переехали в StarsExpress</h2>
+      <p>Telegram ужесточил правила для ботов, поэтому звёзды мы вынесли в отдельный бот, а TonExpress остался для TON. Цена та же, оплата так же картой.</p>
+      <button type="button" class="primary" id="starsMovedBtn">⭐ Купить звёзды в StarsExpress</button>
+    </div>
     <h1 class="panel-title"><span class="gold">Звёзды</span> Telegram</h1>
     <p class="panel-lead">Покупка звёзд за гривны — на свой аккаунт или в подарок другу. Звёзды зачисляются автоматически через Fragment.</p>
 
@@ -1614,6 +1627,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   document.documentElement.lang = 'uk';
   const PAIRS = [
     // 11-17: StarsExpress
+    ['Звёзды переехали в StarsExpress', 'Зірки переїхали в StarsExpress'], ['Купить звёзды в StarsExpress', 'Купити зірки в StarsExpress'],
+    ['Telegram ужесточил правила для ботов, поэтому звёзды мы вынесли в отдельный бот, а TonExpress остался для TON. Цена та же, оплата так же картой.', 'Telegram посилив правила для ботів, тому зірки ми винесли в окремий бот, а TonExpress залишився для TON. Ціна та сама, оплата так само карткою.'],
     ['Звёзды Telegram за гривны', 'Зірки Telegram за гривні'], ['Звёзды за пару минут', 'Зірки за кілька хвилин'],
     // 11-17: розыгрыш
     ['Розыгрыш Chill Flame', 'Розіграш Chill Flame'], ['Бесплатно — забирай жетоны', 'Безкоштовно — забирай жетони'], ['← к обмену', '← до обміну'],
@@ -3685,6 +3700,10 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const text = window.__t(`Бесплатный розыгрыш подарка ${gwInfo.prize} в TonExpress — заходи по моей ссылке и участвуй 🎁`);
     const url = `https://t.me/share/url?url=${encodeURIComponent(gwInfo.invite_link)}&text=${encodeURIComponent(text)}`;
     try { tg.openTelegramLink(url); } catch (e) { window.open(url, '_blank'); }
+  });
+  document.getElementById('starsMovedBtn').addEventListener('click', () => {
+    haptic();
+    try { tg.openTelegramLink('https://t.me/StarsExpressbot'); } catch (e) { window.open('https://t.me/StarsExpressbot', '_blank'); }
   });
   gwEl('gwBanner').addEventListener('click', () => { haptic(); selectTab('giveaway'); gwLoad(); });
   gwEl('gwBack').addEventListener('click', () => { haptic(); selectTab('ton'); });
