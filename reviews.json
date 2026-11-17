@@ -1,8 +1,44 @@
 {
-  "count": 310,
+  "count": 313,
   "avgRating": 4.89,
   "clients": 47,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Завоз тон",
+      "date": "17.11",
+      "name": "@k***",
+      "bought": {
+        "ton": 10.4,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "17.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "17.11",
+      "name": "@h***",
+      "bought": {
+        "ton": 0,
+        "stars": 2800,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1163,42 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 3000,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@i1***11",
-      "bought": {
-        "ton": 1.8,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
         "premium": 0,
         "gifts": 0
       }
