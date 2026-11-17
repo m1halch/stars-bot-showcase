@@ -1882,7 +1882,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   // история цифр). costUahPerTon (см. fetchCostRate ниже) — прямой
   // рыночный курс CoinGecko (get_ton_uah_rate), не себестоимость через
   // EUR_UAH_RATE.
-  let MARGIN = 0.055;   // 11-10: сервер может прислать свою (оптовый курс) — см. /api/exchange/rate
+  let MARGIN = 0.075;   // 11-10: сервер может прислать свою (оптовый курс) — см. /api/exchange/rate
   // 10-30: нижняя граница цены (bot/exchanger/inventory.py), приходит из /api/exchange/rate.
   let minPriceUah = 56.5;
   let privatComp = null;
