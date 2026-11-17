@@ -1514,7 +1514,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
     // 11-16: выкуп TON («Продать»)
     ['Купить или продать TON', 'Купити або продати TON'], ['Купить TON', 'Купити TON'], ['Продать TON', 'Продати TON'], ['Продать', 'Продати'],
     ['На сегодня выкуп TON закрыт.', 'На сьогодні викуп TON закрито.'], ['Дневной лимит выбран — приходи завтра.', 'Денний ліміт вичерпано — приходь завтра.'],
-    ['Получаете на карту', 'Отримуєте на картку'], ['Гривны на карту в тот же день', 'Гривні на картку того ж дня'], ['Выкуп:', 'Викуп:'],
+    ['Получаете на карту', 'Отримуєте на картку'], ['Новая партия TON скоро', 'Нова партія TON скоро'], ['Гривны на карту в тот же день', 'Гривні на картку того ж дня'], ['Выкуп:', 'Викуп:'],
     ['Создаёшь заявку.', 'Створюєш заявку.'], ['Курс фиксируется на 30 минут.', 'Курс фіксується на 30 хвилин.'], ['Отправляешь TON', 'Надсилаєш TON'],
     ['из своего кошелька — в пару нажатий.', 'зі свого гаманця — у кілька натискань.'], ['Получаешь гривны на карту', 'Отримуєш гривні на картку'],
     ['в тот же день до 22:00 по Киеву. Если TON пришли после 21:00 — на следующий день.', 'того ж дня до 22:00 за Києвом. Якщо TON надійшли після 21:00 — наступного дня.'],
@@ -1760,6 +1760,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   // Сколько TON сейчас реально можно купить (свободный остаток горячего
   // кошелька, считает сервер); null — неизвестно, не ограничиваем.
   let maxTonAvailable = null;
+  let tonSoldOut = false;   // 11-17: шапка «Новая партия TON скоро» (renderSellHeader)
   let stockSub = false;   // 11-16: уже нажал «🔔 Сообщить, когда появятся»
   // 'loading' — ещё не знаем курс; 'ok' — курс есть; 'closed' — обменник
   // выключен рубильником (webapi.py::_EXCHANGER_ENABLED → 503
@@ -1931,6 +1932,7 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   function recompute() {
     // 11-16: TON разобрали — прячем форму, показываем карточку с кнопкой 🔔
     const soldOut = rateState === 'ok' && maxTonAvailable != null && maxTonAvailable < MIN_TON;
+    if (soldOut !== tonSoldOut) { tonSoldOut = soldOut; renderSellHeader(); }
     document.getElementById('formSection').classList.toggle('soldout', soldOut);
     const notifyBtn = document.getElementById('soldoutNotifyBtn');
     notifyBtn.classList.toggle('done', stockSub);
@@ -3017,7 +3019,8 @@ body[data-tab="reviews"] .tab-ind { transform: translateX(300%); }
   function renderSellHeader() {
     const sell = document.body.dataset.side === 'sell';
     const tag = document.getElementById('heroTag');
-    if (tag) tag.textContent = sell ? 'Гривны на карту в тот же день' : 'TON за ~1 минуту';
+    // 11-17: пока TON разобрали, «TON за ~1 минуту» в шапке звучит как обман
+    if (tag) tag.textContent = sell ? 'Гривны на карту в тот же день' : (tonSoldOut ? 'Новая партия TON скоро' : 'TON за ~1 минуту');
     if (sell && sellInfo && sellInfo.rate && rateState === 'ok') {
       document.getElementById('ratePillText').textContent = `Выкуп: 1 TON = ${sellInfo.rate.toFixed(2)} грн`;
     } else if (!sell && rateState === 'ok' && lastRateText) {
