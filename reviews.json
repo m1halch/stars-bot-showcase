@@ -1,8 +1,44 @@
 {
-  "count": 315,
+  "count": 318,
   "avgRating": 4.89,
-  "clients": 47,
+  "clients": 48,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "18.11",
+      "name": "@TN***PY",
+      "bought": {
+        "ton": 2.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "18.11",
+      "name": "@ys***sa",
+      "bought": {
+        "ton": 1.7,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Лучший бот , советую",
+      "date": "18.11",
+      "name": "@me***kq",
+      "bought": {
+        "ton": 2.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Долго",
@@ -1163,42 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 270,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Люблю",
-      "date": "11.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 11.9,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@ni***ky",
-      "bought": {
-        "ton": 4.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "все четко",
-      "date": "11.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 2500,
         "premium": 0,
         "gifts": 0
       }
