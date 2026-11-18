@@ -1,8 +1,32 @@
 {
-  "count": 321,
+  "count": 323,
   "avgRating": 4.89,
   "clients": 48,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "18.11",
+      "name": "@TN***PY",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": null,
+      "date": "18.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 2.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1174,30 +1198,6 @@
       "name": "@k***",
       "bought": {
         "ton": 4.9,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Мыхалыч зделац мне бота",
-      "date": "11.11",
-      "name": "@ma***mu",
-      "bought": {
-        "ton": 0,
-        "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "11.11",
-      "name": "@St***th",
-      "bought": {
-        "ton": 7.1,
         "stars": 0,
         "premium": 0,
         "gifts": 0
