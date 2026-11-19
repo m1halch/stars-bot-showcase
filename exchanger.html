@@ -3779,6 +3779,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         row('Приз', admEsc(gv.prize || '—'))
         + row(gv.drawn ? 'Итог' : 'До розыгрыша', `${leftTxt} <span>· ${admTime(gv.ends_at)}</span>`)
         + row('Участников', `${admFmt(gv.participants)} <span>· жетонов ${admFmt(gv.tokens)}</span>`)
+        + (gv.twinks ? row('Твинков отсеяно', `${admFmt(gv.twinks)} <span>· автопроверка</span>`) : '')
         + (gv.top || []).map((p, i) => row(`${i + 1}. ${admEsc(p.who)}`, `${p.tokens} жет. <span>· ${p.friends} друз. · ${admFmt(p.chance, 1)}%</span>`)).join('');
     }
     document.querySelectorAll('.adm-switch[data-act]').forEach((b) => b.classList.toggle('on', !!on[b.dataset.act]));
