@@ -506,6 +506,12 @@
   .limits { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 18px; }
 
   /* 11-16: TON разобрали — вместо формы карточка со спящим Мистером Тоном и кнопкой 🔔 */
+  .sp-card { padding: 16px 16px 14px; margin-bottom: 12px; }
+  .sp-q { font: 700 16px/1.3 var(--font-display); color: var(--text); }
+  .sp-sub { margin: 6px 0 12px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+  .sp-opts { display: flex; gap: 8px; }
+  .sp-opts button { flex: 1; width: auto; margin: 0; padding: 10px 6px; border-radius: 12px; border: 1px solid var(--border);
+    background: var(--accent-dim); color: var(--text); font: 600 13px/1.2 var(--font-body); cursor: pointer; }
   .soldout-card { display: none; text-align: center; padding: 24px 20px 20px; }
   #formSection.soldout .soldout-card { display: block; }
   #formSection.soldout > :not(.soldout-card) { display: none; }
@@ -1164,6 +1170,17 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     <button type="button" class="side-btn" data-side="sell" role="tab" aria-selected="false">Продать TON</button>
   </div>
 
+  <div class="card sp-card" id="sellPollCard" hidden>
+    <div class="sp-q" id="spQ">💸 Продал бы ты нам свои TON за гривны?</div>
+    <div class="sp-sub" id="spSub">Думаем запустить выкуп: ты отправляешь TON — получаешь гривны на карту. Ответь в одно касание 🙏</div>
+    <div class="sp-opts" id="spOpts1">
+      <button type="button" data-a="often">Да, часто</button><button type="button" data-a="sometimes">Иногда</button><button type="button" data-a="no">Нет, не буду</button>
+    </div>
+    <div class="sp-opts" id="spOpts2" hidden>
+      <button type="button" data-m="lt10">до 10 TON</button><button type="button" data-m="10_50">10–50 TON</button><button type="button" data-m="50plus">50+ TON</button>
+    </div>
+  </div>
+
   <div id="formSection" class="section">
     <div class="card soldout-card" id="soldoutCard">
       <img class="soldout-img" src="mister-ton-sleep.png" width="360" height="468" alt="">
@@ -1806,6 +1823,11 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     ['Следующая порция TON — в', 'Наступна порція TON — о'],
     ['TON продаём порциями в течение дня, чтобы хватило всем — и тем, кто заходит вечером. Откроемся через', 'TON продаємо порціями протягом дня, щоб вистачило всім — і тим, хто заходить увечері. Відкриємося через'],
     ['Нажми кнопку — напомню.', 'Натисни кнопку — нагадаю.'],
+    ['💸 Продал бы ты нам свои TON за гривны?', '💸 Продав би ти нам свої TON за гривні?'],
+    ['Думаем запустить выкуп: ты отправляешь TON — получаешь гривны на карту. Ответь в одно касание 🙏', 'Думаємо запустити викуп: ти надсилаєш TON — отримуєш гривні на картку. Відповідь в один дотик 🙏'],
+    ['Да, часто', 'Так, часто'], ['Нет, не буду', 'Ні, не буду'], ['Иногда', 'Іноді'], ['до 10 TON', 'до 10 TON'],
+    ['Круто! А сколько примерно за раз?', 'Круто! А скільки приблизно за раз?'],
+    ['Спасибо, понял! 👍', 'Дякую, зрозумів! 👍'], ['Спасибо! Напишем, когда запустим 💎', 'Дякую! Напишемо, коли запустимо 💎'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
     ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
@@ -2002,7 +2024,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   let maxTonAvailable = null;
   let tonSoldOut = false;   // 11-17: шапка «Новая партия TON скоро» (renderSellHeader)
   let stockSub = false;
-  let reopenAt = null;   // 11-19: потолок открывается порциями — когда следующая   // 11-16: уже нажал «🔔 Сообщить, когда появятся»
+  let reopenAt = null;
+  let spDone = false;   // 11-19: опрос «продал бы нам TON?» — уже ответил в этой сессии   // 11-19: потолок открывается порциями — когда следующая   // 11-16: уже нажал «🔔 Сообщить, когда появятся»
   // 'loading' — ещё не знаем курс; 'ok' — курс есть; 'closed' — обменник
   // выключен рубильником (webapi.py::_EXCHANGER_ENABLED → 503
   // exchanger_disabled); 'error' — сеть/сервер; 'outside' — открыто не из
@@ -2022,6 +2045,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         if (typeof data.stock_sub === 'boolean') stockSub = data.stock_sub;
         reopenAt = data.reopen_at ? new Date(data.reopen_at) : null;
+        if (data.sell_poll && !spDone) document.getElementById('sellPollCard').hidden = false;
         rateState = 'ok';
         onBuybackFlag(!!data.buyback);
       } catch (e) {
@@ -3213,6 +3237,36 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   };
   document.getElementById('contestPlay').addEventListener('click', openGame);
   document.getElementById('soldoutGameBtn').addEventListener('click', openGame);
+  // 11-19: опрос перед запуском выкупа
+  (function () {
+    const card = document.getElementById('sellPollCard');
+    const finish = (txt) => {
+      spDone = true;
+      document.getElementById('spQ').textContent = txt;
+      document.getElementById('spSub').hidden = true;
+      document.getElementById('spOpts1').hidden = true;
+      document.getElementById('spOpts2').hidden = true;
+      setTimeout(() => { card.hidden = true; }, 1600);
+    };
+    const send = async (body) => {
+      try { await apiCall('/api/poll/sell', { init_data: tg ? tg.initData : '', ...body }); } catch (e) { /* не страшно */ }
+    };
+    document.querySelectorAll('#spOpts1 button').forEach((b) => b.addEventListener('click', async () => {
+      haptic();
+      const a = b.dataset.a;
+      await send({ answer: a });
+      if (a === 'no') { finish('Спасибо, понял! 👍'); return; }
+      document.getElementById('spQ').textContent = 'Круто! А сколько примерно за раз?';
+      document.getElementById('spSub').hidden = true;
+      document.getElementById('spOpts1').hidden = true;
+      document.getElementById('spOpts2').hidden = false;
+    }));
+    document.querySelectorAll('#spOpts2 button').forEach((b) => b.addEventListener('click', async () => {
+      haptic();
+      await send({ answer: 'often', amount: b.dataset.m });
+      finish('Спасибо! Напишем, когда запустим 💎');
+    }));
+  })();
   // 11-16: «🔔 Сообщить, когда появятся» — бот один раз напишет при пополнении (webapi /api/exchange/notify)
   document.getElementById('soldoutNotifyBtn').addEventListener('click', async (ev) => {
     if (stockSub || !(tg && tg.initData)) return;
@@ -3760,7 +3814,9 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       + (pa ? row(pa.name, `${admFmt(pa.on_hand)} ₴ на руках <span>· лимит ${admFmt(pa.limit_left)}</span>`) : '')
       + row('Твой лимит', `~${admFmt(ol.left)} ₴`)
       + row('Звёзды', `${pr.stars_open ? 'продаются' : 'закрыты'} <span>· ${admFmt(pr.stars, 2)} ₴</span>`)
-      + (d.giveaway ? row('Розыгрыш', d.giveaway.sent > 0 ? `${d.giveaway.participants} участн.` : 'не запущен') : '');
+      + (d.giveaway ? row('Розыгрыш', d.giveaway.sent > 0 ? `${d.giveaway.participants} участн.` : 'не запущен') : '')
+      + (d.sell_poll ? row('Опрос «продал бы TON»', `да ${d.sell_poll.answers.often} · иногда ${d.sell_poll.answers.sometimes} · нет ${d.sell_poll.answers.no}`
+          + ` <span>· до 10: ${d.sell_poll.amounts.lt10}, 10–50: ${d.sell_poll.amounts['10_50']}, 50+: ${d.sell_poll.amounts['50plus']}</span>`) : '');
     const act = d.active.length ? d.active : [];
     document.getElementById('admOrders').innerHTML = d.orders.slice(0, 15).map(admOrderHtml).join('') || '<div class="adm-li"><span>Заявок нет</span></div>';
     document.querySelector('.adm-seg [data-seg="orders"]').textContent = act.length ? `Заявки · ${act.length} акт.` : 'Заявки';
