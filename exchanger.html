@@ -1167,8 +1167,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   <div id="formSection" class="section">
     <div class="card soldout-card" id="soldoutCard">
       <img class="soldout-img" src="mister-ton-sleep.png" width="360" height="468" alt="">
-      <div class="soldout-title">TON разобрали 🔥</div>
-      <div class="soldout-text">Новая партия скоро. Нажми кнопку — и я напишу тебе первым, как только TON появятся.</div>
+      <div class="soldout-title" id="soldoutTitle">TON разобрали 🔥</div>
+      <div class="soldout-text" id="soldoutText">Новая партия скоро. Нажми кнопку — и я напишу тебе первым, как только TON появятся.</div>
       <button type="button" class="primary" id="soldoutNotifyBtn">🔔 Сообщить, когда появятся</button>
       <button type="button" class="ghost-btn" id="soldoutGameBtn">🎮 А пока — сыграть в игру</button>
     </div>
@@ -1593,8 +1593,10 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     <div class="adm-seg" role="tablist">
       <button type="button" data-seg="orders" aria-selected="true">Заявки</button>
       <button type="button" data-seg="money" aria-selected="false">Деньги</button>
+      <button type="button" data-seg="give" aria-selected="false" id="admGiveTab" hidden>Розыгрыш</button>
       <button type="button" data-seg="ctrl" aria-selected="false">Управление</button>
     </div>
+    <div data-pane="give" hidden><div class="adm-list" id="admGive"></div></div>
     <div data-pane="orders"><div class="adm-list" id="admOrders"></div></div>
     <div data-pane="money" hidden><div class="adm-list" id="admMoney"></div></div>
     <div data-pane="ctrl" hidden>
@@ -1603,6 +1605,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         <div class="adm-li"><div>Потолок вручную<br><span>0 — без потолка</span></div>
           <div class="adm-cap"><input type="number" id="admCapInput" inputmode="numeric" min="0" step="500"><button type="button" id="admCapSave">ОК</button></div></div>
         <div class="adm-li"><div>Платят Артёму<br><span id="admPartnerText"></span></div><button type="button" class="adm-switch" data-act="partner"></button></div>
+        <div class="adm-li"><div>Потолок порциями<br><span>утром часть, днём часть, вечером остаток</span></div><button type="button" class="adm-switch" data-act="portions"></button></div>
         <div class="adm-li"><div>Пуш о каждой продаже</div><button type="button" class="adm-switch" data-act="quiet_inv"></button></div>
         <div class="adm-li"><div>Выкуп TON<br><span id="admBuybackText"></span></div><button type="button" class="adm-switch" data-act="buyback"></button></div>
       </div>
@@ -1800,6 +1803,9 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     ['Подходит любая карта — Приват, ПУМБ, Ощад и другие, а также Apple Pay / Google Pay. Главное — ровно эта сумма, копейка в копейку.', 'Підходить будь-яка картка — Приват, ПУМБ, Ощад та інші, а також Apple Pay / Google Pay. Головне — рівно ця сума, копійка в копійку.'],
     ['💳 или переводом на карту monobank', '💳 або переказом на картку monobank'], ['Скопировать', 'Скопіювати'], ['Скопировано ✓', 'Скопійовано ✓'], ['Выдели номер вручную', 'Виділи номер вручну'], ['Зажми ссылку выше', 'Затисни посилання вище'],
     ['Перевод за полученные TON нельзя отозвать через банк. Если что-то не так — напиши в поддержку, разберёмся.', 'Переказ за отримані TON не можна відкликати через банк. Якщо щось не так — напиши в підтримку, розберемося.'],
+    ['Следующая порция TON — в', 'Наступна порція TON — о'],
+    ['TON продаём порциями в течение дня, чтобы хватило всем — и тем, кто заходит вечером. Откроемся через', 'TON продаємо порціями протягом дня, щоб вистачило всім — і тим, хто заходить увечері. Відкриємося через'],
+    ['Нажми кнопку — напомню.', 'Натисни кнопку — нагадаю.'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
     ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
@@ -1995,7 +2001,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   // кошелька, считает сервер); null — неизвестно, не ограничиваем.
   let maxTonAvailable = null;
   let tonSoldOut = false;   // 11-17: шапка «Новая партия TON скоро» (renderSellHeader)
-  let stockSub = false;   // 11-16: уже нажал «🔔 Сообщить, когда появятся»
+  let stockSub = false;
+  let reopenAt = null;   // 11-19: потолок открывается порциями — когда следующая   // 11-16: уже нажал «🔔 Сообщить, когда появятся»
   // 'loading' — ещё не знаем курс; 'ok' — курс есть; 'closed' — обменник
   // выключен рубильником (webapi.py::_EXCHANGER_ENABLED → 503
   // exchanger_disabled); 'error' — сеть/сервер; 'outside' — открыто не из
@@ -2014,6 +2021,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         if (typeof data.stock_sub === 'boolean') stockSub = data.stock_sub;
+        reopenAt = data.reopen_at ? new Date(data.reopen_at) : null;
         rateState = 'ok';
         onBuybackFlag(!!data.buyback);
       } catch (e) {
@@ -2177,6 +2185,19 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const notifyBtn = document.getElementById('soldoutNotifyBtn');
     notifyBtn.classList.toggle('done', stockSub);
     notifyBtn.textContent = stockSub ? '✅ Напишу, как только появятся' : '🔔 Сообщить, когда появятся';
+    if (soldOut) {
+      const tEl = document.getElementById('soldoutTitle'), xEl = document.getElementById('soldoutText');
+      if (reopenAt && !isNaN(reopenAt)) {
+        const hhmm = reopenAt.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        const mins = Math.max(1, Math.round((reopenAt - Date.now()) / 60000));
+        const left = mins >= 60 ? `${Math.floor(mins / 60)} ч ${mins % 60} мин` : `${mins} мин`;
+        tEl.textContent = `Следующая порция TON — в ${hhmm}`;
+        xEl.textContent = `TON продаём порциями в течение дня, чтобы хватило всем — и тем, кто заходит вечером. Откроемся через ${left}. Нажми кнопку — напомню.`;
+      } else {
+        tEl.textContent = 'TON разобрали 🔥';
+        xEl.textContent = 'Новая партия скоро. Нажми кнопку — и я напишу тебе первым, как только TON появятся.';
+      }
+    }
     const uahInput = document.getElementById('uah');
     const walletInput = document.getElementById('wallet');
     const resultEl = document.getElementById('result');
@@ -3721,7 +3742,10 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const cap = d.cap.cap || 0, used = d.cap.used || 0;
     document.getElementById('admCapBar').style.width = cap ? Math.min(100, used / cap * 100).toFixed(0) + '%' : '0%';
     document.getElementById('admCapL').textContent = cap ? `потолок${d.cap.auto ? ' (умный)' : ''}: ${admFmt(used)} из ${admFmt(cap)}` : 'потолок выключен';
-    document.getElementById('admCapR').textContent = cap ? `осталось ${admFmt(Math.max(0, cap - used))} ₴` : '';
+    const hm = (iso) => { try { return new Date(iso).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); } catch (e) { return ''; } };
+    document.getElementById('admCapR').textContent = !cap ? '' : (d.cap.reopen_at
+      ? `порция выбрана · след. в ${hm(d.cap.reopen_at)}`
+      : `открыто ${admFmt(d.cap.open_now != null ? d.cap.open_now : Math.max(0, cap - used))} ₴`);
     const k1 = document.getElementById('admK1'); k1.textContent = admFmt(st.for_ton, 1); k1.classList.toggle('warn', (st.for_ton || 0) < 5);
     document.getElementById('admK2l').textContent = pa ? `У ${pa.name === 'Артём' ? 'Артёма' : pa.name}` : 'Твой лимит';
     document.getElementById('admK2').textContent = pa ? admFmt(pa.on_hand) + ' ₴' : admFmt(ol.left) + ' ₴';
@@ -3745,7 +3769,18 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const capIn = document.getElementById('admCapInput'); if (document.activeElement !== capIn) capIn.value = d.cap.auto ? '' : (cap || 0);
     document.getElementById('admPartnerText').textContent = pa ? (pa.active ? 'на его банку и карту' : 'сейчас платят тебе') : 'не настроен';
     document.getElementById('admBuybackText').textContent = `рынок −${admFmt(d.buyback.margin * 100, 1)}%`;
-    const on = { partner: pa && pa.active, quiet_inv: !d.quiet, buyback: d.buyback.enabled };
+    const on = { partner: pa && pa.active, quiet_inv: !d.quiet, buyback: d.buyback.enabled, portions: d.cap.portions !== false };
+    const gv = d.giveaway, gTab = document.getElementById('admGiveTab');
+    gTab.hidden = !(gv && gv.sent > 0);
+    if (gv && gv.sent > 0) {
+      const ends = new Date(gv.ends_at), ms = ends - Date.now();
+      const leftTxt = gv.drawn ? (gv.winner ? `победитель @${admEsc(gv.winner)}` : 'разыгран') : (ms > 0 ? `${Math.floor(ms / 86400000)} д ${Math.floor(ms / 3600000) % 24} ч` : 'вот-вот');
+      document.getElementById('admGive').innerHTML =
+        row('Приз', admEsc(gv.prize || '—'))
+        + row(gv.drawn ? 'Итог' : 'До розыгрыша', `${leftTxt} <span>· ${admTime(gv.ends_at)}</span>`)
+        + row('Участников', `${admFmt(gv.participants)} <span>· жетонов ${admFmt(gv.tokens)}</span>`)
+        + (gv.top || []).map((p, i) => row(`${i + 1}. ${admEsc(p.who)}`, `${p.tokens} жет. <span>· ${p.friends} друз. · ${admFmt(p.chance, 1)}%</span>`)).join('');
+    }
     document.querySelectorAll('.adm-switch[data-act]').forEach((b) => b.classList.toggle('on', !!on[b.dataset.act]));
     document.getElementById('admUpdated').textContent = 'обновлено ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + ' · само каждые 30 с';
   }
