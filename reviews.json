@@ -1,8 +1,56 @@
 {
-  "count": 343,
-  "avgRating": 4.89,
-  "clients": 51,
+  "count": 347,
+  "avgRating": 4.88,
+  "clients": 53,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 10.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@bu***66",
+      "bought": {
+        "ton": 0,
+        "stars": 100,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": "Михалыч я тебя люблю киця",
+      "date": "20.11",
+      "name": "@ze***99",
+      "bought": {
+        "ton": 5.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@fk***o4",
+      "bought": {
+        "ton": 10.4,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1150,54 +1198,6 @@
       "name": "@k***",
       "bought": {
         "ton": 11.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 9.9,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 5.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@Vi***ka",
-      "bought": {
-        "ton": 0,
-        "stars": 138,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@ma***mu",
-      "bought": {
-        "ton": 2.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
