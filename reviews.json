@@ -1,8 +1,56 @@
 {
-  "count": 347,
-  "avgRating": 4.88,
+  "count": 351,
+  "avgRating": 4.89,
   "clients": 53,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 1.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@ma***ZE",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@ma***ZE",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@ma***ZE",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1150,54 +1198,6 @@
       "name": "@k***",
       "bought": {
         "ton": 4.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "12.11",
-      "name": "@sp***11",
-      "bought": {
-        "ton": 5.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Вот бы нфт выиграть",
-      "date": "12.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 11.1,
         "stars": 0,
         "premium": 0,
         "gifts": 0
