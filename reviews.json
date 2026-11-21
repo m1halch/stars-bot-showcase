@@ -1,8 +1,32 @@
 {
-  "count": 365,
+  "count": 367,
   "avgRating": 4.89,
   "clients": 54,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "21.11",
+      "name": "@tg***44",
+      "bought": {
+        "ton": 4.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "лучший шоп",
+      "date": "21.11",
+      "name": "@tg***44",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1175,30 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 67,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Вот бы нфт",
-      "date": "13.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 8.6,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "13.11",
-      "name": "@wr***ie",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
