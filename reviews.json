@@ -1,8 +1,20 @@
 {
-  "count": 351,
+  "count": 352,
   "avgRating": 4.89,
   "clients": 53,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "20.11",
+      "name": "@wr***ie",
+      "bought": {
+        "ton": 2.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1186,18 +1198,6 @@
       "name": "@m1***vi",
       "bought": {
         "ton": 3.7,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Вот бы нфт",
-      "date": "12.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 4.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
