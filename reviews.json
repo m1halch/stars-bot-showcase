@@ -1,8 +1,68 @@
 {
-  "count": 359,
+  "count": 365,
   "avgRating": 4.89,
   "clients": 54,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "21.11",
+      "name": "@me***kq",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "21.11",
+      "name": "@TN***PY",
+      "bought": {
+        "ton": 4.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "21.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 3.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "чотка",
+      "date": "21.11",
+      "name": "@i1***11",
+      "bought": {
+        "ton": 0,
+        "stars": 135,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "21.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 2.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1138,66 +1198,6 @@
       "name": "@wr***ie",
       "bought": {
         "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "13.11",
-      "name": "@mi***iy",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "13.11",
-      "name": "@Xu***aH",
-      "bought": {
-        "ton": 4.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "13.11",
-      "name": "@TN***PY",
-      "bought": {
-        "ton": 1.8,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "13.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 100,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "13.11",
-      "name": "@ra***ka",
-      "bought": {
-        "ton": 5.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
