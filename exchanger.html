@@ -1840,6 +1840,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     ['CoinGecko — только курс TON, твои данные туда не идут.', 'CoinGecko — лише курс TON, твої дані туди не йдуть.'],
     ['Кому передаётся:', 'Кому передається:'],
     ['Номер карты, паспортные данные, телефон, геолокацию.', 'Номер картки, паспортні дані, телефон, геолокацію.'],
+    ['Переведи', 'Переказуй'], ['на карту ПУМБ ниже — TON отправим, как только подтвердим оплату (обычно до 15 минут).', 'на картку ПУМБ нижче — TON надішлемо, щойно підтвердимо оплату (зазвичай до 15 хвилин).'],
+    ['ровно эту сумму', 'рівно цю суму'], ['💳 Переводом на карту ПУМБ', '💳 Переказом на картку ПУМБ'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
     ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
@@ -2685,7 +2687,16 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     } else {
       cashbackNote.style.display = 'none';
     }
-    document.getElementById('openJarBtn').style.display = '';
+    // 11-21: крупная заявка на ПУМБ — только карта, без банки, TON после подтверждения владельцем
+    const isPumb = order.pay_bank === 'pumb' || (!order.jar_link && order.card_number);
+    document.getElementById('openJarBtn').style.display = isPumb ? 'none' : '';
+    const wc = document.querySelector('#waitingSection .waiting-copy');
+    if (wc && !wc.dataset.orig) wc.dataset.orig = wc.innerHTML;
+    if (wc) wc.innerHTML = isPumb
+      ? 'Переведи <b>ровно эту сумму</b> на карту ПУМБ ниже — TON отправим, как только подтвердим оплату (обычно до 15 минут).'
+      : wc.dataset.orig;
+    const cpt = document.querySelector('#cardPayBlock .card-pay-title');
+    if (cpt) cpt.textContent = isPumb ? '💳 Переводом на карту ПУМБ' : '💳 или переводом на карту monobank';
     const cardBlock = document.getElementById('cardPayBlock');
     if (order.card_number) {
       const formatted = String(order.card_number).replace(/(\d{4})(?=\d)/g, '$1 ');
@@ -2791,6 +2802,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
           ton_wallet: data.ton_wallet,
           jar_link: data.jar_link,
           card_number: data.card_number,
+          pay_bank: data.pay_bank,
           expires_in_seconds: data.expires_in_seconds,
           credit_used_uah: data.credit_used_uah,
           product: data.product,
