@@ -1,8 +1,56 @@
 {
-  "count": 386,
+  "count": 390,
   "avgRating": 4.89,
   "clients": 56,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "23.11",
+      "name": "@q1***34",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 4,
+      "comment": null,
+      "date": "23.11",
+      "name": "@ga***ik",
+      "bought": {
+        "ton": 4.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "23.11",
+      "name": "@op***ss",
+      "bought": {
+        "ton": 2.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "23.11",
+      "name": "@q1***34",
+      "bought": {
+        "ton": 2.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "михалыч делай цены дешевле",
@@ -1148,54 +1196,6 @@
       "comment": null,
       "date": "14.11",
       "name": "@tw***re",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@La***ni",
-      "bought": {
-        "ton": 1.1,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@Vi***ka",
-      "bought": {
-        "ton": 0,
-        "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@Vi***ka",
-      "bought": {
-        "ton": 0,
-        "stars": 118,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@pe***so",
       "bought": {
         "ton": 1.0,
         "stars": 0,
