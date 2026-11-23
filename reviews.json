@@ -1,8 +1,44 @@
 {
-  "count": 383,
+  "count": 386,
   "avgRating": 4.89,
   "clients": 56,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "михалыч делай цены дешевле",
+      "date": "23.11",
+      "name": "@ty***om",
+      "bought": {
+        "ton": 3.1,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "23.11",
+      "name": "@mi***iy",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "23.11",
+      "name": "@Xu***aH",
+      "bought": {
+        "ton": 6.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1162,42 +1198,6 @@
       "name": "@pe***so",
       "bought": {
         "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "быстро и четко",
-      "date": "14.11",
-      "name": "@ce***ET",
-      "bought": {
-        "ton": 12.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@ty***om",
-      "bought": {
-        "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 4,
-      "comment": null,
-      "date": "13.11",
-      "name": "@ti***ki",
-      "bought": {
-        "ton": 5.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
