@@ -1,8 +1,44 @@
 {
-  "count": 395,
+  "count": 398,
   "avgRating": 4.87,
   "clients": 56,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Всё очень быстро и чётко, всем советую",
+      "date": "24.11",
+      "name": "@ch***zz",
+      "bought": {
+        "ton": 5.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "24.11",
+      "name": "@h2***22",
+      "bought": {
+        "ton": 9.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "24.11",
+      "name": "@fi***ps",
+      "bought": {
+        "ton": 13.8,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1160,42 +1196,6 @@
       "comment": null,
       "date": "14.11",
       "name": "@pe***so",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@j***",
-      "bought": {
-        "ton": 37.6,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@wr***ie",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "14.11",
-      "name": "@v***",
       "bought": {
         "ton": 2.0,
         "stars": 0,
