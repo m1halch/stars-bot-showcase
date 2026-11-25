@@ -1000,7 +1000,7 @@ body[data-tab="admin"] .tab-ind { opacity: 0; }
 .adm-toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); padding: 10px 16px;
   border-radius: 12px; background: rgba(20,20,30,.92); color: #fff; font-size: 13px; z-index: 50; }
 /* 11-17: StarsExpress — тот же мини-апп, только звёзды (?app=stars) */
-body[data-app="stars"] .gw-banner { display: none; }
+body[data-app="stars"] .gw-banner, body[data-app="stars"] .ch-banner { display: none; }
 /* в TonExpress вкладка «Звёзды» — только карточка «переехали в StarsExpress» */
 body:not([data-app="stars"]) #panel-stars > :not(.stars-moved) { display: none !important; }
 body[data-app="stars"] .stars-moved { display: none; }
@@ -1018,6 +1018,9 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
 .gw-banner b { display: block; font-size: 14px; }
 .gw-banner span { font-size: 12.5px; color: var(--muted); }
 .gw-banner i { margin-left: auto; font-style: normal; color: #f2b83b; font-size: 20px; }
+.ch-banner { margin-bottom: 8px; border-color: rgba(140, 120, 255, .5); background: linear-gradient(120deg, rgba(120, 100, 250, .22), rgba(120, 100, 250, .05)); }
+.ch-banner img { border-radius: 50%; }
+.ch-banner i { color: #9d8cff; }
 .gw-back { display: inline-flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 6px 2px; border: 0; background: none; color: var(--muted); font: 500 13px/1 var(--font-body); cursor: pointer; }
 .gw-hero { text-align: center; padding: 6px 0 2px; }
 .gw-gift { width: 168px; height: 168px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(242, 184, 59, .7);
@@ -1151,6 +1154,10 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   </header>
 
   <section class="tab-panel" id="panel-ton" role="tabpanel" aria-labelledby="tab-ton">
+  <button type="button" class="gw-banner ch-banner" id="chBanner">
+    <img src="channel-avatar.jpg" width="44" height="44" alt="">
+    <div><b>У нас теперь свой канал 📢</b><span>TonExpress news — курс, розыгрыши, новости</span></div><i>›</i>
+  </button>
   <button type="button" class="gw-banner" id="gwBanner" hidden>
     <img src="gift-spyagaric.jpg" width="44" height="44" alt="">
     <div><b>Розыгрыш Spy Agaric</b><span>+1 жетон за каждые 200 грн покупок</span></div><i>›</i>
@@ -1845,6 +1852,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     ['⏳ Сейчас банк показывает платежи с задержкой — до 15–20 минут. Если ты уже оплатил — всё в порядке, TON придут сами, писать в поддержку не нужно.', '⏳ Зараз банк показує платежі із затримкою — до 15–20 хвилин. Якщо ти вже оплатив — все гаразд, TON прийдуть самі, писати в підтримку не потрібно.'],
     ['Чтобы участвовать, подпишись на канал — там объявим победителя. Открыть канал?', 'Щоб узяти участь, підпишись на канал — там оголосимо переможця. Відкрити канал?'],
     [' · за покупки +', ' · за покупки +'], [' · покупки: +1 за 200 грн', ' · покупки: +1 за 200 грн'],
+    ['У нас теперь свой канал 📢', 'У нас тепер свій канал 📢'], ['TonExpress news — курс, розыгрыши, новости', 'TonExpress news — курс, розіграші, новини'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
     ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
@@ -4027,6 +4035,12 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     try { tg.openTelegramLink('https://t.me/StarsExpressbot'); } catch (e) { window.open('https://t.me/StarsExpressbot', '_blank'); }
   });
   gwEl('gwBanner').addEventListener('click', () => { haptic(); selectTab('giveaway'); gwLoad(); });
+  // 11-25: баннер канала TonExpress news
+  document.getElementById('chBanner').addEventListener('click', () => {
+    haptic();
+    const url = 'https://t.me/m1halch_m';
+    if (tg && typeof tg.openTelegramLink === 'function') tg.openTelegramLink(url); else window.open(url, '_blank');
+  });
   gwEl('gwBack').addEventListener('click', () => { haptic(); selectTab('ton'); });
 
   // ?tab=stars|reviews|friends — бот открывает мини-апп сразу на нужной вкладке.
