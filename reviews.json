@@ -1,8 +1,32 @@
 {
-  "count": 411,
+  "count": 413,
   "avgRating": 4.85,
   "clients": 55,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Круто чётко понимаешь 😁",
+      "date": "26.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 21.3,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "26.11",
+      "name": "@TN***PY",
+      "bought": {
+        "ton": 2.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 4,
       "comment": null,
@@ -1175,30 +1199,6 @@
       "bought": {
         "ton": 0,
         "stars": 50,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "17.11",
-      "name": "@bu***66",
-      "bought": {
-        "ton": 0,
-        "stars": 625,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "17.11",
-      "name": "@ma***ZE",
-      "bought": {
-        "ton": 5.9,
-        "stars": 0,
         "premium": 0,
         "gifts": 0
       }
