@@ -4038,7 +4038,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   // 11-25: баннер канала TonExpress news
   document.getElementById('chBanner').addEventListener('click', () => {
     haptic();
-    const url = 'https://t.me/m1halch_m';
+    const url = 'https://t.me/tonexpressnews';
     if (tg && typeof tg.openTelegramLink === 'function') tg.openTelegramLink(url); else window.open(url, '_blank');
   });
   gwEl('gwBack').addEventListener('click', () => { haptic(); selectTab('ton'); });
