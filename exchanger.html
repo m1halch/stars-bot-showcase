@@ -1105,6 +1105,79 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   .tab-ind, .mascot-shades, .step-dot svg path { transition: none; }
   #snowfall { display: none; }
 }
+
+/* ===== 11-27 редизайн главного экрана v2 (как на макете) ===== */
+.topline { display: flex; align-items: center; gap: 10px; padding: 12px 0 10px; }
+.tl-ava { width: 38px; height: 38px; border-radius: 12px; object-fit: cover; object-position: 50% 8%;
+  background: linear-gradient(140deg, #5b4be0, #8f80ff); }
+.tl-brand .logo-name { font: 800 19px/1.1 var(--font-brand); letter-spacing: -.3px; }
+.tl-brand .logo-tag { font-size: 11.5px; color: var(--muted); margin-top: 2px; }
+.tl-sp { flex: 1; }
+.topline .lang-btn { padding: 8px 11px; border: 1px solid var(--border); background: var(--card); font: 700 12px/1 var(--font-body); color: #fff; }
+.topline .adm-btn { position: static; padding: 7px 9px; border: 1px solid var(--border); background: var(--card); }
+.hero { margin: 0 0 12px; border-radius: 22px; min-height: 0; padding: 16px 18px 16px;
+  background: radial-gradient(120% 140% at 100% 0%, #9a8cff 0%, #6a59ea 38%, #3e2fb8 100%); }
+.hero .rc-label { display: flex; align-items: center; gap: 7px; font: 700 12.5px/1 var(--font-body); opacity: .9; }
+.hero .rc-label .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #7dffb0; box-shadow: 0 0 0 4px rgba(125,255,176,.18); }
+.hero .rate-pill { display: block; margin-top: 8px; padding: 0; background: none; border: 0; border-radius: 0; }
+.hero .rate-pill .live-dot { display: none; }
+.hero .rate-pill #ratePillText { display: flex; align-items: baseline; gap: 6px; font: 700 18px/1 var(--font-body); }
+.hero .rp-num { font: 800 38px/1 var(--font-brand); letter-spacing: -.6px; }
+.hero .rp-unit { font: 700 15px/1 var(--font-body); opacity: .85; }
+.hero-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; max-width: calc(100% - 96px); }
+.hero-chips span { white-space: nowrap; }
+.hero-chips span { padding: 6px 8px; border-radius: 10px; background: rgba(255,255,255,.15); font: 700 12px/1 var(--font-body); color: #fff; }
+.topbar .mascot { width: 112px; right: 2px; bottom: -6px; }
+.ex-card { border-radius: 22px; }
+.ex-card .card-input label, .ex-card .card-hero label { font: 700 11.5px/1 var(--font-body); letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.ex-card #uah { font: 800 40px/1.1 var(--font-brand); letter-spacing: -.8px; }
+.ex-card .chip.active, .ex-card .chip[aria-pressed="true"] { box-shadow: inset 0 0 0 1.5px var(--accent); color: #c9c2ff; }
+.arrow-divider { display: flex; align-items: center; gap: 10px; margin: 4px 16px; }
+.arrow-divider .ad-line { flex: 1; height: 1px; background: var(--border); }
+.arrow-divider .ad-text { display: none; }
+.arrow-divider .arrow-badge { position: static; transform: none; width: 30px; height: 30px; }
+.ex-card .card-hero .result-value { color: #b3a8ff; font-size: 32px; }
+.ex-card .card-hero label .ton-mark { display: none; }
+.card-wallet { border-top: 1px solid var(--border); border-radius: 0; margin-top: 4px; }
+.trust { display: flex; gap: 8px; width: 100%; margin: 0 0 12px; padding: 0; border: 0; background: none; color: inherit; cursor: pointer; }
+.trust .trust-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 11px 6px;
+  border-radius: 16px; background: var(--card); border: 1px solid var(--border); }
+.trust .trust-item b { display: flex; align-items: center; gap: 5px; font: 700 15px/1 var(--font-body); color: #f3f1fa; }
+.trust .trust-item b i { font-style: normal; }
+.trust .trust-item svg { width: 15px; height: 15px; color: #ffd24a; }
+.trust .trust-item > span { font: 500 11px/1.2 var(--font-body); color: var(--muted); }
+.ch-banner { padding: 10px 12px; border-radius: 16px; margin-bottom: 12px; }
+.ch-banner img { width: 32px; height: 32px; border-radius: 50%; }
+.ch-banner b { font-size: 13.5px; }
+.ch-banner span { font-size: 11.5px; }
+#submitBtn:not(:disabled) { position: sticky; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 5;
+  background: linear-gradient(90deg, #6a59ea, #8f80ff); box-shadow: 0 10px 30px rgba(123,108,246,.35); }
+body[data-app="stars"] .hero-chips, body[data-app="stars"] .trust #trustTon, body[data-app="stars"] .trust #trustOrders { display: none; }
+body[data-section="successSection"] .topline { display: none; }
+.tl-ch { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: #c9c2ee; display: flex; align-items: center; justify-content: center; padding: 0; }
+.topline .lang-btn { border-radius: 18px; height: 36px; }
+.hero .rc-change { display: inline-block; margin-top: 8px; padding: 4px 9px; border-radius: 99px; background: rgba(0,0,0,.22); font: 700 12px/1 var(--font-body); color: #b8ffd6; }
+.hero .rc-change.dn { color: #ffd0d0; }
+.hero .rc-spark { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 54px; z-index: 0; pointer-events: none; }
+.hero .hero-text { z-index: 2; }
+.ex-card .amount-row { justify-content: flex-start; gap: 10px; align-items: baseline; }
+.ex-card #uah { width: auto; max-width: 70%; field-sizing: content; min-width: 1ch; }
+.ex-card #inputUnit { font: 700 22px/1 var(--font-body); color: var(--muted); }
+.arrow-divider .ad-text { display: inline; cursor: pointer; color: var(--muted); font-size: 12px; }
+.arrow-divider .arrow-badge { display: none; }
+.ex-card .card-hero label#resultLabel { display: none; }
+.res-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.res-sub { margin-top: 4px; font-size: 12px; color: var(--muted); }
+.res-ico { width: 42px; height: 42px; border-radius: 50%; background: #2b74ff; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; }
+body[data-tab="ton"] .ex-card .rate-line, .ex-card .rate-line { display: none; }
+#walletHint { display: none; }
+.paste-txt { width: auto !important; padding: 6px 10px !important; border-radius: 10px; background: rgba(123,108,246,.16) !important; color: #b3a8ff !important; font: 700 12.5px/1 var(--font-body); border: 0 !important; }
+.ex-card .card-wallet { border-top: 0; margin-top: 14px; padding-top: 4px; }
+.card-wallet label { font: 700 11.5px/1 var(--font-body); letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+#formSection > .limits, #formSection > .footer-note { display: none; }
+#formSection > .agree-row { font-size: 12px; }
+body[data-app="stars"] .rc-spark, body[data-app="stars"] .rc-change, body[data-app="stars"] .res-ico { display: none; }
+
 </style>
 </head>
 <body data-tab="ton">
@@ -1132,18 +1205,26 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     })();
   </script>
 
+  <div class="topline" id="topline">
+    <img class="tl-ava" src="mister-ton.png" alt="">
+    <div class="tl-brand"><div class="logo-name">TonExpress</div><div class="logo-tag" id="heroTag">грн → TON за ~1 минуту</div></div>
+    <div class="tl-sp"></div>
+    <button type="button" id="admBtn" class="adm-btn" hidden>⚙️</button>
+    <button type="button" id="langBtn" class="lang-btn">🇺🇦 UA</button>
+    <button type="button" id="tlCh" class="tl-ch" aria-label="Канал TonExpress news"><svg viewBox="0 0 24 24" width="17" height="17"><path d="M3 10v4h3l6 5V5L6 10z" fill="currentColor"/><path d="M16 8a5 5 0 010 8" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>
+  </div>
   <header class="topbar hero">
     <div class="hero-text">
-      <button type="button" id="langBtn" class="lang-btn">🌐 Українська</button>
-      <button type="button" id="admBtn" class="adm-btn" hidden>⚙️ Админ</button>
-      <div class="logo-name">TonExpress</div>
       <div class="hero-say" id="heroSay">Не вопрос, жду перевод</div>
-      <div class="logo-tag" id="heroSubTag">Обмен грн ⇄ TON</div>
-      <div class="logo-tag" id="heroTag">TON за ~1 минуту</div>
+      <div class="logo-tag" id="heroSubTag" hidden>Обмен грн ⇄ TON</div>
+      <div class="rc-label"><span class="live-dot"></span><span id="rcLabel">Курс сейчас</span></div>
       <div class="rate-pill" id="ratePill" data-state="loading" aria-live="polite">
-        <span class="live-dot"></span><span id="ratePillText">Курс…</span>
+        <span id="ratePillText">Курс…</span>
       </div>
+      <div class="rc-change" id="rcChange" hidden></div>
+      <div class="hero-chips" id="heroChips"><span id="heroStock" hidden></span><span class="hc-fast">⚡ ~1 мин</span></div>
     </div>
+    <svg class="rc-spark" id="spark" viewBox="0 0 300 54" preserveAspectRatio="none" hidden><path id="sparkA" fill="rgba(255,255,255,.10)" d=""/><polyline id="sparkL" fill="none" stroke="rgba(255,255,255,.55)" stroke-width="2" points=""/></svg>
     <button type="button" class="mascot" id="heroMascot" aria-label="Мистер Тон">
       <img class="mood-base" src="mister-ton.png" width="360" height="468" alt="">
       <img class="mood-gold" src="mister-ton-gold.png" width="360" height="468" alt="">
@@ -1154,18 +1235,11 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   </header>
 
   <section class="tab-panel" id="panel-ton" role="tabpanel" aria-labelledby="tab-ton">
-  <button type="button" class="gw-banner ch-banner" id="chBanner">
-    <img src="channel-avatar.jpg" width="44" height="44" alt="">
-    <div><b>У нас теперь свой канал 📢</b><span>TonExpress news — курс, розыгрыши, новости</span></div><i>›</i>
-  </button>
   <button type="button" class="gw-banner" id="gwBanner" hidden>
     <img src="gift-spyagaric.jpg" width="44" height="44" alt="">
     <div><b>Розыгрыш Spy Agaric</b><span>+1 жетон за каждые 200 грн покупок</span></div><i>›</i>
   </button>
-  <button type="button" class="trust" id="trustRow" aria-label="Открыть отзывы">
-    <span class="trust-item" id="trustReviews" hidden><svg class="star-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.24l-5.66 2.97 1.08-6.3L2.85 9.45l6.32-.92L12 2.8z"/></svg><b id="trustScore">5.0</b><span id="trustCount"></span></span>
-    <span class="trust-item"><svg viewBox="0 0 24 24" fill="none"><path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>TON за ~1 минуту</span>
-  </button>
+
 
   <div class="notice" id="closedNotice" hidden>
     <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 7.5v5.5M12 16.5v.01" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
@@ -1201,7 +1275,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       <label for="uah" id="inputLabel">Отдаёте</label>
       <div class="amount-row">
         <input type="number" id="uah" inputmode="decimal" placeholder="0" min="0" step="1">
-        <span class="unit" id="inputUnit">грн</span>
+        <span class="unit" id="inputUnit">₴</span>
       </div>
       <div class="chips" id="amountChips">
         <button type="button" class="chip" data-amount="500">500</button>
@@ -1218,6 +1292,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     </div>
 
     <div class="arrow-divider">
+      <span class="ad-line"></span><span class="ad-text" id="adText">получаете</span><span class="ad-line"></span>
       <button type="button" class="arrow-badge" id="modeToggleBtn" title="Ввести в TON вместо грн">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M12 4V20M12 20L6 14M12 20L18 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1227,28 +1302,34 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
 
     <div class="card card-hero">
       <label id="resultLabel"><svg class="ton-mark" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 9L12 2L20 9L12 22L4 9Z" fill="currentColor"/><path d="M4 9H20L12 2L4 9Z" fill="currentColor" fill-opacity=".45"/></svg>Получаете</label>
-      <div class="result-value" id="result">0.00 TON</div>
+      <div class="res-row"><div><div class="result-value" id="result">0,00 TON</div><div class="res-sub" id="resSub">придёт на кошелёк автоматически</div></div>
+        <span class="res-ico"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 8l8-5 8 5-8 13z" fill="#fff" opacity=".9"/><path d="M4 8h16L12 21z" fill="#fff"/></svg></span></div>
       <div class="rate-line" id="rateLine">Введите сумму, чтобы увидеть курс</div>
     </div>
-    </div>
-
-    <div class="card card-input">
+    <div class="card card-input card-wallet">
       <label for="wallet">Ваш TON-адрес</label>
       <div class="wallet-field">
         <input type="text" id="wallet" class="wallet-input" placeholder="UQ… или EQ…" autocomplete="off" autocapitalize="off" spellcheck="false">
         <svg id="walletCheckIcon" class="wallet-check" viewBox="0 0 24 24" fill="none" style="display:none;">
           <path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        <button type="button" id="pasteBtn" class="paste-btn" title="Вставить из буфера" style="display:none;">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="7" y="4" width="10" height="4" rx="1" stroke="currentColor" stroke-width="1.6"/>
-            <path d="M8 6H6a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          </svg>
-        </button>
+        <button type="button" id="pasteBtn" class="paste-btn paste-txt" title="Вставить из буфера" style="display:none;">Вставить</button>
       </div>
       <button type="button" class="wallet-saved" id="walletSavedBtn" hidden><span>Мой адрес</span> <code id="walletSavedText"></code></button>
       <div class="hint" id="walletHint">TON придёт сюда сразу после оплаты — проверьте адрес перед отправкой.</div>
     </div>
+
+    </div>
+
+  <button type="button" class="trust" id="trustRow" aria-label="Открыть отзывы">
+    <span class="trust-item" id="trustReviews" hidden><b><svg class="star-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.8l2.83 5.73 6.32.92-4.57 4.46 1.08 6.3L12 17.24l-5.66 2.97 1.08-6.3L2.85 9.45l6.32-.92L12 2.8z"/></svg><i id="trustScore">5.0</i></b><span id="trustCount"></span></span>
+    <span class="trust-item" id="trustTon" hidden><b id="trustTonN"></b><span id="trustTonL">TON отправлено</span></span>
+    <span class="trust-item" id="trustOrders" hidden><b id="trustOrdersN"></b><span id="trustOrdersL">обменов</span></span>
+  </button>
+  <button type="button" class="gw-banner ch-banner" id="chBanner">
+    <img src="channel-avatar.jpg" width="44" height="44" alt="">
+    <div><b>TonExpress news 📢</b><span>курс, розыгрыши, новости</span></div><i>›</i>
+  </button>
 
     <div class="limits" id="limits">От 1 TON до 50 000 грн за раз</div>
 
@@ -1727,7 +1808,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   const initLangBtn = () => {
     const btn = document.getElementById('langBtn');
     if (!btn) return;
-    btn.textContent = lang === 'uk' ? '🌐 Русский' : '🌐 Українська';
+    btn.textContent = lang === 'uk' ? 'RU' : '🇺🇦 UA';   // 11-27 редизайн: коротко
     btn.addEventListener('click', () => {
       try { localStorage.setItem('tonexpress_lang', lang === 'uk' ? 'ru' : 'uk'); } catch (e) {}
       location.reload();
@@ -1803,7 +1884,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     ['Не получилось узнать курс — попробуй через пару минут.', 'Не вдалося дізнатися курс — спробуй за кілька хвилин.'],
     ['Не получилось создать заявку — проверь интернет и попробуй ещё раз.', 'Не вдалося створити заявку — перевір інтернет і спробуй ще раз.'],
     ['Обмен грн ⇄ TON', 'Обмін грн ⇄ TON'], ['TonExpress — обмен грн ⇄ TON', 'TonExpress — обмін грн ⇄ TON'],
-    ['Открыть отзывы', 'Відкрити відгуки'], ['Курс…', 'Курс…'], ['TON за ~1 минуту', 'TON за ~1 хвилину'],
+    ['Открыть отзывы', 'Відкрити відгуки'], ['Курс…', 'Курс…'], ['TON за ~1 минуту', 'TON за ~1 хвилину'], ['грн → TON за ~1 минуту', 'грн → TON за ~1 хвилину'], ['придёт на кошелёк автоматически', 'прийде на гаманець автоматично'], ['Вставить', 'Вставити'], ['за 24 ч', 'за 24 год'],
     ['Обмен временно на паузе.', 'Обмін тимчасово на паузі.'], ['Обмен временно на паузе', 'Обмін тимчасово на паузі'],
     ['Новые заявки сейчас не принимаем — загляни чуть позже.', 'Нові заявки зараз не приймаємо — зазирни трохи пізніше.'],
     ['Не удаётся получить курс.', 'Не вдається отримати курс.'], ['Проверь интернет — попробуем ещё раз через минуту.', 'Перевір інтернет — спробуємо ще раз за хвилину.'],
@@ -1852,7 +1933,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     ['⏳ Сейчас банк показывает платежи с задержкой — до 15–20 минут. Если ты уже оплатил — всё в порядке, TON придут сами, писать в поддержку не нужно.', '⏳ Зараз банк показує платежі із затримкою — до 15–20 хвилин. Якщо ти вже оплатив — все гаразд, TON прийдуть самі, писати в підтримку не потрібно.'],
     ['Чтобы участвовать, подпишись на канал — там объявим победителя. Открыть канал?', 'Щоб узяти участь, підпишись на канал — там оголосимо переможця. Відкрити канал?'],
     [' · за покупки +', ' · за покупки +'], [' · покупки: +1 за 200 грн', ' · покупки: +1 за 200 грн'],
-    ['У нас теперь свой канал 📢', 'У нас тепер свій канал 📢'], ['TonExpress news — курс, розыгрыши, новости', 'TonExpress news — курс, розіграші, новини'],
+    ['У нас теперь свой канал 📢', 'У нас тепер свій канал 📢'], ['TonExpress news — курс, розыгрыши, новости', 'TonExpress news — курс, розіграші, новини'], ['курс, розыгрыши, новости', 'курс, розіграші, новини'], ['Курс сейчас', 'Курс зараз'], ['получаете', 'отримуєте'], ['TON отправлено', 'TON відправлено'], ['обменов', 'обмінів'],
     ['Сумма — ровно', 'Сума — рівно'], ['Копейки важны: по ним бот узнаёт твой платёж.', 'Копійки важливі: за ними бот впізнає твій платіж.'],
     ['Успей оплатить за', 'Встигни сплатити за'], ['Заявка создана', 'Заявку створено'], ['Оплата получена', 'Оплату отримано'], ['TON отправлен', 'TON надіслано'], ['Звёзды зачислены', 'Зірки зараховано'],
     ['Мой адрес', 'Моя адреса'], ['Перерыв, скоро вернусь', 'Перерва, скоро повернусь'], ['Связь шалит, попробуй ещё раз', 'Зв’язок підводить, спробуй ще раз'], ['Не вопрос, жду перевод', 'Не питання, чекаю на переказ'], ['Оплату вижу, уже отправляю', 'Оплату бачу, вже надсилаю'], ['Проверяю вручную, не переживай', 'Перевіряю вручну, не хвилюйся'], ['Время вышло, создай новую заявку', 'Час вийшов, створи нову заявку'],
@@ -2059,6 +2140,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   let rateState = (tg && tg.initData) ? 'loading' : 'outside';
   const RATE_REFRESH_MS = 60_000; // сервер сам кэширует курс на TON_RATE_CACHE_TTL (по умолчанию 5 мин) — чаще спрашивать смысла нет
 
+  let stockTon = null;
   async function fetchCostRate() {
     if (STARS_APP) return;   // курс TON в StarsExpress не нужен (и подпись там другого бота)
     if (tg && tg.initData) {
@@ -2069,6 +2151,23 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         if (typeof data.min_price_uah === 'number') minPriceUah = data.min_price_uah;
         privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
+        stockTon = (typeof data.stock_ton === 'number') ? data.stock_ton : null;
+        if (data.chart && data.chart.pts && data.chart.pts.length > 3) {   // 11-27 редизайн: «▲1,2% за 24 ч» + линия
+          const c = data.chart.change, ch = document.getElementById('rcChange');
+          ch.hidden = false; ch.className = 'rc-change ' + (c >= 0 ? 'up' : 'dn');
+          ch.textContent = `${c >= 0 ? '▲' : '▼'} ${Math.abs(c).toFixed(1).replace('.', ',')}% за 24 ч`;
+          const h = data.chart.pts, mn = Math.min(...h), mx = Math.max(...h), k = (mx - mn) || 1;
+          const pts = h.map((v, i) => `${(i * 300 / (h.length - 1)).toFixed(1)},${(48 - (v - mn) / k * 30).toFixed(1)}`);
+          document.getElementById('sparkL').setAttribute('points', pts.join(' '));
+          document.getElementById('sparkA').setAttribute('d', 'M0,54 L' + pts.join(' L') + ' L300,54 Z');
+          document.getElementById('spark').removeAttribute('hidden');
+        }
+        if (data.stats) {   // 11-27 редизайн: цифры доверия
+          const fmt = n => n >= 1000 ? `${(Math.floor(n / 100) * 100).toLocaleString('ru-RU')}+` : `${n}`;
+          document.getElementById('trustTonN').textContent = fmt(data.stats.ton);
+          document.getElementById('trustOrdersN').textContent = fmt(data.stats.orders);
+          document.getElementById('trustTon').hidden = document.getElementById('trustOrders').hidden = false;
+        }
         if (typeof data.stock_sub === 'boolean') stockSub = data.stock_sub;
         reopenAt = data.reopen_at ? new Date(data.reopen_at) : null;
         if (data.sell_poll && !spDone) document.getElementById('sellPollCard').hidden = false;
@@ -2157,7 +2256,16 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         );
       }
       lastRateText = rateText;
-      text.textContent = rateText;
+      // 11-27 редизайн: крупное число + подпись
+      text.innerHTML = `<b class="rp-num">${sell.toFixed(2).replace('.', ',')}</b><small class="rp-unit">₴ за 1 TON</small>`;
+      const st = document.getElementById('heroStock');
+      if (st) {
+        const av = typeof stockTon === 'number' ? stockTon : maxTonAvailable;
+        if (typeof av === 'number') {
+          st.hidden = false;
+          st.textContent = av >= 1 ? `💎 В наличии ${av.toFixed(1).replace('.', ',')} TON` : '💎 TON разобрали';
+        } else st.hidden = true;
+      }
     } else if (rateState === 'closed') {
       text.textContent = 'Пауза';
     } else if (rateState === 'error') {
@@ -2268,7 +2376,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         // разъедется с реальной суммой заявки на копейки TON.
         ton = Math.floor((uah / sellRate) * 100) / 100;
       }
-      resultEl.textContent = `${ton.toFixed(2)} TON`;
+      resultEl.textContent = `${ton.toFixed(2).replace('.', ',')} TON`;
       amountOk = uah >= minUahNow() && uah <= MAX_UAH && !(maxTonAvailable != null && ton > maxTonAvailable);
       finalUahToSubmit = uah;
     } else {
@@ -2344,7 +2452,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
         ? 'Введите сумму и адрес'
         : !agreed
           ? 'Прими условия ниже'
-          : 'Оплатить';
+          : (STARS_APP ? 'Оплатить' : `Купить ${document.getElementById('result').textContent} · ${Math.round(finalUahToSubmit).toLocaleString('ru-RU')} ₴`);
 
   }
 
@@ -2368,7 +2476,7 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       toggleBtn.title = 'Ввести в грн вместо TON';
     } else {
       inputLabel.textContent = 'Отдаёте';
-      inputUnit.textContent = 'грн';
+      inputUnit.textContent = '₴';
       resultLabel.innerHTML = `${tonMarkSvg}Получаете`;
       document.getElementById('amountChips').style.display = '';
       document.getElementById('amountChipsTon').style.display = 'none';
@@ -3202,7 +3310,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
       : 'Пока нет отзывов — твой может стать первым.';
     if (count) {
       document.getElementById('trustScore').textContent = avgRating.toFixed(1);
-      document.getElementById('trustCount').textContent = `· ${count} ${reviewsWord(count)}`;
+      document.getElementById('trustCount').textContent = `${count} ${reviewsWord(count)}`;
+      document.getElementById('trustReviews').hidden = false;   // 11-27 редизайн: на главной снова видно
       // 10-29: «★ 5.0 · N отзывов» на главной скрыт (владелец: пока мало) — вкладка «Отзывы» остаётся.
     }
   }
@@ -3393,11 +3502,12 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
     const sell = document.body.dataset.side === 'sell';
     const tag = document.getElementById('heroTag');
     // 11-17: пока TON разобрали, «TON за ~1 минуту» в шапке звучит как обман
-    if (tag) tag.textContent = sell ? 'Гривны на карту в тот же день' : (tonSoldOut ? 'Новая партия TON скоро' : 'TON за ~1 минуту');
+    if (tag) tag.textContent = sell ? 'Гривны на карту в тот же день' : (tonSoldOut ? 'Новая партия TON скоро' : 'грн → TON за ~1 минуту');
     if (sell && sellInfo && sellInfo.rate && rateState === 'ok') {
       document.getElementById('ratePillText').textContent = `Выкуп: 1 TON = ${sellInfo.rate.toFixed(2)} грн`;
     } else if (!sell && rateState === 'ok' && lastRateText) {
-      document.getElementById('ratePillText').textContent = lastRateText;
+      const num = lastRateText.replace(/^1 TON = /, '').replace(/ грн$/, '').replace('.', ',');   // 11-27 редизайн
+      document.getElementById('ratePillText').innerHTML = `<b class="rp-num">${num}</b><small class="rp-unit">₴ за 1 TON</small>`;
     }
   }
 
@@ -4036,6 +4146,8 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
   });
   gwEl('gwBanner').addEventListener('click', () => { haptic(); selectTab('giveaway'); gwLoad(); });
   // 11-25: баннер канала TonExpress news
+  document.getElementById('tlCh').addEventListener('click', () => document.getElementById('chBanner').click());
+  document.getElementById('adText').addEventListener('click', () => document.getElementById('modeToggleBtn').click());
   document.getElementById('chBanner').addEventListener('click', () => {
     haptic();
     const url = 'https://t.me/tonexpressnews';
