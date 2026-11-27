@@ -1,8 +1,80 @@
 {
-  "count": 423,
+  "count": 430,
   "avgRating": 4.84,
   "clients": 59,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Круто бистро, я рижа маупаа",
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 9.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@Ch***_X",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Я рижа маупаа",
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 4.9,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 3.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 9.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Нармас",
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 15.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1126,78 +1198,6 @@
       "name": "@tr***eg",
       "bought": {
         "ton": 3.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@wr***ie",
-      "bought": {
-        "ton": 5.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@TN***PY",
-      "bought": {
-        "ton": 2.9,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@ys***sa",
-      "bought": {
-        "ton": 1.7,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Лучший бот , советую",
-      "date": "18.11",
-      "name": "@me***kq",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Долго",
-      "date": "17.11",
-      "name": "@k***",
-      "bought": {
-        "ton": 12.9,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Ставлю позитивный видгук",
-      "date": "17.11",
-      "name": "@v***",
-      "bought": {
-        "ton": 5.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
