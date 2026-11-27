@@ -1,8 +1,44 @@
 {
-  "count": 430,
+  "count": 433,
   "avgRating": 4.84,
   "clients": 59,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@Gr***zs",
+      "bought": {
+        "ton": 1.0,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 20.5,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": "Не лагай😁 дякую",
+      "date": "27.11",
+      "name": "@St***th",
+      "bought": {
+        "ton": 20.4,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": "Круто бистро, я рижа маупаа",
@@ -1162,42 +1198,6 @@
       "name": "@TN***PY",
       "bought": {
         "ton": 1.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 4,
-      "comment": null,
-      "date": "18.11",
-      "name": "@wr***ie",
-      "bought": {
-        "ton": 2.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@wr***ie",
-      "bought": {
-        "ton": 3.5,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": "Четко",
-      "date": "18.11",
-      "name": "@tr***eg",
-      "bought": {
-        "ton": 3.5,
         "stars": 0,
         "premium": 0,
         "gifts": 0
