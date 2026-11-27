@@ -1150,8 +1150,10 @@ body[data-tab="giveaway"] button.primary:not(:disabled) { color: #2a1d02; }
 .ch-banner img { width: 32px; height: 32px; border-radius: 50%; }
 .ch-banner b { font-size: 13.5px; }
 .ch-banner span { font-size: 11.5px; }
-#submitBtn:not(:disabled) { position: sticky; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 5;
-  background: linear-gradient(90deg, #6a59ea, #8f80ff); box-shadow: 0 10px 30px rgba(123,108,246,.35); }
+/* 11-27: кнопка «Купить» закреплена внизу всегда (владелец: «чтобы не листать») */
+#submitBtn { position: sticky; bottom: calc(86px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
+#submitBtn:disabled { background: #2c2840; color: #b9b3d3; opacity: 1; box-shadow: 0 8px 24px rgba(0,0,0,.45); }
+#submitBtn:not(:disabled) { background: linear-gradient(90deg, #6a59ea, #8f80ff); box-shadow: 0 10px 30px rgba(123,108,246,.35); }
 body[data-app="stars"] .hero-chips, body[data-app="stars"] .trust #trustTon, body[data-app="stars"] .trust #trustOrders { display: none; }
 body[data-section="successSection"] .topline { display: none; }
 .tl-ch { width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: #c9c2ee; display: flex; align-items: center; justify-content: center; padding: 0; }
