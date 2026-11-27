@@ -1,8 +1,32 @@
 {
-  "count": 433,
+  "count": 435,
   "avgRating": 4.84,
   "clients": 59,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@q1***34",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
+    {
+      "rating": 5,
+      "comment": null,
+      "date": "27.11",
+      "name": "@q1***34",
+      "bought": {
+        "ton": 0,
+        "stars": 50,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1174,30 +1198,6 @@
       "name": "@La***ni",
       "bought": {
         "ton": 2.8,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@TN***PY",
-      "bought": {
-        "ton": 2.0,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@TN***PY",
-      "bought": {
-        "ton": 1.0,
         "stars": 0,
         "premium": 0,
         "gifts": 0
