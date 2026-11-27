@@ -2154,6 +2154,10 @@ body[data-app="stars"] .rc-spark, body[data-app="stars"] .rc-change, body[data-a
         privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         stockTon = (typeof data.stock_ton === 'number') ? data.stock_ton : null;
+        if (data.hide_stars) {   // 11-27: пришёл по ссылке партнёра со своим магазином звёзд — у нас только TON
+          const tb = document.getElementById('tab-stars'); if (tb) tb.hidden = true;
+          if (document.body.dataset.tab === 'stars') { const t = document.getElementById('tab-ton'); if (t) t.click(); }
+        }
         if (data.chart && data.chart.pts && data.chart.pts.length > 3) {   // 11-27 редизайн: «▲1,2% за 24 ч» + линия
           const c = data.chart.change, ch = document.getElementById('rcChange');
           ch.hidden = false; ch.className = 'rc-change ' + (c >= 0 ? 'up' : 'dn');
