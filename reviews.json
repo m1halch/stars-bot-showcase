@@ -1,8 +1,20 @@
 {
-  "count": 441,
+  "count": 442,
   "avgRating": 4.84,
   "clients": 59,
   "reviews": [
+    {
+      "rating": 5,
+      "comment": "Спасибо хорошо",
+      "date": "28.11",
+      "name": "@v***",
+      "bought": {
+        "ton": 3.2,
+        "stars": 0,
+        "premium": 0,
+        "gifts": 0
+      }
+    },
     {
       "rating": 5,
       "comment": null,
@@ -1186,18 +1198,6 @@
       "name": "@wr***ie",
       "bought": {
         "ton": 2.4,
-        "stars": 0,
-        "premium": 0,
-        "gifts": 0
-      }
-    },
-    {
-      "rating": 5,
-      "comment": null,
-      "date": "18.11",
-      "name": "@St***th",
-      "bought": {
-        "ton": 17.9,
         "stars": 0,
         "premium": 0,
         "gifts": 0
