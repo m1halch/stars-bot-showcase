@@ -2154,8 +2154,10 @@ body[data-app="stars"] .rc-spark, body[data-app="stars"] .rc-change, body[data-a
         privatComp = data.privat_comp || null;
         maxTonAvailable = (typeof data.max_ton_available === 'number') ? data.max_ton_available : null;
         stockTon = (typeof data.stock_ton === 'number') ? data.stock_ton : null;
-        if (data.hide_stars) {   // 11-27: пришёл по ссылке партнёра со своим магазином звёзд — у нас только TON
+        if (data.hide_stars && !HIDE_STARS) {   // 11-27: пришёл по ссылке партнёра со своим магазином звёзд — у нас только TON
+          HIDE_STARS = true;
           const tb = document.getElementById('tab-stars'); if (tb) tb.hidden = true;
+          if (reviewsData) { reviewsData = null; reviewsShown = 0; reviewsLoading = null; loadReviews(); }
           if (document.body.dataset.tab === 'stars') { const t = document.getElementById('tab-ton'); if (t) t.click(); }
         }
         if (data.chart && data.chart.pts && data.chart.pts.length > 3) {   // 11-27 редизайн: «▲1,2% за 24 ч» + линия
@@ -3263,6 +3265,7 @@ body[data-app="stars"] .rc-spark, body[data-app="stars"] .rc-change, body[data-a
   }
   let reviewsData = null;
   let reviewsShown = 0;
+  var HIDE_STARS = false;
   const REVIEWS_PAGE = 15;
   function renderReviewsPage() {
     const list = document.getElementById('reviewsList');
@@ -3334,6 +3337,14 @@ body[data-app="stars"] .rc-spark, body[data-app="stars"] .rc-change, body[data-a
           comment: r.comment && /[\p{L}\p{N}]{2,}/u.test(r.comment) ? r.comment.trim() : null,
         }));
         all.sort((a, b) => (b.comment ? 1 : 0) - (a.comment ? 1 : 0));
+        if (HIDE_STARS) {   // 11-27: люди партнёра со своим магазином звёзд — отзывы только про TON
+          const starWord = /зв[её]зд|зірк|зірок|stars?\b|⭐/i;
+          for (let i = all.length - 1; i >= 0; i--) {
+            const b = all[i].bought || {};
+            if ((b.stars && !b.ton) || (all[i].comment && starWord.test(all[i].comment))) all.splice(i, 1);
+            else if (b.stars) all[i] = { ...all[i], bought: { ...b, stars: 0 } };
+          }
+        }
         reviewsData = { count: data.count || all.length, avgRating: data.avgRating || 0, reviews: all, clients: data.clients || 0 };
         renderReviewsSummary();
         if (all.length) renderReviewsPage();
